@@ -1,38 +1,24 @@
-.App {
-  text-align: center;
+#app .status-button-select.open .status-group {
+  border: 1px solid black;
+  box-shadow: rgba(0, 0, 0, 0.75) 5px 5px 5px;
+}
+#app .status-button-select .btn {
+  min-width: 3rem;
+  padding: 0.1rem 0.25rem;
+  font-size: 0.675rem;
+  line-height: 1.75;
+  border-radius: 0.15rem;
+}
+#app .status-button-select .status-group {
+  min-width: 3rem;
+  padding: 0 0.5rem 0.5rem;
+  margin-left: -0.5rem;
+  margin-top: -0.15rem;
+}
+#app .status-button-select .status-group li.btn {
+  display: block;
+  cursor: pointer;
+  margin-top: 0.25rem;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/*# sourceMappingURL=App.css.map */

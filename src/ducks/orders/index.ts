@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import {EDIOrder, EDIOrdersAction, OrderFilter, OrderListState} from "./types";
+import {EDIOrder, EDIOrdersAction, OrderFilter, OrderListState, StatusPopupKey} from "./types";
 import {
     FETCH_ORDERS,
     FETCH_ORDERS_FAILED,
@@ -7,15 +7,17 @@ import {
     FILTER_ORDERS,
     PUT_ORDER,
     PUT_ORDER_FAILED,
-    PUT_ORDER_SUCCESS
+    PUT_ORDER_SUCCESS, TOGGLE_STATUS_POPUP
 } from "./actions";
+import {RootState} from "../index";
+import {orderKey} from "./utils";
 
 
 const initialOrderFilter: OrderFilter = {
-    company: 'chums',
-    arDivisionNo: '',
-    customerNo: '',
-    customerPONo: '',
+    Company: 'chums',
+    ARDivisionNo: '',
+    CustomerNo: '',
+    CustomerPONo: '',
     search: '',
     rowsPerPage: 25,
     page: 1,
@@ -26,6 +28,11 @@ const initialOrderState: OrderListState = {
     saving: false,
     filter: initialOrderFilter,
     list: [],
+}
+
+const noSelectedPopup:StatusPopupKey = {
+    key: '',
+    statusField: '',
 }
 
 const loadingReducer = (state = initialOrderState.loading, action: EDIOrdersAction): boolean => {
@@ -70,8 +77,33 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
     switch (type) {
     case FETCH_ORDERS_SUCCESS:
         return [...payload?.list || []];
+    case PUT_ORDER_SUCCESS:
+        if (!payload?.salesOrder) {
+            return state;
+        }
+        const payloadOrderKey = orderKey(payload.salesOrder);
+        console.log('listReducer()', state.filter(order => orderKey(order) !== payloadOrderKey).length, state.length)
+        return [
+            ...state.filter(order => orderKey(order) !== payloadOrderKey),
+            {...payload.salesOrder}
+        ]
     default:
         return state;
+    }
+}
+
+const statusPopupReducer = (state:StatusPopupKey = noSelectedPopup, action: EDIOrdersAction) => {
+    const {type, payload} = action;
+    switch (type) {
+    case TOGGLE_STATUS_POPUP: {
+        if (payload?.statusPopupKey?.key === state.key && payload?.statusPopupKey?.statusField === state.statusField) {
+            return {...noSelectedPopup};
+        }
+        return {...payload?.statusPopupKey};
+    }
+    case PUT_ORDER_SUCCESS:
+        return {...noSelectedPopup}
+    default: return state;
     }
 }
 
@@ -80,5 +112,5 @@ export default combineReducers({
     saving: savingReducer,
     filter: filterReducer,
     list: listReducer,
+    statusPopup: statusPopupReducer,
 });
-

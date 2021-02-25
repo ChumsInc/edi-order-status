@@ -1,0 +1,31 @@
+import {Customer, EDIOrder, OrderStatus, OrderStatusTitles} from "./types";
+import {parseISO, format, isToday, isThisYear} from 'date-fns';
+
+export const customerKey = (row:EDIOrder|Customer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
+
+export const orderKey = (row:EDIOrder):string => `${row.ARDivisionNo}-${row.CustomerNo}:${row.CustomerPONo}`;
+
+export const orderStatusClassName = (value: string|number|null) => {
+    switch (value) {
+    case 1: return 'btn-info';
+    case 2: return 'btn-success';
+    case 3: return 'btn-warning';
+    case 4: return 'btn-danger';
+    default: return 'btn-outline-dark';
+    }
+}
+
+export const friendlyDate = (val:string|Date) => {
+    const date = val instanceof Date ? val : parseISO(val);
+    if (isThisYear(date)) {
+        return format(date, 'MM/dd')
+    }
+    return format(date, 'MM/dd/yyyy');
+}
+export const friendlyDateTime = (val:string|Date) => {
+    const date = val instanceof Date ? val : parseISO(val);
+    if (isToday(date)) {
+        return format(date, 'HH:mm')
+    }
+    return friendlyDate(date);
+}

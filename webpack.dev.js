@@ -26,7 +26,7 @@ module.exports = merge(common, {
             '/pdf/': {...localProxy},
             '/files/': {...localProxy},
             '/node/': {...localProxy},
-            '/node_modules/': {...localProxy},
+            // '/node_modules/': {...localProxy},
             '/node-chums/': {...localProxy},
             '/node-dev/': {...localProxy},
             '/node-sage/': {...localProxy},

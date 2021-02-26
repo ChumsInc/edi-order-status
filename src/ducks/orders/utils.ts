@@ -1,5 +1,6 @@
-import {Customer, EDIOrder, OrderStatus, OrderStatusTitles} from "./types";
+import {EDIOrder, OrderStatus, OrderStatusTitles} from "./types";
 import {parseISO, format, isToday, isThisYear} from 'date-fns';
+import {Customer} from "../customers";
 
 export const customerKey = (row:EDIOrder|Customer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 
@@ -11,7 +12,7 @@ export const orderStatusClassName = (value: string|number|null) => {
     case 2: return 'btn-success';
     case 3: return 'btn-warning';
     case 4: return 'btn-danger';
-    default: return 'btn-outline-dark';
+    default: return 'btn-light';
     }
 }
 

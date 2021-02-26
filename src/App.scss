@@ -5,7 +5,6 @@
         border: 1px solid black;
         box-shadow: rgba(0,0,0,0.75) 5px 5px 5px;
       }
-
     }
     .btn {
       min-width: 3rem;
@@ -13,6 +12,9 @@
       font-size: .675rem;
       line-height: 1.75;
       border-radius: .15rem;
+      &.btn-light {
+        border-color: #888;
+      }
     }
 
 
@@ -27,6 +29,15 @@
         cursor: pointer;
         margin-top: 0.25rem;
       }
+    }
+  }
+
+  .table {
+    .edi-order-row--has-comment:not(.edi-order-row--comment) {
+      border-bottom-color: transparent;
+    }
+    .edi-order-row--comment-text {
+
     }
   }
 }

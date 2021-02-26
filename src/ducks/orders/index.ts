@@ -1,46 +1,24 @@
 import {combineReducers} from 'redux';
 import {EDIOrder, EDIOrdersAction, OrderFilter, OrderListState, StatusPopupKey} from "./types";
 import {
-    FETCH_ORDERS,
-    FETCH_ORDERS_FAILED,
-    FETCH_ORDERS_SUCCESS,
-    FILTER_ORDERS,
-    PUT_ORDER,
-    PUT_ORDER_FAILED,
-    PUT_ORDER_SUCCESS, TOGGLE_STATUS_POPUP
+    ordersFetch,
+    ordersFetchFailure,
+    ordersFetchSuccess,
+    ordersFilterChanged, ordersComment, ordersCommentSuccess,
+    ordersPut,
+    ordersPutFailure,
+    ordersPutSuccess, ordersToggleStatusPopup
 } from "./actions";
 import {RootState} from "../index";
 import {orderKey} from "./utils";
-
-
-const initialOrderFilter: OrderFilter = {
-    Company: 'chums',
-    ARDivisionNo: '',
-    CustomerNo: '',
-    CustomerPONo: '',
-    search: '',
-    rowsPerPage: 25,
-    page: 1,
-}
-
-const initialOrderState: OrderListState = {
-    loading: false,
-    saving: false,
-    filter: initialOrderFilter,
-    list: [],
-}
-
-const noSelectedPopup:StatusPopupKey = {
-    key: '',
-    statusField: '',
-}
+import {noSelectedPopup, initialOrderState, initialOrderFilter} from './defaults';
 
 const loadingReducer = (state = initialOrderState.loading, action: EDIOrdersAction): boolean => {
     switch (action.type) {
-    case FETCH_ORDERS:
+    case ordersFetch:
         return true;
-    case FETCH_ORDERS_SUCCESS:
-    case FETCH_ORDERS_FAILED:
+    case ordersFetchSuccess:
+    case ordersFetchFailure:
         return false;
     default:
         return state;
@@ -49,10 +27,10 @@ const loadingReducer = (state = initialOrderState.loading, action: EDIOrdersActi
 
 const savingReducer = (state = initialOrderState.saving, action: EDIOrdersAction): boolean => {
     switch (action.type) {
-    case PUT_ORDER:
+    case ordersPut:
         return true;
-    case PUT_ORDER_SUCCESS:
-    case PUT_ORDER_FAILED:
+    case ordersPutSuccess:
+    case ordersPutFailure:
         return false;
     default:
         return state;
@@ -62,7 +40,7 @@ const savingReducer = (state = initialOrderState.saving, action: EDIOrdersAction
 const filterReducer = (state = initialOrderState.filter, action: EDIOrdersAction): OrderFilter => {
     const {type, payload} = action;
     switch (type) {
-    case FILTER_ORDERS:
+    case ordersFilterChanged:
         return {
             ...state,
             ...payload?.filter,
@@ -75,9 +53,11 @@ const filterReducer = (state = initialOrderState.filter, action: EDIOrdersAction
 const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): EDIOrder[] => {
     const {type, payload} = action;
     switch (type) {
-    case FETCH_ORDERS_SUCCESS:
+    case ordersFetchSuccess:
         return [...payload?.list || []];
-    case PUT_ORDER_SUCCESS:
+    case ordersComment:
+    case ordersCommentSuccess:
+    case ordersPutSuccess:
         if (!payload?.salesOrder) {
             return state;
         }
@@ -86,7 +66,7 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
         return [
             ...state.filter(order => orderKey(order) !== payloadOrderKey),
             {...payload.salesOrder}
-        ]
+        ];
     default:
         return state;
     }
@@ -95,13 +75,13 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
 const statusPopupReducer = (state:StatusPopupKey = noSelectedPopup, action: EDIOrdersAction) => {
     const {type, payload} = action;
     switch (type) {
-    case TOGGLE_STATUS_POPUP: {
+    case ordersToggleStatusPopup: {
         if (payload?.statusPopupKey?.key === state.key && payload?.statusPopupKey?.statusField === state.statusField) {
             return {...noSelectedPopup};
         }
         return {...payload?.statusPopupKey};
     }
-    case PUT_ORDER_SUCCESS:
+    case ordersPutSuccess:
         return {...noSelectedPopup}
     default: return state;
     }

@@ -9,6 +9,9 @@
   line-height: 1.75;
   border-radius: 0.15rem;
 }
+#app .status-button-select .btn.btn-light {
+  border-color: #888;
+}
 #app .status-button-select .status-group {
   min-width: 3rem;
   padding: 0 0.5rem 0.5rem;
@@ -19,6 +22,9 @@
   display: block;
   cursor: pointer;
   margin-top: 0.25rem;
+}
+#app .table .edi-order-row--has-comment:not(.edi-order-row--comment) {
+  border-bottom-color: transparent;
 }
 
 /*# sourceMappingURL=App.css.map */

@@ -4,3 +4,4 @@ export interface ActionInterface {
     meta?: Object|string,
     error?: boolean
 }
+

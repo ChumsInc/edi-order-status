@@ -99,6 +99,7 @@ export default class Pagination extends Component {
 
         return (
             <nav aria-label="Page Navigation">
+                <label>Page</label>
                 <ul className={classNames("pagination pagination-sm", {filtered})}>
                     {hasMore && <PageButton page={activePage - 1} label={PAGE_LABELS.prev} disabled={activePage <= 1}
                                             onClick={this.onSelect}/>}

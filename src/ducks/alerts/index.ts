@@ -2,8 +2,8 @@ import {AnyAction, } from 'redux';
 import {RootStateOrAny} from "react-redux";
 import {ActionInterface} from "../types";
 
-const ADD_ALERT: string = 'app/alerts/alertAdded';
-const DISMISS_ALERT: string = 'app/alerts/alertDismissed';
+const alertsAlertAdded: string = 'app/alerts/alertAdded';
+const alertsAlertDismissed: string = 'app/alerts/alertDismissed';
 
 export interface BasicAlertType {
     title?: string,
@@ -36,7 +36,7 @@ export default function reducer(state: AlertListState = initialState, action: An
     const {type, payload} = action;
     const {counter, list} = state;
     switch (type) {
-        case ADD_ALERT: {
+        case alertsAlertAdded: {
             const {alert} = payload;
             alert.id = counter;
             alert.count = 0;
@@ -51,7 +51,7 @@ export default function reducer(state: AlertListState = initialState, action: An
                 ]
             }
         }
-        case DISMISS_ALERT:
+        case alertsAlertDismissed:
             const {id} = payload;
             return {
                 ...state,
@@ -64,7 +64,7 @@ export default function reducer(state: AlertListState = initialState, action: An
 
 export function addAlertAction(alert: BasicAlertType): AlertAction {
     return {
-        type: ADD_ALERT,
+        type: alertsAlertAdded,
         payload: {
             alert: {...alert, color: alert.color || 'danger'}
         },
@@ -73,7 +73,7 @@ export function addAlertAction(alert: BasicAlertType): AlertAction {
 
 export function dismissAlertAction(id:number): AlertAction {
     return {
-        type: DISMISS_ALERT,
+        type: alertsAlertDismissed,
         payload: {
             id
         }
@@ -86,7 +86,7 @@ export const alertSelector = (state:RootStateOrAny):AlertType[] => {
 
 export function onErrorAction(err:Error, context?: string): AlertAction {
     return {
-        type: ADD_ALERT,
+        type: alertsAlertAdded,
         payload: {
             alert: {message: err.message, title: err.name, context}
         }

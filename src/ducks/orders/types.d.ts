@@ -1,19 +1,13 @@
 import {ActionInterface} from "../types";
 
-export interface Customer {
-    ARDivisionNo: string,
-    CustomerNo: string,
-    BillToName: string,
-}
-
 export interface OrderFilter {
     Company?: string,
     ARDivisionNo?: string,
     CustomerNo?: string,
     CustomerPONo?: string,
-    search?: string,
-    rowsPerPage?: number,
-    page?: number,
+    showCompleted?: boolean,
+    minDate?: string,
+    maxDate?: string,
 }
 
 export interface OrderStatusUpdate {
@@ -54,9 +48,11 @@ export interface EDIOrder {
     OrderStatus: string,
     ShipExpireDate: string,
     UDF_CANCEL_DATE?: string,
+    LastInvoiceDate?: string,
     CustomerPONo: string,
     OrderTotal:number,
     OrderCount: number,
+    InvoiceCount: number,
     CSUser: string,
     status_json: OrderStatusGroup,
     notes?: string,

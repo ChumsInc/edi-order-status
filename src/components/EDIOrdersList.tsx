@@ -2,10 +2,16 @@ import * as React from "react";
 import {EDIOrder, OrderFilter, StatusPopupKey} from "../ducks/orders/types";
 import {connect} from "react-redux";
 import {RootState} from '../ducks';
-import {fetchOrdersAction} from "../ducks/orders/actions";
+import {fetchOrdersAction, toggleStatusPopup} from "../ducks/orders/actions";
 import EDIOrdersFilter from "./EDIOrdersFilter";
 import EDIOrderTable from "./EDIOrderTable";
 import ErrorBoundary from "../common-components/ErrorBoundary";
+import {noSelectedPopup} from "../ducks/orders/defaults";
+import ProgressBar from "../common-components/ProgressBar";
+import RowsPerPage from "../ducks/page/RowsPerPage";
+import Pagination from "../ducks/page/Pagination";
+import {setPage} from "../ducks/page";
+import {fetchCustomers} from '../ducks/customers';
 
 
 interface StateProps {
@@ -13,16 +19,22 @@ interface StateProps {
     loading: boolean,
     filter: OrderFilter,
     statusPopup: StatusPopupKey,
+    page: number,
+    rowsPerPage: number,
 }
 
 interface DispatchProps {
     fetchOrders: () => void,
+    toggleStatusPopup: (statusPopup:StatusPopupKey) => void,
+    setPage: (page:number) => void,
+    fetchCustomers: () => void,
 }
 
 type Props = StateProps & DispatchProps;
 
 const mapState = (state: RootState): StateProps => {
     const {list, loading, filter, statusPopup} = state.orders;
+    const {page, rowsPerPage} = state.page;
     const filteredList = list.filter(order => {
         return (!filter.ARDivisionNo || order.ARDivisionNo === filter.ARDivisionNo)
             && (!filter.CustomerNo || order.CustomerNo === filter.CustomerNo)
@@ -32,64 +44,77 @@ const mapState = (state: RootState): StateProps => {
         loading,
         filter,
         statusPopup,
+        page,
+        rowsPerPage,
     }
 }
 
 const mapDispatch = {
     fetchOrders: fetchOrdersAction,
+    toggleStatusPopup: toggleStatusPopup,
+    setPage: setPage,
+    fetchCustomers
 }
 
 const connector = connect(mapState, mapDispatch);
 
-interface stateProps {
-    page: number,
-    rowsPerPage: number,
-}
 
 class EDIOrdersList extends React.Component<Props, any> {
 
-    state: stateProps = {
-        page: 1,
-        rowsPerPage: 25,
-    }
-
     constructor(props: React.ComponentProps<any>) {
         super(props);
-        this.onChangePage = this.onChangePage.bind(this);
-        this.onChangeRowsPerPage = this.onChangeRowsPerPage.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
 
     componentDidMount() {
         this.props.fetchOrders();
+        this.props.fetchCustomers();
     }
 
-    componentDidUpdate(prevProps: Props, prevState: stateProps) {
-        if (this.state.page !== 1 && Object.values(prevProps).join('/') !== Object.values(this.props).join('/')) {
-            this.setState({page: 1});
+    onClick(ev:React.MouseEvent) {
+        console.log(ev);
+        const target = ev.target as HTMLElement;
+        if (target.closest('.status-button-select')) {
+            return;
+        }
+        this.props.toggleStatusPopup(noSelectedPopup);
+    }
+
+
+
+    pageData() {
+        const {list, page, rowsPerPage} = this.props;
+        const pages = Math.ceil(list.length / rowsPerPage);
+
+        return {
+            pages,
+            list: list.filter((row, index) => Math.floor(index / rowsPerPage) === (page - 1))
         }
     }
 
-
-    onChangePage(page: number) {
-        this.setState({page});
-    }
-
-    onChangeRowsPerPage(rowsPerPage: number) {
-        this.setState({rowsPerPage, page: 1});
-    }
-
     render() {
-        const {list, loading, statusPopup} = this.props;
-        const {page, rowsPerPage} = this.state;
+        const {loading, statusPopup} = this.props;
+        const {list, pages} = this.pageData();
+
         return (
-            <div>
-                <EDIOrdersFilter/>
-                {loading && <div>loading</div>}
-                <ErrorBoundary>
-                    <EDIOrderTable rows={list} statusPopup={statusPopup}/>
-                </ErrorBoundary>
-            </div>
+            <>
+                <div onClick={this.onClick}>
+                    <EDIOrdersFilter/>
+                    <ProgressBar striped={true} active={true} visible={loading} />
+                    <ErrorBoundary>
+                        <EDIOrderTable rows={list} statusPopup={statusPopup}/>
+                    </ErrorBoundary>
+                </div>
+                <div className="row g-3">
+                    <div className="col-auto">
+                        <RowsPerPage />
+                    </div>
+                    <div className="col-auto">
+                        <Pagination pages={pages} />
+                    </div>
+                </div>
+            </>
         )
     }
 }

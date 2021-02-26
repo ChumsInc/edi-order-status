@@ -12,8 +12,6 @@ export declare const ordersComment: string;
 export declare const ordersCommentSuccess: string;
 export declare const ordersCommentFailure: string;
 export declare const ordersSortChanged: string;
-export declare const SET_STATUS: string;
-export declare const RECEIVE_STATUS: string;
 export declare const ordersFilterChanged: string;
 export declare const ordersToggleStatusPopup: string;
 export declare const fetchOrdersAction: () => ThunkAction<void, {}, unknown, Action<string>>;

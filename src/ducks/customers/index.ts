@@ -9,9 +9,6 @@ const customersFetchSuccess:string = 'app/customers/fetchSuccess'
 const customersFetchFailure:string = 'app/customers/fetchFailure'
 
 const URL_CUSTOMERS = '/api/operations/shipping/edi-order-status/chums/customers';
-/*
-@TODO: fetch customers
- */
 
 export interface Customer {
     ARDivisionNo: string,

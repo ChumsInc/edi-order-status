@@ -9,7 +9,7 @@ import OrderStatusButton from "./OrderStatusButton";
 
 const EDIOrdersFilter:React.FC = () => {
     const dispatch = useDispatch();
-    const {showCompleted, minDate, maxDate, CustomerPONo} = useSelector((state:RootState) => state.orders.filter);
+    const {showCompleted, minDate, maxDate} = useSelector((state:RootState) => state.orders.filter);
 
     const onChangeCustomerFilter = ({ARDivisionNo = '', CustomerNo = ''}:Customer) => dispatch(onChangeFilter({ARDivisionNo, CustomerNo}));
     const onToggleCompleted = () => dispatch(onChangeFilter({showCompleted: !showCompleted}));

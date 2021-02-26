@@ -21,8 +21,6 @@ export const ordersCommentFailure: string = 'app/orders/comment/failure';
 
 export const ordersSortChanged:string = 'app/orders/sortChanged';
 
-export const SET_STATUS: string = 'app/orders/statusChanged';
-export const RECEIVE_STATUS: string = 'app/orders/statusReceived';
 export const ordersFilterChanged: string = 'app/orders/filterChanged';
 
 export const ordersToggleStatusPopup: string = 'app/orders/toggleStatusPopup';
@@ -81,7 +79,7 @@ export const fetchOrdersAction = ():ThunkAction<void, {}, unknown, Action<string
 export const onChangeFilter = (props:OrderFilter):EDIOrdersAction => ({type: ordersFilterChanged, payload: {filter: {...props}}});
 
 export const onChangeOrderStatus = (order:EDIOrder, newStatus: OrderStatusUpdate, ):ThunkAction<void, RootState, null, Action<string>> =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
     try {
         dispatch({type: ordersPut});
         const url = API_URL_ORDER_STATUS
@@ -109,7 +107,7 @@ export const onChangeOrderStatus = (order:EDIOrder, newStatus: OrderStatusUpdate
 }
 
 export const onChangeOrderComment = (order: EDIOrder, notes:string):ThunkAction<void, RootState, null, Action<string>> =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         try {
             dispatch({type: ordersComment, payload: {salesOrder: {...order, notes}}});
             const url = API_URL_ORDER_NOTES

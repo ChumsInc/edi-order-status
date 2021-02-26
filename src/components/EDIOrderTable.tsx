@@ -1,6 +1,5 @@
-import React, {ReactChildren, useState} from "react";
+import React, {ReactChildren} from "react";
 import {EDIOrder, StatusPopupKey} from "../ducks/orders/types";
-import {EDIOrderSortHandler} from "../ducks/orders/EDIOrderSorter";
 import classNames from "classnames";
 import EDIOrderRow from "./EDIOrderRow";
 import {orderKey} from "../ducks/orders/utils";
@@ -38,7 +37,7 @@ interface Props {
 
 const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
     const dispatch = useDispatch();
-    const {sort} = useSelector((state:RootState) => state.orders);
+    const {sort} = useSelector((state: RootState) => state.orders);
     const onClickSort = (field: string) => {
         dispatch(setSortField(field));
     }
@@ -62,8 +61,8 @@ const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
                 <th>Route</th>
                 <th>ASN</th>
                 <th>Picked Up</th>
-                <th>Completed</th>
                 <th>Invoiced</th>
+                <th>Completed</th>
                 <ThSortable field="OrderCount" className="right" sort={sort} onClick={onClickSort}>Orders</ThSortable>
                 <ThSortable field="OrderTotal" className="right" sort={sort} onClick={onClickSort}>Order
                     Total</ThSortable>

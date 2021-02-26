@@ -39,7 +39,7 @@ const rowValues = (row: EDIOrder) => {
 }
 
 const EDIOrderRow: React.FC<Props> = ({row, statusPopup}) => {
-    const {cancelDate, shipDate, orderDate, trClassName, lastInvoiceDate, key} = rowValues(row);
+    const {cancelDate, shipDate, orderDate, trClassName, lastInvoiceDate} = rowValues(row);
     const [editComment, setEditComment] = useState(false);
     return (
         <>

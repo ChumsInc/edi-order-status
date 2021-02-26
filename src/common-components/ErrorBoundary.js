@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Alert from "../ducks/alerts/Alert";
 
-function mapStateToProps(state) {
+function mapStateToProps() {
     return {};
 }
 
@@ -23,7 +23,7 @@ class ErrorBoundary extends Component {
         this.state = {hasError: false};
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError() {
         return {hasError: true};
     }
 

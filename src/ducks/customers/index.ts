@@ -1,13 +1,14 @@
 import {Action, AnyAction, combineReducers} from 'redux';
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
+import {onErrorAction} from "../alerts";
 
 //actions
 const customersFetch:string = 'app/customers/fetch';
 const customersFetchSuccess:string = 'app/customers/fetchSuccess'
 const customersFetchFailure:string = 'app/customers/fetchFailure'
 
-const URL_CUSTOMERS = '/api/operations/shipping/edi-order-status/customers';
+const URL_CUSTOMERS = '/api/operations/shipping/edi-order-status/chums/customers';
 /*
 @TODO: fetch customers
  */
@@ -41,14 +42,18 @@ export interface CustomerThunkAction extends ThunkAction<void, RootState, unknow
 export const fetchCustomers = ():CustomerThunkAction =>
     async (dispatch, getState) => {
     try {
-        const {customers} = getState();
-        if (customers.loading) {
+        const state = getState();
+        if (state.customers.loading) {
             return;
         }
-
+        dispatch({type: customersFetch});
+        const res = await fetch(URL_CUSTOMERS, {credentials: 'same-origin'});
+        const {customers} = await res.json();
+        dispatch({type: customersFetchSuccess, payload: {customers}});
     } catch(err) {
         console.log("loadCustomers()", err.message);
-        return Promise.reject(err);
+        dispatch({type: customersFetchFailure});
+        dispatch(onErrorAction(err, customersFetch));
     }
 }
 

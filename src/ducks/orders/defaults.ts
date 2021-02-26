@@ -14,6 +14,7 @@ export const initialOrderState: OrderListState = {
     saving: false,
     filter: initialOrderFilter,
     list: [],
+    sort: {field: 'CustomerNo', asc: true}
 }
 
 export const noSelectedPopup:StatusPopupKey = {

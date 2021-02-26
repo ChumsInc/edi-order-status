@@ -4,6 +4,9 @@ import {EDIOrderSortHandler} from "../ducks/orders/EDIOrderSorter";
 import classNames from "classnames";
 import EDIOrderRow from "./EDIOrderRow";
 import {orderKey} from "../ducks/orders/utils";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../ducks";
+import {setSortField} from "../ducks/orders/actions";
 
 interface ThProps {
     field: string,
@@ -34,15 +37,11 @@ interface Props {
 }
 
 const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
-    const [sort, setSort] = useState({field: 'CustomerNo', asc: true});
+    const dispatch = useDispatch();
+    const {sort} = useSelector((state:RootState) => state.orders);
     const onClickSort = (field: string) => {
-        if (field === sort.field) {
-            return setSort({...sort, asc: !sort.asc})
-        }
-        setSort({field, asc: true});
+        dispatch(setSortField(field));
     }
-
-    const sorted = EDIOrderSortHandler({list: rows, ...sort});
     return (
         <table className="table table-sm table-sticky table-hover">
             <thead>
@@ -64,6 +63,7 @@ const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
                 <th>ASN</th>
                 <th>Picked Up</th>
                 <th>Completed</th>
+                <th>Invoiced</th>
                 <ThSortable field="OrderCount" className="right" sort={sort} onClick={onClickSort}>Orders</ThSortable>
                 <ThSortable field="OrderTotal" className="right" sort={sort} onClick={onClickSort}>Order
                     Total</ThSortable>

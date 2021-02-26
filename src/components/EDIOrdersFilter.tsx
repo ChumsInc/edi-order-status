@@ -1,10 +1,11 @@
 import * as React from "react";
-import {Customer} from '../ducks/customers';
+import {Customer, fetchCustomers} from '../ducks/customers';
 import {RootState} from '../ducks'
 import {useDispatch, useSelector} from 'react-redux';
 import {onChangeFilter, fetchOrdersAction} from "../ducks/orders/actions";
 import CustomerFilterSelect from "./CustomerFilter";
 import {FormEvent} from "react";
+import OrderStatusButton from "./OrderStatusButton";
 
 const EDIOrdersFilter:React.FC = () => {
     const dispatch = useDispatch();
@@ -17,10 +18,11 @@ const EDIOrdersFilter:React.FC = () => {
     const onReload = (ev:FormEvent) => {
         ev.preventDefault();
         dispatch(fetchOrdersAction());
+        dispatch(fetchCustomers());
     }
 
     return (
-        <form className="row g-3" onSubmit={onReload}>
+        <form className="row g-3 mb-3" onSubmit={onReload}>
             <div className="col-auto">
                 <CustomerFilterSelect onChange={onChangeCustomerFilter} required={showCompleted}/>
             </div>
@@ -48,6 +50,18 @@ const EDIOrdersFilter:React.FC = () => {
             )}
             <div className="col-auto">
                 <button type="submit" className="btn btn-sm btn-primary">Reload</button>
+            </div>
+            <div className="col-auto">
+                <label>Legend</label>
+            </div>
+            <div className="col-auto">
+                <div className="status-button-select--legend">
+                    <button type="button" className="btn btn-light me-1">No Status</button>
+                    <button type="button" className="btn btn-info me-1">In Process</button>
+                    <button type="button" className="btn btn-success me-1">Done</button>
+                    <button type="button" className="btn btn-warning me-1">Waiting</button>
+                    <button type="button" className="btn btn-danger me-1">On Hold</button>
+                </div>
             </div>
         </form>
     )

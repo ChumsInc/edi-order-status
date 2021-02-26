@@ -1,7 +1,9 @@
+#app .status-button-select--legend.open .status-group,
 #app .status-button-select.open .status-group {
   border: 1px solid black;
   box-shadow: rgba(0, 0, 0, 0.75) 5px 5px 5px;
 }
+#app .status-button-select--legend .btn,
 #app .status-button-select .btn {
   min-width: 3rem;
   padding: 0.1rem 0.25rem;
@@ -9,15 +11,18 @@
   line-height: 1.75;
   border-radius: 0.15rem;
 }
+#app .status-button-select--legend .btn.btn-light,
 #app .status-button-select .btn.btn-light {
   border-color: #888;
 }
+#app .status-button-select--legend .status-group,
 #app .status-button-select .status-group {
   min-width: 3rem;
   padding: 0 0.5rem 0.5rem;
   margin-left: -0.5rem;
   margin-top: -0.15rem;
 }
+#app .status-button-select--legend .status-group li.btn,
 #app .status-button-select .status-group li.btn {
   display: block;
   cursor: pointer;

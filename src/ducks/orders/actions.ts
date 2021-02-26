@@ -19,7 +19,7 @@ export const ordersComment: string = 'app/orders/comment';
 export const ordersCommentSuccess: string = 'app/orders/comment/success';
 export const ordersCommentFailure: string = 'app/orders/comment/failure';
 
-
+export const ordersSortChanged:string = 'app/orders/sortChanged';
 
 export const SET_STATUS: string = 'app/orders/statusChanged';
 export const RECEIVE_STATUS: string = 'app/orders/statusReceived';
@@ -32,6 +32,8 @@ const API_URL_ORDERS = '/api/operations/shipping/edi-order-status/chums/';
 const API_URL_ORDERS_COMPLETED = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/';
 const API_URL_ORDER_STATUS = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/:CustomerPONo/:statusCode';
 const API_URL_ORDER_NOTES = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/:CustomerPONo/notes';
+
+
 
 function completedURL(filter:OrderFilter) {
     const url = API_URL_ORDERS_COMPLETED
@@ -88,7 +90,7 @@ export const onChangeOrderStatus = (order:EDIOrder, newStatus: OrderStatusUpdate
             .replace(':CustomerPONo', encodeURIComponent(order.CustomerPONo))
             .replace(':statusCode', encodeURIComponent(newStatus.key));
         const res = await fetch(url, {
-            credentials: 'same-origin', method: 'POST', body: JSON.stringify(newStatus),
+            credentials: 'same-origin', method: 'PUT', body: JSON.stringify(newStatus),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -115,7 +117,7 @@ export const onChangeOrderComment = (order: EDIOrder, notes:string):ThunkAction<
                 .replace(':CustomerNo', encodeURIComponent(order.CustomerNo))
                 .replace(':CustomerPONo', encodeURIComponent(order.CustomerPONo));
             const res = await fetch(url, {
-                credentials: 'same-origin', method: 'POST', body: JSON.stringify({notes}),
+                credentials: 'same-origin', method: 'PUT', body: JSON.stringify({notes}),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -137,3 +139,4 @@ export const toggleStatusPopup = (statusPopupKey: StatusPopupKey) => ({type: ord
 
 export const statusPopupEquality = (a: StatusPopupKey, b:StatusPopupKey) => Object.values(a).join('/') === Object.values(b).join('/');
 
+export const setSortField = (field:string) => ({type: ordersSortChanged, payload: {field}});

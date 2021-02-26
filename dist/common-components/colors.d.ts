@@ -1,0 +1,52 @@
+export declare const colors: {
+    primary: string;
+    secondary: string;
+    success: string;
+    info: string;
+    danger: string;
+    warning: string;
+    light: string;
+    dark: string;
+};
+export declare const buttonColors: {
+    'outline-primary': string;
+    'outline-secondary': string;
+    'outline-success': string;
+    'outline-info': string;
+    'outline-danger': string;
+    'outline-warning': string;
+    'outline-light': string;
+    'outline-dark': string;
+    primary: string;
+    secondary: string;
+    success: string;
+    info: string;
+    danger: string;
+    warning: string;
+    light: string;
+    dark: string;
+};
+export declare const textColors: {
+    white: string;
+    muted: string;
+    primary: string;
+    secondary: string;
+    success: string;
+    info: string;
+    danger: string;
+    warning: string;
+    light: string;
+    dark: string;
+};
+export declare const bgColors: {
+    white: string;
+    transparent: string;
+    primary: string;
+    secondary: string;
+    success: string;
+    info: string;
+    danger: string;
+    warning: string;
+    light: string;
+    dark: string;
+};

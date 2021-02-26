@@ -4,7 +4,7 @@ import {Customer} from "../customers";
 
 export const customerKey = (row:EDIOrder|Customer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 
-export const orderKey = (row:EDIOrder):string => `${row.ARDivisionNo}-${row.CustomerNo}:${row.CustomerPONo}`;
+export const orderKey = (row:EDIOrder):string => `${row.ARDivisionNo}-${row.CustomerNo}:${row.CustomerPONo}/${row.OrderStatus}`;
 
 export const orderStatusClassName = (value: string|number|null) => {
     switch (value) {

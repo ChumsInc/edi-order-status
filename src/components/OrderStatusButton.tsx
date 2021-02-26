@@ -36,8 +36,8 @@ const OrderStatusButton:React.FC<Props> = ({order, type, statusPopup}) => {
 
     return (
         <div className={classNames("status-button-select", {open: expanded})} role="group">
-            <button type="button"
-                    onClick={onOpenDropDown}
+            <button type="button" onClick={onOpenDropDown}
+                    title={status.userName}
                     className={classNames("btn", currentStatusClassName)} aria-expanded={expanded}>
                 {!status.date ? '-' : friendlyDateTime(status.date)}
             </button>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {EDIOrder, OrderFilter, StatusPopupKey} from "../ducks/orders/types";
+import {EDIOrder, OrderFilter, OrderSort, StatusPopupKey} from "../ducks/orders/types";
 import {connect} from "react-redux";
 import {RootState} from '../ducks';
 import {fetchOrdersAction, toggleStatusPopup} from "../ducks/orders/actions";
@@ -12,6 +12,7 @@ import RowsPerPage from "../ducks/page/RowsPerPage";
 import Pagination from "../ducks/page/Pagination";
 import {setPage} from "../ducks/page";
 import {fetchCustomers} from '../ducks/customers';
+import {EDIOrderSortHandler} from "../ducks/orders/EDIOrderSorter";
 
 
 interface StateProps {
@@ -21,6 +22,7 @@ interface StateProps {
     statusPopup: StatusPopupKey,
     page: number,
     rowsPerPage: number,
+    sort: OrderSort,
 }
 
 interface DispatchProps {
@@ -33,7 +35,7 @@ interface DispatchProps {
 type Props = StateProps & DispatchProps;
 
 const mapState = (state: RootState): StateProps => {
-    const {list, loading, filter, statusPopup} = state.orders;
+    const {list, loading, filter, statusPopup, sort} = state.orders;
     const {page, rowsPerPage} = state.page;
     const filteredList = list.filter(order => {
         return (!filter.ARDivisionNo || order.ARDivisionNo === filter.ARDivisionNo)
@@ -46,6 +48,7 @@ const mapState = (state: RootState): StateProps => {
         statusPopup,
         page,
         rowsPerPage,
+        sort,
     }
 }
 
@@ -73,7 +76,6 @@ class EDIOrdersList extends React.Component<Props, any> {
     }
 
     onClick(ev:React.MouseEvent) {
-        console.log(ev);
         const target = ev.target as HTMLElement;
         if (target.closest('.status-button-select')) {
             return;
@@ -84,12 +86,13 @@ class EDIOrdersList extends React.Component<Props, any> {
 
 
     pageData() {
-        const {list, page, rowsPerPage} = this.props;
+        const {list, page, rowsPerPage, sort} = this.props;
         const pages = Math.ceil(list.length / rowsPerPage);
 
         return {
             pages,
-            list: list.filter((row, index) => Math.floor(index / rowsPerPage) === (page - 1))
+            list: EDIOrderSortHandler(list, sort)
+                .filter((row, index) => Math.floor(index / rowsPerPage) === (page - 1))
         }
     }
 

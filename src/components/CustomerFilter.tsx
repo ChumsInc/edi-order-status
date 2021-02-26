@@ -20,7 +20,7 @@ const CustomerFilterSelect: React.FC<Props> = ({onChange, required}) => {
         <select className="form-select form-select-sm" onChange={changeHandler} required={required}>
             <option value="">All Customers</option>
             {customers.map(customer => (
-                <option key={customerKey(customer)} value={customerKey(customer)}>{customer.CustomerName}</option>))}
+                <option key={customerKey(customer)} value={customerKey(customer)}>{customer.CustomerName} - {customerKey(customer)}</option>))}
         </select>
     )
 }

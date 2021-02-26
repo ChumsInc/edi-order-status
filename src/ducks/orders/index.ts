@@ -7,7 +7,7 @@ import {
     ordersFilterChanged, ordersComment, ordersCommentSuccess,
     ordersPut,
     ordersPutFailure,
-    ordersPutSuccess, ordersToggleStatusPopup
+    ordersPutSuccess, ordersToggleStatusPopup, ordersSortChanged
 } from "./actions";
 import {RootState} from "../index";
 import {orderKey} from "./utils";
@@ -87,10 +87,24 @@ const statusPopupReducer = (state:StatusPopupKey = noSelectedPopup, action: EDIO
     }
 }
 
+const sortReducer = (state = initialOrderState.sort, action:EDIOrdersAction) => {
+    const {type, payload} = action;
+    const field = payload?.field || initialOrderState.sort.field;
+    switch (type) {
+    case ordersSortChanged:
+        if (state.field === field) {
+            return {...state, asc: !state.asc};
+        }
+        return {field, asc: true};
+    default: return state;
+    }
+}
+
 export default combineReducers({
     loading: loadingReducer,
     saving: savingReducer,
     filter: filterReducer,
     list: listReducer,
     statusPopup: statusPopupReducer,
+    sort: sortReducer,
 });

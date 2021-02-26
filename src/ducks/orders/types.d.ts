@@ -33,6 +33,7 @@ export interface OrderStatus {
     value: string|number,
     date?: string,
     text?: string,
+    userName?: string,
 }
 
 export type OrderStatusGroup = {
@@ -46,7 +47,7 @@ export interface EDIOrder {
     BillToName: string,
     OrderDate: string,
     OrderStatus: string,
-    ShipExpireDate: string,
+    ShipExpireDate?: string,
     UDF_CANCEL_DATE?: string,
     LastInvoiceDate?: string,
     CustomerPONo: string,
@@ -60,11 +61,17 @@ export interface EDIOrder {
     completedByUserName?: string,
 }
 
+export interface OrderSort {
+    field: string,
+    asc: boolean,
+}
+
 export interface OrderListState {
     loading: boolean,
     saving: boolean,
     filter: OrderFilter,
     list: EDIOrder[],
+    sort: OrderSort,
 }
 
 export interface EDIOrdersAction extends ActionInterface {
@@ -73,6 +80,7 @@ export interface EDIOrdersAction extends ActionInterface {
         list?: EDIOrder[],
         salesOrder?: EDIOrder,
         statusPopupKey?: StatusPopupKey,
+        field?: string,
     }
 }
 

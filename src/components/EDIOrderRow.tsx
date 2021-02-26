@@ -60,6 +60,7 @@ const EDIOrderRow: React.FC<Props> = ({row, statusPopup}) => {
                 <td><OrderStatusButton order={row} type="routed" statusPopup={statusPopup}/></td>
                 <td><OrderStatusButton order={row} type="asn" statusPopup={statusPopup}/></td>
                 <td><OrderStatusButton order={row} type="picked-up" statusPopup={statusPopup}/></td>
+                <td><OrderStatusButton order={row} type="invoiced" statusPopup={statusPopup}/></td>
                 <td><OrderCompletedButton order={row} statusPopup={statusPopup}/></td>
                 <td className="right">
                     {numeral(row.InvoiceCount).format('0,0')} / {numeral(row.OrderCount).format('0,0')}
@@ -75,7 +76,7 @@ const EDIOrderRow: React.FC<Props> = ({row, statusPopup}) => {
             {!editComment && !!row.notes && (
                 <tr className={classNames('edi-order-row--comment', trClassName)}>
                     <td colSpan={7}>&nbsp;</td>
-                    <td colSpan={13} className="edi-order-row--comment-text">{row.notes}</td>
+                    <td colSpan={14} className="edi-order-row--comment-text">{row.notes}</td>
                 </tr>
             )}
         </>
@@ -102,7 +103,7 @@ const EDIOrderComment: React.FC<EDIOrderCommentProps> = ({row, onSave}) => {
     return (
         <tr className={classNames(trClassName)}>
             <td colSpan={7}>&nbsp;</td>
-            <td colSpan={12}>
+            <td colSpan={13}>
                 <TextareaAutosize value={notes} maxRows={3} autoFocus
                                   className="form-control form-control-sm"
                                   onChange={(ev) => setNotes(ev.target.value)}

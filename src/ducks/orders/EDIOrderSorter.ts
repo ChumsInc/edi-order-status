@@ -24,16 +24,15 @@ const sortShipExpireDate: SortFunction = (a, b) => sorter(sortFields.ShipExpireD
 const sortUDF_CANCEL_DATE: SortFunction = (a, b) => sorter(sortFields.UDF_CANCEL_DATE(a), sortFields.UDF_CANCEL_DATE(b));
 const sortOrderStatus: SortFunction = (a, b) => sorter(a.OrderStatus, b.OrderStatus);
 
-const sortFunctions: EDIOrderSorter = {
-    CustomerNo: (a, b) => sortCustomerNo(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
-    BillToName: (a, b) => sortBillToName(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
-    CustomerPONo: (a, b) => sortCustomerPONo(a, b) || sortOrderStatus(a, b) || sortCustomerNo(a, b),
+export const sortFunctions: EDIOrderSorter = {
+    CustomerNo: (a, b) => sortCustomerNo(a, b) || sortShipExpireDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
+    BillToName: (a, b) => sortBillToName(a, b) || sortShipExpireDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
+    CustomerPONo: (a, b) => sortCustomerPONo(a, b) || sortOrderStatus(a, b) || sortCustomerNo(a, b) || sortShipExpireDate(a, b),
     OrderDate: (a, b) => sortOrderDate(a, b) || sortShipExpireDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     ShipExpireDate: (a, b) => sortShipExpireDate(a, b) || sortOrderDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     UDF_CANCEL_DATE: (a, b) => sortUDF_CANCEL_DATE(a, b) || sortOrderDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     OrderCount: (a, b) => (a.OrderCount - b.OrderCount) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     OrderTotal: (a, b) => (a.OrderTotal - b.OrderTotal) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
-
 }
 
 export const EDIOrderSortHandler = (list: EDIOrder[], {field, asc}: OrderSort): EDIOrder[] => {

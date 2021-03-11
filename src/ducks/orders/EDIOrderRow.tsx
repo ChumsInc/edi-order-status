@@ -1,14 +1,15 @@
 import React, {useState} from "react";
 import classNames from "classnames";
-import {EDIOrder, StatusPopupKey} from "../ducks/orders/types";
+import {EDIOrder, StatusPopupKey} from "./types";
 import {isPast, parseISO} from 'date-fns';
-import {customerKey, friendlyDate, orderKey} from "../ducks/orders/utils";
+import {customerKey, friendlyDate, orderKey} from "./utils";
 import OrderStatusButton from "./OrderStatusButton";
 import numeral from "numeral";
 import TextareaAutosize from 'react-textarea-autosize';
 import {useDispatch} from "react-redux";
-import {onChangeOrderComment} from "../ducks/orders/actions";
+import {onChangeOrderComment} from "./actions";
 import OrderCompletedButton from "./OrderCompletedButton";
+import OrderSelectCheckbox from "./OrderSelectCheckbox";
 
 interface Props {
     row: EDIOrder,
@@ -38,13 +39,21 @@ const rowValues = (row: EDIOrder) => {
     }
 }
 
+const CustomerItemLink: React.FC<{row: EDIOrder}> = ({row}) => {
+    const href = `/reports/production/customer-open-items?company=${encodeURIComponent(row.Company)}&customer=${encodeURIComponent(row.ARDivisionNo)}-${encodeURIComponent(row.CustomerNo)}`;
+    return (
+        <a href={href} target="_blank">{customerKey(row)}</a>
+    )
+}
+
 const EDIOrderRow: React.FC<Props> = ({row, statusPopup}) => {
     const {cancelDate, shipDate, orderDate, trClassName, lastInvoiceDate} = rowValues(row);
     const [editComment, setEditComment] = useState(false);
     return (
         <>
             <tr className={classNames(trClassName)}>
-                <td>{customerKey(row)}</td>
+                <th><OrderSelectCheckbox order={row} /></th>
+                <td><CustomerItemLink row={row} /></td>
                 <td>{row.BillToName}</td>
                 <td>{row.CustomerPONo}</td>
                 <td>{row.OrderStatus}</td>

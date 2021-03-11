@@ -1,9 +1,9 @@
 import React, {EventHandler, useState} from "react";
 import classNames from "classnames";
-import {EDIOrder, OrderStatus, StatusPopupKey} from "../ducks/orders/types";
-import {friendlyDateTime, orderKey, orderStatusClassName} from "../ducks/orders/utils";
+import {EDIOrder, OrderStatus, StatusPopupKey} from "./types";
+import {friendlyDateTime, orderKey, orderStatusClassName} from "./utils";
 import {useDispatch} from "react-redux";
-import {onChangeOrderStatus, statusPopupEquality, toggleStatusPopup} from "../ducks/orders/actions";
+import {onChangeOrderStatus, statusPopupEquality, toggleStatusPopup} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
 
 
@@ -13,6 +13,9 @@ interface Props {
 }
 
 const OrderCompletedButton:React.FC<Props> = ({order, statusPopup}) => {
+    if (order.OrderStatus === 'X') {
+        return null;
+    }
     const dispatch = useDispatch();
     const {completed, completedByUserName} = order;
     const currentStatusClassName = {

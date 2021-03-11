@@ -1,18 +1,18 @@
 import * as React from "react";
-import {EDIOrder, OrderFilter, OrderSort, StatusPopupKey} from "../ducks/orders/types";
+import {EDIOrder, OrderFilter, OrderSort, StatusPopupKey} from "./types";
 import {connect} from "react-redux";
-import {RootState} from '../ducks';
-import {fetchOrdersAction, toggleStatusPopup} from "../ducks/orders/actions";
+import {RootState} from '../index';
+import {fetchOrdersAction, toggleStatusPopup} from "./actions";
 import EDIOrdersFilter from "./EDIOrdersFilter";
 import EDIOrderTable from "./EDIOrderTable";
-import ErrorBoundary from "../common-components/ErrorBoundary";
-import {noSelectedPopup} from "../ducks/orders/defaults";
-import ProgressBar from "../common-components/ProgressBar";
-import RowsPerPage from "../ducks/page/RowsPerPage";
-import Pagination from "../ducks/page/Pagination";
-import {setPage} from "../ducks/page";
-import {fetchCustomers} from '../ducks/customers';
-import {EDIOrderSortHandler} from "../ducks/orders/EDIOrderSorter";
+import ErrorBoundary from "../../common-components/ErrorBoundary";
+import {noSelectedPopup} from "./defaults";
+import ProgressBar from "../../common-components/ProgressBar";
+import RowsPerPage from "../page/RowsPerPage";
+import Pagination from "../page/Pagination";
+import {setPage} from "../page";
+import {fetchCustomers} from '../customers';
+import {EDIOrderSortHandler} from "./EDIOrderSorter";
 
 
 interface StateProps {
@@ -40,6 +40,8 @@ const mapState = (state: RootState): StateProps => {
     const filteredList = list.filter(order => {
         return (!filter.ARDivisionNo || order.ARDivisionNo === filter.ARDivisionNo)
             && (!filter.CustomerNo || order.CustomerNo === filter.CustomerNo)
+            && (!filter.OrderDate || order.OrderDate === filter.OrderDate)
+            && (!filter.ShipExpireDate || order.LastInvoiceDate === filter.ShipExpireDate || order.ShipExpireDate === filter.ShipExpireDate)
     })
     return {
         list: filteredList,

@@ -1,11 +1,11 @@
-import React, {ReactChildren} from "react";
-import {EDIOrder, StatusPopupKey} from "../ducks/orders/types";
+import React, {ChangeEvent, ReactChildren, useState} from "react";
+import {EDIOrder, StatusPopupKey} from "./types";
 import classNames from "classnames";
 import EDIOrderRow from "./EDIOrderRow";
-import {orderKey} from "../ducks/orders/utils";
+import {orderKey} from "./utils";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../ducks";
-import {setSortField} from "../ducks/orders/actions";
+import {RootState} from "../index";
+import {selectOrders, setOrderSelected, setSortField} from "./actions";
 
 interface ThProps {
     field: string,
@@ -38,13 +38,29 @@ interface Props {
 const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
     const dispatch = useDispatch();
     const {sort} = useSelector((state: RootState) => state.orders);
+    const {CustomerNo, ShipExpireDate, OrderDate} = useSelector((state: RootState) => state.orders.filter);
+    const canSelectAll = !!CustomerNo && (!!ShipExpireDate || !!OrderDate);
+    const [selectAll, setSelectAll] = useState(false);
     const onClickSort = (field: string) => {
         dispatch(setSortField(field));
     }
+    const onSelectAll = (ev:ChangeEvent<HTMLInputElement>) => {
+        setSelectAll(!selectAll);
+        const selectedList = rows.map(row => orderKey(row));
+        dispatch(selectOrders(selectedList, !selectAll));
+    }
+
     return (
         <table className="table table-sm table-sticky table-hover">
             <thead>
             <tr>
+                <th>
+                    {canSelectAll && (
+                        <div className="form-check form-check-inline">
+                            <input type="checkbox" className="form-check-input" checked={selectAll} onChange={onSelectAll}/>
+                        </div>
+                    )}
+                </th>
                 <ThSortable field="CustomerNo" sort={sort} onClick={onClickSort}>Customer</ThSortable>
                 <ThSortable field="BillToName" sort={sort} onClick={onClickSort}>Name</ThSortable>
                 <ThSortable field="CustomerPONo" sort={sort} onClick={onClickSort}>PO #</ThSortable>

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import AlertList from "./ducks/alerts/AlertList";
-import EDIOrdersList from "./components/EDIOrdersList";
+import EDIOrdersList from "./ducks/orders/EDIOrdersList";
 import "./App.css";
 import {useDispatch} from "react-redux";
 import {fetchCustomers} from "./ducks/customers";

@@ -25,6 +25,8 @@ export const ordersFilterChanged: string = 'app/orders/filterChanged';
 
 export const ordersToggleStatusPopup: string = 'app/orders/toggleStatusPopup';
 
+export const setOrderSelected: string = 'app/orders/setOrderSelected';
+
 
 const API_URL_ORDERS = '/api/operations/shipping/edi-order-status/chums/';
 const API_URL_ORDERS_COMPLETED = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/';
@@ -138,3 +140,5 @@ export const toggleStatusPopup = (statusPopupKey: StatusPopupKey) => ({type: ord
 export const statusPopupEquality = (a: StatusPopupKey, b:StatusPopupKey) => Object.values(a).join('/') === Object.values(b).join('/');
 
 export const setSortField = (field:string) => ({type: ordersSortChanged, payload: {field}});
+
+export const selectOrders = (selectedList:string[], selected:boolean):EDIOrdersAction => ({type: setOrderSelected, payload: {selectedList, selected}});

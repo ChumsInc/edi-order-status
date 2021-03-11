@@ -12,6 +12,7 @@ export const orderStatusClassName = (value: string|number|null) => {
     case 2: return 'btn-success';
     case 3: return 'btn-warning';
     case 4: return 'btn-danger';
+    case 5: return 'btn-dark';
     default: return 'btn-light';
     }
 }

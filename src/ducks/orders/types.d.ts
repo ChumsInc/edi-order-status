@@ -8,6 +8,8 @@ export interface OrderFilter {
     showCompleted?: boolean,
     minDate?: string,
     maxDate?: string,
+    OrderDate?: string,
+    ShipExpireDate?: string,
 }
 
 export interface OrderStatusUpdate {
@@ -59,6 +61,7 @@ export interface EDIOrder {
     notes?: string,
     completed?: string|Date,
     completedByUserName?: string,
+    selected?: boolean,
 }
 
 export interface OrderSort {
@@ -81,6 +84,8 @@ export interface EDIOrdersAction extends ActionInterface {
         salesOrder?: EDIOrder,
         statusPopupKey?: StatusPopupKey,
         field?: string,
+        selectedList?: string[],
+        selected?: boolean,
     }
 }
 

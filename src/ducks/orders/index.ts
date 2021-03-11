@@ -7,11 +7,12 @@ import {
     ordersFilterChanged, ordersComment, ordersCommentSuccess,
     ordersPut,
     ordersPutFailure,
-    ordersPutSuccess, ordersToggleStatusPopup, ordersSortChanged
+    ordersPutSuccess, ordersToggleStatusPopup, ordersSortChanged, setOrderSelected
 } from "./actions";
 import {RootState} from "../index";
 import {orderKey} from "./utils";
 import {noSelectedPopup, initialOrderState, initialOrderFilter} from './defaults';
+import {EDIOrderSortHandler, sortFunctions} from "./EDIOrderSorter";
 
 const loadingReducer = (state = initialOrderState.loading, action: EDIOrdersAction): boolean => {
     switch (action.type) {
@@ -54,7 +55,7 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
     const {type, payload} = action;
     switch (type) {
     case ordersFetchSuccess:
-        return [...payload?.list || []];
+        return [...payload?.list || []].sort(sortFunctions.CustomerNo);
     case ordersComment:
     case ordersCommentSuccess:
     case ordersPutSuccess:
@@ -66,7 +67,17 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
         return [
             ...state.filter(order => orderKey(order) !== payloadOrderKey),
             {...payload.salesOrder}
-        ];
+        ].sort(sortFunctions.CustomerNo);
+    case setOrderSelected:
+        return [
+            ...state
+                .filter(order => payload?.selectedList?.indexOf(orderKey(order)) !== -1)
+                .map(order => {
+                    order.selected = payload?.selected || false;
+                    return order;
+            }),
+            ...state.filter(order => payload?.selectedList?.indexOf(orderKey(order)) === -1)
+        ].sort(sortFunctions.CustomerNo)
     default:
         return state;
     }

@@ -28,8 +28,19 @@
   cursor: pointer;
   margin-top: 0.25rem;
 }
+#app .status-button-select--legend .status-group li.btn.btn-dark,
+#app .status-button-select .status-group li.btn.btn-dark {
+  border-color: blueviolet;
+}
+#app .form-floating > label {
+  white-space: nowrap;
+}
 #app .table .edi-order-row--has-comment:not(.edi-order-row--comment) {
   border-bottom-color: transparent;
+}
+#app .table .form-check {
+  min-height: unset;
+  margin-bottom: unset;
 }
 
 /*# sourceMappingURL=App.css.map */

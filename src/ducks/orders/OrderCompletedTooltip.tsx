@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import {friendlyDateTime} from "../ducks/orders/utils";
+import {friendlyDateTime} from "./utils";
 import OrderStatusTooltipItem from "./OrderStatusTooltipItem";
 
 interface OrderCompletedTooltipProps {

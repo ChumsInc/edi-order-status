@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from "classnames";
 
 interface OrderStatusTooltipItemProps {
-    color: 'light'|'info'|'success'|'warning'|'danger',
+    color: 'light'|'info'|'success'|'warning'|'danger'|'dark',
     value: number,
     text: string,
     onClick: (val:number) => void,

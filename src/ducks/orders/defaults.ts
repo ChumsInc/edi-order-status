@@ -1,4 +1,5 @@
 import {OrderFilter, OrderListState, StatusPopupKey} from "./types";
+import {appStorage, STORAGE_KEYS} from "../../appStorage";
 
 export const initialOrderFilter: OrderFilter = {
     Company: 'chums',
@@ -7,6 +8,7 @@ export const initialOrderFilter: OrderFilter = {
     CustomerPONo: '',
     minDate: '',
     maxDate: '',
+    mapadoc: true,
 }
 
 export const initialOrderState: OrderListState = {
@@ -14,7 +16,8 @@ export const initialOrderState: OrderListState = {
     saving: false,
     filter: initialOrderFilter,
     list: [],
-    sort: {field: 'CustomerNo', asc: true}
+    sort: {field: 'CustomerNo', asc: true},
+    autoRefresh: appStorage.getItem(STORAGE_KEYS.AUTO_REFRESH) || false,
 }
 
 export const noSelectedPopup:StatusPopupKey = {

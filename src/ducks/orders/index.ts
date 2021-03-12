@@ -1,18 +1,23 @@
 import {combineReducers} from 'redux';
-import {EDIOrder, EDIOrdersAction, OrderFilter, OrderListState, StatusPopupKey} from "./types";
+import {EDIOrder, EDIOrdersAction, OrderFilter, StatusPopupKey} from "./types";
 import {
+    ordersComment,
+    ordersCommentSuccess,
     ordersFetch,
     ordersFetchFailure,
     ordersFetchSuccess,
-    ordersFilterChanged, ordersComment, ordersCommentSuccess,
+    ordersFilterChanged,
     ordersPut,
     ordersPutFailure,
-    ordersPutSuccess, ordersToggleStatusPopup, ordersSortChanged, setOrderSelected
+    ordersPutSuccess,
+    ordersSortChanged,
+    ordersToggleStatusPopup, setAutoRefresh,
+    setOrderSelected
 } from "./actions";
-import {RootState} from "../index";
 import {orderKey} from "./utils";
-import {noSelectedPopup, initialOrderState, initialOrderFilter} from './defaults';
-import {EDIOrderSortHandler, sortFunctions} from "./EDIOrderSorter";
+import {initialOrderState, noSelectedPopup} from './defaults';
+import {sortFunctions} from "./EDIOrderSorter";
+import {STORAGE_KEYS, appStorage} from '../../appStorage';
 
 const loadingReducer = (state = initialOrderState.loading, action: EDIOrdersAction): boolean => {
     switch (action.type) {
@@ -63,7 +68,6 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
             return state;
         }
         const payloadOrderKey = orderKey(payload.salesOrder);
-        console.log('listReducer()', state.filter(order => orderKey(order) !== payloadOrderKey).length, state.length)
         return [
             ...state.filter(order => orderKey(order) !== payloadOrderKey),
             {...payload.salesOrder}
@@ -75,7 +79,7 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
                 .map(order => {
                     order.selected = payload?.selected || false;
                     return order;
-            }),
+                }),
             ...state.filter(order => payload?.selectedList?.indexOf(orderKey(order)) === -1)
         ].sort(sortFunctions.CustomerNo)
     default:
@@ -83,7 +87,7 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
     }
 }
 
-const statusPopupReducer = (state:StatusPopupKey = noSelectedPopup, action: EDIOrdersAction) => {
+const statusPopupReducer = (state: StatusPopupKey = noSelectedPopup, action: EDIOrdersAction) => {
     const {type, payload} = action;
     switch (type) {
     case ordersToggleStatusPopup: {
@@ -94,11 +98,12 @@ const statusPopupReducer = (state:StatusPopupKey = noSelectedPopup, action: EDIO
     }
     case ordersPutSuccess:
         return {...noSelectedPopup}
-    default: return state;
+    default:
+        return state;
     }
 }
 
-const sortReducer = (state = initialOrderState.sort, action:EDIOrdersAction) => {
+const sortReducer = (state = initialOrderState.sort, action: EDIOrdersAction) => {
     const {type, payload} = action;
     const field = payload?.field || initialOrderState.sort.field;
     switch (type) {
@@ -107,6 +112,17 @@ const sortReducer = (state = initialOrderState.sort, action:EDIOrdersAction) => 
             return {...state, asc: !state.asc};
         }
         return {field, asc: true};
+    default:
+        return state;
+    }
+}
+
+const autoRefreshReducer = (state = initialOrderState.autoRefresh, action: EDIOrdersAction) => {
+    const {type} = action;
+    switch (type) {
+    case setAutoRefresh:
+        appStorage.setItem(STORAGE_KEYS.AUTO_REFRESH, !state);
+        return !state;
     default: return state;
     }
 }
@@ -118,4 +134,5 @@ export default combineReducers({
     list: listReducer,
     statusPopup: statusPopupReducer,
     sort: sortReducer,
+    autoRefresh: autoRefreshReducer,
 });

@@ -14,9 +14,12 @@ export declare const ordersCommentFailure: string;
 export declare const ordersSortChanged: string;
 export declare const ordersFilterChanged: string;
 export declare const ordersToggleStatusPopup: string;
+export declare const setOrderSelected: string;
+export declare const setAutoRefresh: string;
 export declare const fetchOrdersAction: () => ThunkAction<void, {}, unknown, Action<string>>;
 export declare const onChangeFilter: (props: OrderFilter) => EDIOrdersAction;
 export declare const onChangeOrderStatus: (order: EDIOrder, newStatus: OrderStatusUpdate) => ThunkAction<void, RootState, null, Action<string>>;
+export declare const onMassChangeOrderStatus: (newStatus: OrderStatusUpdate) => ThunkAction<void, RootState, null, Action<string>>;
 export declare const onChangeOrderComment: (order: EDIOrder, notes: string) => ThunkAction<void, RootState, null, Action<string>>;
 export declare const toggleStatusPopup: (statusPopupKey: StatusPopupKey) => {
     type: string;
@@ -31,3 +34,5 @@ export declare const setSortField: (field: string) => {
         field: string;
     };
 };
+export declare const selectOrders: (selectedList: string[], selected: boolean) => EDIOrdersAction;
+export declare const toggleAutoRefresh: () => ThunkAction<void, RootState, null, Action>;

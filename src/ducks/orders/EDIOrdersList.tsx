@@ -13,13 +13,13 @@ import Pagination from "../page/Pagination";
 import {setPage} from "../page";
 import {fetchCustomers} from '../customers';
 import {EDIOrderSortHandler} from "./EDIOrderSorter";
+import AutoRefreshCheckbox from "./AutoRefreshCheckbox";
 
 
 interface StateProps {
     list: EDIOrder[],
     loading: boolean,
     filter: OrderFilter,
-    statusPopup: StatusPopupKey,
     page: number,
     rowsPerPage: number,
     sort: OrderSort,
@@ -27,19 +27,20 @@ interface StateProps {
 
 interface DispatchProps {
     fetchOrders: () => void,
-    toggleStatusPopup: (statusPopup:StatusPopupKey) => void,
-    setPage: (page:number) => void,
+    toggleStatusPopup: (statusPopup: StatusPopupKey) => void,
+    setPage: (page: number) => void,
     fetchCustomers: () => void,
 }
 
 type Props = StateProps & DispatchProps;
 
 const mapState = (state: RootState): StateProps => {
-    const {list, loading, filter, statusPopup, sort} = state.orders;
+    const {list, loading, filter, sort} = state.orders;
     const {page, rowsPerPage} = state.page;
     const filteredList = list.filter(order => {
         return (!filter.ARDivisionNo || order.ARDivisionNo === filter.ARDivisionNo)
             && (!filter.CustomerNo || order.CustomerNo === filter.CustomerNo)
+            && (!filter.mapadoc || order.isMAPADOC)
             && (!filter.OrderDate || order.OrderDate === filter.OrderDate)
             && (!filter.ShipExpireDate || order.LastInvoiceDate === filter.ShipExpireDate || order.ShipExpireDate === filter.ShipExpireDate)
     })
@@ -47,7 +48,6 @@ const mapState = (state: RootState): StateProps => {
         list: filteredList,
         loading,
         filter,
-        statusPopup,
         page,
         rowsPerPage,
         sort,
@@ -77,14 +77,13 @@ class EDIOrdersList extends React.Component<Props, any> {
         this.props.fetchCustomers();
     }
 
-    onClick(ev:React.MouseEvent) {
+    onClick(ev: React.MouseEvent) {
         const target = ev.target as HTMLElement;
         if (target.closest('.status-button-select')) {
             return;
         }
         this.props.toggleStatusPopup(noSelectedPopup);
     }
-
 
 
     pageData() {
@@ -99,24 +98,29 @@ class EDIOrdersList extends React.Component<Props, any> {
     }
 
     render() {
-        const {loading, statusPopup} = this.props;
+        const {loading} = this.props;
         const {list, pages} = this.pageData();
 
         return (
             <>
                 <div onClick={this.onClick}>
                     <EDIOrdersFilter/>
-                    <ProgressBar striped={true} active={true} visible={loading} />
+                    <div className="mb-1">
+                        <ProgressBar striped={true} active={true} visible={loading}/>
+                    </div>
                     <ErrorBoundary>
-                        <EDIOrderTable rows={list} statusPopup={statusPopup}/>
+                        <EDIOrderTable rows={list}/>
                     </ErrorBoundary>
                 </div>
-                <div className="row g-3">
+                <div className="row g-3 align-items-end">
                     <div className="col-auto">
-                        <RowsPerPage />
+                        <AutoRefreshCheckbox />
                     </div>
                     <div className="col-auto">
-                        <Pagination pages={pages} />
+                        <RowsPerPage/>
+                    </div>
+                    <div className="col-auto">
+                        <Pagination pages={pages}/>
                     </div>
                 </div>
             </>

@@ -6,5 +6,6 @@ declare const _default: import("redux").Reducer<import("redux").CombinedState<{
     list: EDIOrder[];
     statusPopup: never;
     sort: import("./types").OrderSort;
+    autoRefresh: boolean;
 }>, EDIOrdersAction>;
 export default _default;

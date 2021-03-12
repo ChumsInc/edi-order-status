@@ -30,13 +30,13 @@ const ShipDateFilterSelect: React.FC<Props> = ({onChange, value}) => {
     }
 
     return (
-        <div className="form-floating">
+        <div>
+            <label className="form-label">Ship Date</label>
             <select className="form-select form-select-sm" onChange={changeHandler} value={value || ''}>
                 <option value="">All</option>
                 {shipDates.map(date => (
                     <option key={date} value={date}>{new Date(date).toLocaleDateString()}</option>))}
             </select>
-            <label>Ship Date</label>
         </div>
     )
 }

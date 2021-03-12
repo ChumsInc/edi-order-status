@@ -1,30 +1,38 @@
 #app {
+  .--status-btn {
+    min-width: 3rem;
+    padding: .1rem .25rem;
+    font-size: .675rem;
+    line-height: 1.75;
+    border-radius: .15rem;
+    &.btn-light {
+      border-color: #888;
+    }
+  }
+
+  .form-label {
+    font-size: small;
+    opacity: 0.65;
+  }
+
   .status-button-select--legend,
   .status-button-select {
-    &.open {
-      .status-group {
-        border: 1px solid black;
-        box-shadow: rgba(0,0,0,0.75) 5px 5px 5px;
-      }
-    }
     .btn {
-      min-width: 3rem;
-      padding: .1rem .25rem;
-      font-size: .675rem;
-      line-height: 1.75;
-      border-radius: .15rem;
-      &.btn-light {
-        border-color: #888;
-      }
+      @extend .--status-btn;
     }
+  }
 
+  .status-group-tooltip {
     .status-group {
+      border: 1px solid black;
+      box-shadow: rgba(0,0,0,0.75) 5px 5px 5px;
       min-width: 3rem;
       padding: 0 0.5rem 0.5rem;
       margin-left: -0.5rem;
       margin-top: -0.15rem;
       //border-top-left-radius: 0;
       li.btn {
+        @extend .--status-btn;
         display: block;
         cursor: pointer;
         margin-top: 0.25rem;
@@ -50,5 +58,11 @@
       min-height: unset;
       margin-bottom: unset;
     }
+    th.tooltip-toggle {
+      cursor: pointer;
+    }
+  }
+  .pagination {
+    margin-bottom: 0;
   }
 }

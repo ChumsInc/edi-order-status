@@ -3,9 +3,8 @@ import {ThunkAction} from 'redux-thunk';
 
 import {EDIOrder, EDIOrdersAction, OrderFilter, OrderStatusUpdate, StatusPopupKey} from "./types";
 import {onErrorAction} from "../alerts";
-import {GetStateFunction, RootState} from "../index";
-import {customerKey} from "./utils";
-import * as QueryString from "querystring";
+import {RootState} from "../index";
+import Timeout = NodeJS.Timeout;
 
 export const ordersFetch: string = 'app/orders/fetch';
 export const ordersFetchSuccess: string = 'app/orders/fetch/success';
@@ -19,14 +18,14 @@ export const ordersComment: string = 'app/orders/comment';
 export const ordersCommentSuccess: string = 'app/orders/comment/success';
 export const ordersCommentFailure: string = 'app/orders/comment/failure';
 
-export const ordersSortChanged:string = 'app/orders/sortChanged';
-
+export const ordersSortChanged: string = 'app/orders/sortChanged';
 export const ordersFilterChanged: string = 'app/orders/filterChanged';
-
 export const ordersToggleStatusPopup: string = 'app/orders/toggleStatusPopup';
-
 export const setOrderSelected: string = 'app/orders/setOrderSelected';
+export const setAutoRefresh: string = 'app/orders/setAutoRefresh';
 
+let refreshTimer: Timeout|number;
+const REFRESH_TIMER_MS = 10 * 60 * 1000;
 
 const API_URL_ORDERS = '/api/operations/shipping/edi-order-status/chums/';
 const API_URL_ORDERS_COMPLETED = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/';
@@ -34,8 +33,7 @@ const API_URL_ORDER_STATUS = '/api/operations/shipping/edi-order-status/chums/:A
 const API_URL_ORDER_NOTES = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/:CustomerPONo/notes';
 
 
-
-function completedURL(filter:OrderFilter) {
+function completedURL(filter: OrderFilter) {
     const url = API_URL_ORDERS_COMPLETED
         .replace(':ARDivisionNo', encodeURIComponent(filter.ARDivisionNo || ''))
         .replace(':CustomerNo', encodeURIComponent(filter.CustomerNo || ''));
@@ -50,7 +48,7 @@ function completedURL(filter:OrderFilter) {
     return `${url}?${query.toString()}`;
 }
 
-export const fetchOrdersAction = ():ThunkAction<void, {}, unknown, Action<string>> => async (dispatch, getState) => {
+export const fetchOrdersAction = (): ThunkAction<void, {}, unknown, Action<string>> => async (dispatch, getState) => {
     try {
 
         // @ts-ignore
@@ -71,44 +69,67 @@ export const fetchOrdersAction = ():ThunkAction<void, {}, unknown, Action<string
             dispatch({type: ordersFetchFailure});
         }
         dispatch({type: ordersFetchSuccess, payload: {list: salesOrders}});
-    } catch(err) {
+    } catch (err) {
         console.log("()", err.message);
         dispatch(onErrorAction(err, ordersFetch));
         dispatch({type: ordersFetchFailure});
     }
 }
 
-export const onChangeFilter = (props:OrderFilter):EDIOrdersAction => ({type: ordersFilterChanged, payload: {filter: {...props}}});
+export const onChangeFilter = (props: OrderFilter): EDIOrdersAction => ({
+    type: ordersFilterChanged,
+    payload: {filter: {...props}}
+});
 
-export const onChangeOrderStatus = (order:EDIOrder, newStatus: OrderStatusUpdate, ):ThunkAction<void, RootState, null, Action<string>> =>
+export const onChangeOrderStatus = (order: EDIOrder, newStatus: OrderStatusUpdate,): ThunkAction<void, RootState, null, Action<string>> =>
     async (dispatch) => {
-    try {
-        dispatch({type: ordersPut});
-        const url = API_URL_ORDER_STATUS
-            .replace(':ARDivisionNo', encodeURIComponent(order.ARDivisionNo))
-            .replace(':CustomerNo', encodeURIComponent(order.CustomerNo))
-            .replace(':CustomerPONo', encodeURIComponent(order.CustomerPONo))
-            .replace(':statusCode', encodeURIComponent(newStatus.key));
-        const res = await fetch(url, {
-            credentials: 'same-origin', method: 'PUT', body: JSON.stringify(newStatus),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-        });
-        const json = await res.json();
-        const {salesOrder} = json;
-        if (salesOrder) {
-            dispatch({type: ordersPutSuccess, payload: {salesOrder}});
+        try {
+            dispatch({type: ordersPut});
+            const url = API_URL_ORDER_STATUS
+                .replace(':ARDivisionNo', encodeURIComponent(order.ARDivisionNo))
+                .replace(':CustomerNo', encodeURIComponent(order.CustomerNo))
+                .replace(':CustomerPONo', encodeURIComponent(order.CustomerPONo))
+                .replace(':statusCode', encodeURIComponent(newStatus.key));
+            const res = await fetch(url, {
+                credentials: 'same-origin', method: 'PUT', body: JSON.stringify(newStatus),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            });
+            const json = await res.json();
+            const {salesOrder} = json;
+            if (salesOrder) {
+                dispatch({type: ordersPutSuccess, payload: {salesOrder}});
+            }
+        } catch (err) {
+            console.log("onChangeOrderStatus()", err.message);
+            dispatch(onErrorAction(err, ordersPut));
+            dispatch({type: ordersPutFailure});
         }
-    } catch(err) {
-        console.log("onChangeOrderStatus()", err.message);
-        dispatch(onErrorAction(err, ordersPut));
-        dispatch({type: ordersPutFailure});
     }
+
+function wait(ms: number) {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(null), ms);
+    });
 }
 
-export const onChangeOrderComment = (order: EDIOrder, notes:string):ThunkAction<void, RootState, null, Action<string>> =>
+export const onMassChangeOrderStatus = (newStatus: OrderStatusUpdate): ThunkAction<void, RootState, null, Action<string>> =>
+    async (dispatch, getState) => {
+        try {
+            const selectedOrders = getState().orders.list.filter(order => order.selected);
+            for (const order of selectedOrders) {
+                dispatch(onChangeOrderStatus(order, newStatus));
+                await wait(100);
+            }
+        } catch (err) {
+            console.log("onMassChangeOrderStatus()", err.message);
+            return Promise.reject(err);
+        }
+    }
+
+export const onChangeOrderComment = (order: EDIOrder, notes: string): ThunkAction<void, RootState, null, Action<string>> =>
     async (dispatch) => {
         try {
             dispatch({type: ordersComment, payload: {salesOrder: {...order, notes}}});
@@ -128,17 +149,35 @@ export const onChangeOrderComment = (order: EDIOrder, notes:string):ThunkAction<
             if (salesOrder) {
                 dispatch({type: ordersCommentSuccess, payload: {salesOrder}});
             }
-        } catch(err) {
+        } catch (err) {
             console.log("onChangeOrderComment()", err.message);
             dispatch(onErrorAction(err, ordersComment));
             dispatch({type: ordersCommentFailure});
         }
-}
+    }
 
-export const toggleStatusPopup = (statusPopupKey: StatusPopupKey) => ({type: ordersToggleStatusPopup, payload: {statusPopupKey}});
+export const toggleStatusPopup = (statusPopupKey: StatusPopupKey) => ({
+    type: ordersToggleStatusPopup,
+    payload: {statusPopupKey}
+});
 
-export const statusPopupEquality = (a: StatusPopupKey, b:StatusPopupKey) => Object.values(a).join('/') === Object.values(b).join('/');
+export const statusPopupEquality = (a: StatusPopupKey, b: StatusPopupKey) => Object.values(a).join('/') === Object.values(b).join('/');
 
-export const setSortField = (field:string) => ({type: ordersSortChanged, payload: {field}});
+export const setSortField = (field: string) => ({type: ordersSortChanged, payload: {field}});
 
-export const selectOrders = (selectedList:string[], selected:boolean):EDIOrdersAction => ({type: setOrderSelected, payload: {selectedList, selected}});
+export const selectOrders = (selectedList: string[], selected: boolean): EDIOrdersAction => ({
+    type: setOrderSelected,
+    payload: {selectedList, selected}
+});
+
+
+export const toggleAutoRefresh = (): ThunkAction<void, RootState, null, Action> =>
+    (dispatch, getState) => {
+        const willAutoRefresh = !getState().orders.autoRefresh;
+        if (willAutoRefresh) {
+            refreshTimer = setInterval(() => dispatch(fetchOrdersAction()), REFRESH_TIMER_MS);
+        } else {
+            clearInterval(refreshTimer as Timeout);
+        }
+        dispatch({type: setAutoRefresh});
+    }

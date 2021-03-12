@@ -1,4 +1,14 @@
-export const appStorage = {
+export interface AppStorage {
+    getItem: (key:string) => any,
+    setItem: (key:string, value:any) => void,
+    delete: (key:string) => void,
+}
+
+export interface StorageKeys {
+    [key:string]: string,
+}
+
+export const appStorage:AppStorage = {
     getItem: (key:string):any => {
         if (window.localStorage) {
             const val = window.localStorage.getItem(key);
@@ -24,4 +34,5 @@ export const appStorage = {
 
 export const STORAGE_KEYS = {
     ROWS_PER_PAGE: 'com.chums.intranet.edi-order-status.rowsPerPage',
+    AUTO_REFRESH: 'com.chums.intranet.edi-order-status.autoRefresh',
 };

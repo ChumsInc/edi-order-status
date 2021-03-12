@@ -1,11 +1,12 @@
-import React, {ChangeEvent, ReactChildren, useState} from "react";
-import {EDIOrder, StatusPopupKey} from "./types";
+import React, {ReactChildren, useState} from "react";
+import {EDIOrder} from "./types";
 import classNames from "classnames";
 import EDIOrderRow from "./EDIOrderRow";
 import {orderKey} from "./utils";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../index";
-import {selectOrders, setOrderSelected, setSortField} from "./actions";
+import {selectOrders, setSortField} from "./actions";
+import OrderStatusTH from "./OrderStatusTH";
 
 interface ThProps {
     field: string,
@@ -32,19 +33,19 @@ const ThSortable: React.FC<ThProps> = ({field, sort, className, children, onClic
 
 interface Props {
     rows: EDIOrder[],
-    statusPopup: StatusPopupKey,
 }
 
-const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
+const EDIOrderTable: React.FC<Props> = ({rows}) => {
     const dispatch = useDispatch();
     const {sort} = useSelector((state: RootState) => state.orders);
     const {CustomerNo, ShipExpireDate, OrderDate} = useSelector((state: RootState) => state.orders.filter);
+    const thPopupEnabled = useSelector((state: RootState) => !!state.orders.list.filter(order => order.selected).length);
     const canSelectAll = !!CustomerNo && (!!ShipExpireDate || !!OrderDate);
     const [selectAll, setSelectAll] = useState(false);
     const onClickSort = (field: string) => {
         dispatch(setSortField(field));
     }
-    const onSelectAll = (ev:ChangeEvent<HTMLInputElement>) => {
+    const onSelectAll = () => {
         setSelectAll(!selectAll);
         const selectedList = rows.map(row => orderKey(row));
         dispatch(selectOrders(selectedList, !selectAll));
@@ -57,7 +58,8 @@ const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
                 <th>
                     {canSelectAll && (
                         <div className="form-check form-check-inline">
-                            <input type="checkbox" className="form-check-input" checked={selectAll} onChange={onSelectAll}/>
+                            <input type="checkbox" className="form-check-input" checked={selectAll}
+                                   onChange={onSelectAll}/>
                         </div>
                     )}
                 </th>
@@ -68,17 +70,17 @@ const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
                 <ThSortable field="OrderDate" sort={sort} onClick={onClickSort}>Order Date</ThSortable>
                 <ThSortable field="ShipExpireDate" sort={sort} onClick={onClickSort}>Ship Date</ThSortable>
                 <ThSortable field="UDF_CANCEL_DATE" sort={sort} onClick={onClickSort}>Cancel Date</ThSortable>
-                <th>Import</th>
-                <th>Inventory</th>
-                <th>Print</th>
-                <th>Logistics</th>
-                <th>W/C</th>
-                <th>Pick</th>
-                <th>Route</th>
-                <th>ASN</th>
-                <th>Picked Up</th>
-                <th>Invoiced</th>
-                <th>Completed</th>
+                <OrderStatusTH type="imported" enabled={thPopupEnabled}>Import</OrderStatusTH>
+                <OrderStatusTH type="inventory" enabled={thPopupEnabled}>Inventory</OrderStatusTH>
+                <OrderStatusTH type="printed" enabled={thPopupEnabled}>Print</OrderStatusTH>
+                <OrderStatusTH type="logistics" enabled={thPopupEnabled}>Logistics</OrderStatusTH>
+                <OrderStatusTH type="work-cell" enabled={thPopupEnabled}>W/C</OrderStatusTH>
+                <OrderStatusTH type="picked" enabled={thPopupEnabled}>Pick</OrderStatusTH>
+                <OrderStatusTH type="routed" enabled={thPopupEnabled}>Route</OrderStatusTH>
+                <OrderStatusTH type="asn" enabled={thPopupEnabled}>ASN</OrderStatusTH>
+                <OrderStatusTH type="picked-up" enabled={thPopupEnabled}>Picked Up</OrderStatusTH>
+                <OrderStatusTH type="invoiced" enabled={thPopupEnabled}>Invoiced</OrderStatusTH>
+                <OrderStatusTH type="completed" enabled={thPopupEnabled}>Completed</OrderStatusTH>
                 <ThSortable field="OrderCount" className="right" sort={sort} onClick={onClickSort}>Orders</ThSortable>
                 <ThSortable field="OrderTotal" className="right" sort={sort} onClick={onClickSort}>Order
                     Total</ThSortable>
@@ -86,7 +88,7 @@ const EDIOrderTable: React.FC<Props> = ({rows, statusPopup}) => {
             </tr>
             </thead>
             <tbody>
-            {rows.map(row => <EDIOrderRow key={orderKey(row)} row={row} statusPopup={statusPopup}/>)}
+            {rows.map(row => <EDIOrderRow key={orderKey(row)} row={row}/>)}
             </tbody>
         </table>
     )

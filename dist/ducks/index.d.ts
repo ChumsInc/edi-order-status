@@ -10,6 +10,7 @@ declare const rootReducer: import("redux").Reducer<import("redux").CombinedState
         list: import("./orders/types").EDIOrder[];
         statusPopup: never;
         sort: import("./orders/types").OrderSort;
+        autoRefresh: boolean;
     }>;
     page: import("redux").CombinedState<{
         page: number;
@@ -22,4 +23,3 @@ declare const rootReducer: import("redux").Reducer<import("redux").CombinedState
 }>, import("./orders/types").EDIOrdersAction | import("redux").AnyAction | import("./page").PageAction | import("./customers").CustomerAction>;
 export declare type RootState = ReturnType<typeof rootReducer>;
 export default rootReducer;
-export declare type GetStateFunction = () => RootState;

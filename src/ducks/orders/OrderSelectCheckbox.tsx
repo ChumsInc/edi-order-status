@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React from 'react';
 import {EDIOrder} from "./types";
 import {useDispatch} from "react-redux";
 import {selectOrders} from "./actions";
@@ -8,9 +8,9 @@ interface Props {
     order: EDIOrder
 }
 
-const OrderSelectCheckbox:React.FC<Props> = ({order}) => {
+const OrderSelectCheckbox: React.FC<Props> = ({order}) => {
     const dispatch = useDispatch();
-    const onChange = (order:EDIOrder) => {
+    const onChange = (order: EDIOrder) => {
         dispatch(selectOrders([orderKey(order)], !order.selected));
     }
 
@@ -18,6 +18,7 @@ const OrderSelectCheckbox:React.FC<Props> = ({order}) => {
         <div className="form-check form-check-inline">
             <input type="checkbox" className="form-check-input"
                    checked={order.selected || false} disabled={order.OrderStatus === 'X'}
+                   onClick={(ev) => ev.stopPropagation()}
                    onChange={() => onChange(order)}/>
         </div>
     )

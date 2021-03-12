@@ -1,9 +1,4 @@
-#app .status-button-select--legend.open .status-group,
-#app .status-button-select.open .status-group {
-  border: 1px solid black;
-  box-shadow: rgba(0, 0, 0, 0.75) 5px 5px 5px;
-}
-#app .status-button-select--legend .btn,
+#app .--status-btn, #app .status-group-tooltip .status-group li.btn, #app .status-button-select--legend .btn,
 #app .status-button-select .btn {
   min-width: 3rem;
   padding: 0.1rem 0.25rem;
@@ -11,25 +6,28 @@
   line-height: 1.75;
   border-radius: 0.15rem;
 }
-#app .status-button-select--legend .btn.btn-light,
-#app .status-button-select .btn.btn-light {
+#app .--status-btn.btn-light, #app .status-group-tooltip .status-group li.btn-light.btn, #app .status-button-select--legend .btn-light.btn,
+#app .status-button-select .btn-light.btn {
   border-color: #888;
 }
-#app .status-button-select--legend .status-group,
-#app .status-button-select .status-group {
+#app .form-label {
+  font-size: small;
+  opacity: 0.65;
+}
+#app .status-group-tooltip .status-group {
+  border: 1px solid black;
+  box-shadow: rgba(0, 0, 0, 0.75) 5px 5px 5px;
   min-width: 3rem;
   padding: 0 0.5rem 0.5rem;
   margin-left: -0.5rem;
   margin-top: -0.15rem;
 }
-#app .status-button-select--legend .status-group li.btn,
-#app .status-button-select .status-group li.btn {
+#app .status-group-tooltip .status-group li.btn {
   display: block;
   cursor: pointer;
   margin-top: 0.25rem;
 }
-#app .status-button-select--legend .status-group li.btn.btn-dark,
-#app .status-button-select .status-group li.btn.btn-dark {
+#app .status-group-tooltip .status-group li.btn.btn-dark {
   border-color: blueviolet;
 }
 #app .form-floating > label {
@@ -41,6 +39,12 @@
 #app .table .form-check {
   min-height: unset;
   margin-bottom: unset;
+}
+#app .table th.tooltip-toggle {
+  cursor: pointer;
+}
+#app .pagination {
+  margin-bottom: 0;
 }
 
 /*# sourceMappingURL=App.css.map */

@@ -12,9 +12,13 @@ const OrderStatusTooltipItem:React.FC<OrderStatusTooltipItemProps> = ({color, va
     const className = classNames({
         btn: true,
         [`btn-${color}`]: true
-    })
+    });
+    const clickHandler = (ev:React.MouseEvent) => {
+        ev.stopPropagation();
+        onClick(value)
+    }
     return (
-        <li className={className} onClick={() => onClick(value)}>{text}</li>
+        <li className={className} onClick={clickHandler}>{text}</li>
     );
 };
 

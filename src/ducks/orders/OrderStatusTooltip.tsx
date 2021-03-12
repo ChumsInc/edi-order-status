@@ -7,7 +7,7 @@ interface OrderStatusTooltipProps {
 
 const OrderStatusTooltip: React.FC<OrderStatusTooltipProps> = ({onClick}) => {
     return (
-        <div className="tooltip bs-tooltip-bottom show" role="tooltip">
+        <div className="tooltip bs-tooltip-bottom show status-group-tooltip" role="tooltip">
             <div className="tooltip-arrow"/>
             <ul className="tooltip-inner status-group">
                 <li style={{whiteSpace: 'nowrap'}}>New Status</li>

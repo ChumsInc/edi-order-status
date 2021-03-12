@@ -1,5 +1,8 @@
 import {ActionInterface} from "../types";
 
+export type OrderStatusField = 'imported' | 'inventory' | 'printed' | 'logistics' | 'work-cell' | 'picked' | 'routed'
+    | 'asn' | 'picked-up' | 'invoiced' | 'completed' | '';
+
 export interface OrderFilter {
     Company?: string,
     ARDivisionNo?: string,
@@ -10,6 +13,7 @@ export interface OrderFilter {
     maxDate?: string,
     OrderDate?: string,
     ShipExpireDate?: string,
+    mapadoc?:boolean,
 }
 
 export interface OrderStatusUpdate {
@@ -27,25 +31,25 @@ export interface OrderStatusTitles {
     routed?: string,
     'picked-up'?: string,
     asn?: string,
-
 }
 
 export interface OrderStatus {
     user?: number,
-    value: string|number,
+    value: string | number,
     date?: string,
     text?: string,
     userName?: string,
 }
 
 export type OrderStatusGroup = {
-    [key:string]: OrderStatus;
+    [key: string]: OrderStatus;
 };
 
 export interface EDIOrder {
     Company: string,
     ARDivisionNo: string,
     CustomerNo: string,
+    isMAPADOC: boolean,
     BillToName: string,
     OrderDate: string,
     OrderStatus: string,
@@ -53,13 +57,13 @@ export interface EDIOrder {
     UDF_CANCEL_DATE?: string,
     LastInvoiceDate?: string,
     CustomerPONo: string,
-    OrderTotal:number,
+    OrderTotal: number,
     OrderCount: number,
     InvoiceCount: number,
     CSUser: string,
     status_json: OrderStatusGroup,
     notes?: string,
-    completed?: string|Date,
+    completed?: string | Date,
     completedByUserName?: string,
     selected?: boolean,
 }
@@ -75,6 +79,7 @@ export interface OrderListState {
     filter: OrderFilter,
     list: EDIOrder[],
     sort: OrderSort,
+    autoRefresh: boolean,
 }
 
 export interface EDIOrdersAction extends ActionInterface {
@@ -90,7 +95,7 @@ export interface EDIOrdersAction extends ActionInterface {
 }
 
 export interface EDIOrderSort {
-    [key:string]: (row:EDIOrder) => string|number,
+    [key: string]: (row: EDIOrder) => string | number,
 }
 
 export interface EDIOrderSortParams {
@@ -98,13 +103,14 @@ export interface EDIOrderSortParams {
     field: string,
     asc: boolean,
 }
-export type SortFunction = (a:any, b:any) => number;
+
+export type SortFunction = (a: any, b: any) => number;
 
 export interface EDIOrderSorter {
-    [key:string]: SortFunction
+    [key: string]: SortFunction
 }
 
 export interface StatusPopupKey {
     key: string,
-    statusField?: string,
+    statusField?: OrderStatusField,
 }

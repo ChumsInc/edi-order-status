@@ -5,6 +5,7 @@ export interface Customer {
     ARDivisionNo: string;
     CustomerNo: string;
     CustomerName: string;
+    isMAPADOC: boolean;
 }
 export interface CustomerState {
     list: Customer[];

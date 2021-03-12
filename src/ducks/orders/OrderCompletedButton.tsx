@@ -1,18 +1,19 @@
-import React, {EventHandler, useState} from "react";
+import React from "react";
 import classNames from "classnames";
-import {EDIOrder, OrderStatus, StatusPopupKey} from "./types";
-import {friendlyDateTime, orderKey, orderStatusClassName} from "./utils";
-import {useDispatch} from "react-redux";
+import {EDIOrder, StatusPopupKey} from "./types";
+import {friendlyDateTime, orderKey} from "./utils";
+import {useDispatch, useSelector} from "react-redux";
 import {onChangeOrderStatus, statusPopupEquality, toggleStatusPopup} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
+import {RootState} from "../index";
 
 
 interface Props {
     order: EDIOrder,
-    statusPopup: StatusPopupKey,
 }
 
-const OrderCompletedButton:React.FC<Props> = ({order, statusPopup}) => {
+const OrderCompletedButton: React.FC<Props> = ({order}) => {
+    const statusPopup: StatusPopupKey = useSelector((state: RootState) => state.orders.statusPopup);
     if (order.OrderStatus === 'X') {
         return null;
     }
@@ -22,10 +23,10 @@ const OrderCompletedButton:React.FC<Props> = ({order, statusPopup}) => {
         'btn-light': !completed,
         'btn-success': !!completed,
     };
-    const _statusPopup:StatusPopupKey = {key: orderKey(order), statusField: 'completed'};
+    const _statusPopup: StatusPopupKey = {key: orderKey(order), statusField: 'completed'};
     const expanded = statusPopupEquality(statusPopup, _statusPopup)
 
-    const clickHandler = (value:number) => {
+    const clickHandler = (value: number) => {
         dispatch(onChangeOrderStatus(order, {key: 'completed', value}));
     }
 
@@ -41,7 +42,7 @@ const OrderCompletedButton:React.FC<Props> = ({order, statusPopup}) => {
                     className={classNames("btn", currentStatusClassName)} aria-expanded={expanded}>
                 {!completed ? '-' : friendlyDateTime(completed)}
             </button>
-            {expanded && (<OrderCompletedTooltip onClick={clickHandler} />)}
+            {expanded && (<OrderCompletedTooltip onClick={clickHandler}/>)}
         </div>
     )
 }

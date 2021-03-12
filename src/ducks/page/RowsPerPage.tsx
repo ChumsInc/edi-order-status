@@ -13,7 +13,7 @@ const RowsPerPage:React.FC = () => {
 
     return (
         <>
-            <label>Rows Per Page</label>
+            <label>Show</label>
             <select className="form-select form-select-sm" value={rowsPerPage} onChange={onChange}>
                 <option value={10}>10</option>
                 <option value={25}>25</option>

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import classNames from "classnames";
-import {EDIOrder, StatusPopupKey} from "./types";
-import {isPast, parseISO} from 'date-fns';
+import {EDIOrder} from "./types";
+import {isPast, isSameDay, parseISO} from 'date-fns';
 import {customerKey, friendlyDate, orderKey} from "./utils";
 import OrderStatusButton from "./OrderStatusButton";
 import numeral from "numeral";
@@ -13,7 +13,6 @@ import OrderSelectCheckbox from "./OrderSelectCheckbox";
 
 interface Props {
     row: EDIOrder,
-    statusPopup: StatusPopupKey,
 }
 
 const rowValues = (row: EDIOrder) => {
@@ -24,8 +23,8 @@ const rowValues = (row: EDIOrder) => {
     const key = orderKey(row);
 
     const trClassName = {
-        'table-danger': !lastInvoiceDate && !!cancelDate && isPast(cancelDate),
-        'table-warning': !lastInvoiceDate && !!shipDate && isPast(shipDate),
+        'table-danger': !lastInvoiceDate && !!cancelDate && isPast(cancelDate) && !isSameDay(cancelDate, new Date()),
+        'table-warning': !lastInvoiceDate && !!shipDate && (isPast(shipDate) || (!!cancelDate && isSameDay(cancelDate, new Date()))),
         'table-success': !!lastInvoiceDate,
         'edi-order-row--has-comment': !!row.notes,
     }
@@ -39,38 +38,38 @@ const rowValues = (row: EDIOrder) => {
     }
 }
 
-const CustomerItemLink: React.FC<{row: EDIOrder}> = ({row}) => {
+const CustomerItemLink: React.FC<{ row: EDIOrder }> = ({row}) => {
     const href = `/reports/production/customer-open-items?company=${encodeURIComponent(row.Company)}&customer=${encodeURIComponent(row.ARDivisionNo)}-${encodeURIComponent(row.CustomerNo)}`;
     return (
         <a href={href} target="_blank">{customerKey(row)}</a>
     )
 }
 
-const EDIOrderRow: React.FC<Props> = ({row, statusPopup}) => {
+const EDIOrderRow: React.FC<Props> = ({row}) => {
     const {cancelDate, shipDate, orderDate, trClassName, lastInvoiceDate} = rowValues(row);
     const [editComment, setEditComment] = useState(false);
     return (
         <>
             <tr className={classNames(trClassName)}>
-                <th><OrderSelectCheckbox order={row} /></th>
-                <td><CustomerItemLink row={row} /></td>
+                <th><OrderSelectCheckbox order={row}/></th>
+                <td><CustomerItemLink row={row}/></td>
                 <td>{row.BillToName}</td>
                 <td>{row.CustomerPONo}</td>
                 <td>{row.OrderStatus}</td>
                 <td>{friendlyDate(orderDate)}</td>
                 <td>{!!shipDate ? friendlyDate(shipDate) : (!!lastInvoiceDate ? friendlyDate(lastInvoiceDate) : '-')}</td>
                 <td>{!!cancelDate ? friendlyDate(cancelDate) : '-'}</td>
-                <td><OrderStatusButton order={row} type="imported" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="inventory" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="printed" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="logistics" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="work-cell" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="picked" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="routed" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="asn" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="picked-up" statusPopup={statusPopup}/></td>
-                <td><OrderStatusButton order={row} type="invoiced" statusPopup={statusPopup}/></td>
-                <td><OrderCompletedButton order={row} statusPopup={statusPopup}/></td>
+                <td><OrderStatusButton order={row} type="imported"/></td>
+                <td><OrderStatusButton order={row} type="inventory"/></td>
+                <td><OrderStatusButton order={row} type="printed"/></td>
+                <td><OrderStatusButton order={row} type="logistics"/></td>
+                <td><OrderStatusButton order={row} type="work-cell"/></td>
+                <td><OrderStatusButton order={row} type="picked"/></td>
+                <td><OrderStatusButton order={row} type="routed"/></td>
+                <td><OrderStatusButton order={row} type="asn"/></td>
+                <td><OrderStatusButton order={row} type="picked-up"/></td>
+                <td><OrderStatusButton order={row} type="invoiced"/></td>
+                <td><OrderCompletedButton order={row}/></td>
                 <td className="right">
                     {numeral(row.InvoiceCount).format('0,0')} / {numeral(row.OrderCount).format('0,0')}
                 </td>

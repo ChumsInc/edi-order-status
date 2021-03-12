@@ -1,8 +1,8 @@
-import React, {ChangeEvent, FC, InputHTMLAttributes} from 'react';
+import React, {InputHTMLAttributes} from 'react';
 import classNames from "classnames";
 import {InputFieldValue} from "./InputFieldValue";
 
-interface TextInputProps extends InputHTMLAttributes<HTMLInputElement>{
+interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
     field: string,
     changeHandler: (props: InputFieldValue) => void,
 }

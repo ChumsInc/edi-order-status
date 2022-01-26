@@ -1,9 +1,9 @@
 import React from "react";
 import classNames from "classnames";
-import {EDIOrder, OrderStatusField, StatusPopupKey} from "./types";
+import {EDIOrder, OrderStatus, OrderStatusField, StatusPopupKey} from "./types";
 import {friendlyDateTime, orderKey, orderStatusClassName} from "./utils";
 import {useDispatch, useSelector} from "react-redux";
-import {onChangeOrderStatus, statusPopupEquality, toggleStatusPopup} from "./actions";
+import {onChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
 import OrderStatusTooltip from "./OrderStatusTooltip";
 import {RootState} from "../index";
 
@@ -19,8 +19,8 @@ const OrderStatusButton: React.FC<Props> = ({order, type}) => {
         return null;
     }
     const dispatch = useDispatch();
-    const status = order.status_json[type] || {};
-    const currentStatusClassName = orderStatusClassName(status.value);
+    const status:OrderStatus = order.status_json[type] as OrderStatus;
+    const currentStatusClassName = orderStatusClassName(status?.value);
     const _statusPopup: StatusPopupKey = {key: orderKey(order), statusField: type};
     const expanded = statusPopupEquality(statusPopup, _statusPopup)
 
@@ -28,22 +28,22 @@ const OrderStatusButton: React.FC<Props> = ({order, type}) => {
         if (order.completed) {
             return;
         }
-        dispatch(onChangeOrderStatus(order, {key: type, value}));
+        dispatch(onChangeOrderStatusAction(order, {key: type, value}));
     }
 
     const onOpenDropDown = () => {
         if (order.completed) {
             return;
         }
-        dispatch(toggleStatusPopup(_statusPopup))
+        dispatch(toggleStatusPopupAction(_statusPopup))
     }
 
     return (
         <div className={classNames("status-button-select", {open: expanded})} role="group">
             <button type="button" onClick={onOpenDropDown}
-                    title={status.userName}
+                    title={status?.userName}
                     className={classNames("btn", currentStatusClassName)} aria-expanded={expanded}>
-                {!status.date ? '-' : friendlyDateTime(status.date)}
+                {!status?.date ? '-' : friendlyDateTime(status.date)}
             </button>
             {expanded && (<OrderStatusTooltip onClick={clickHandler}/>)}
         </div>

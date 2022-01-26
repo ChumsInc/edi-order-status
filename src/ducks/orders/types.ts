@@ -1,7 +1,10 @@
 import {ActionInterface} from "../types";
+import {ActionPayload} from "chums-ducks";
+import {ThunkAction} from "redux-thunk";
+import {RootState} from "../index";
 
-export type OrderStatusField = 'imported' | 'inventory' | 'printed' | 'logistics' | 'work-cell' | 'picked' | 'routed'
-    | 'asn' | 'picked-up' | 'invoiced' | 'completed' | '';
+export type OrderStatusField = 'imported' | 'inventory' | 'printed' | 'logistics'
+    | 'work-cell' | 'picked' | 'routed' | 'asn' | 'picked-up' | 'invoiced' | 'completed';
 
 export interface OrderFilter {
     Company?: string,
@@ -41,8 +44,9 @@ export interface OrderStatus {
     userName?: string,
 }
 
+
 export type OrderStatusGroup = {
-    [key: string]: OrderStatus;
+    [key in OrderStatusField]: OrderStatus;
 };
 
 export interface EDIOrder {
@@ -69,7 +73,7 @@ export interface EDIOrder {
 }
 
 export interface OrderSort {
-    field: string,
+    field: OrderStatusField|EDIOrderField,
     asc: boolean,
 }
 
@@ -82,17 +86,21 @@ export interface OrderListState {
     autoRefresh: boolean,
 }
 
-export interface EDIOrdersAction extends ActionInterface {
-    payload?: {
-        filter?: OrderFilter,
-        list?: EDIOrder[],
-        salesOrder?: EDIOrder,
-        statusPopupKey?: StatusPopupKey,
-        field?: string,
-        selectedList?: string[],
-        selected?: boolean,
-    }
+export interface EDIOrdersPayload extends ActionPayload {
+    filter?: OrderFilter,
+    list?: EDIOrder[],
+    salesOrder?: EDIOrder,
+    statusPopupKey?: StatusPopupKey,
+    field?: string,
+    selectedList?: string[],
+    selected?: boolean,
 }
+
+export interface EDIOrdersAction extends ActionInterface {
+    payload?: EDIOrdersPayload,
+}
+
+export interface EDIOrdersThunkAction extends ThunkAction<any, RootState, unknown, EDIOrdersAction> {}
 
 export interface EDIOrderSort {
     [key: string]: (row: EDIOrder) => string | number,
@@ -104,11 +112,14 @@ export interface EDIOrderSortParams {
     asc: boolean,
 }
 
-export type SortFunction = (a: any, b: any) => number;
+export type SortFunction = (a: EDIOrder, b: EDIOrder) => number;
 
-export interface EDIOrderSorter {
-    [key: string]: SortFunction
-}
+export type EDIOrderField = keyof EDIOrder;
+
+export type EDIOrderSorterKey = EDIOrderField|OrderStatusField;
+export type EDIOrderSorter = {
+    [key in EDIOrderSorterKey]: SortFunction;
+};
 
 export interface StatusPopupKey {
     key: string,

@@ -1,12 +1,12 @@
-import {Action, AnyAction, combineReducers} from 'redux';
+import {combineReducers} from 'redux';
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
-import {onErrorAction} from "../alerts";
+import {ActionInterface, ActionPayload, fetchJSON} from "chums-ducks";
 
 //actions
-const customersFetch:string = 'app/customers/fetch';
-const customersFetchSuccess:string = 'app/customers/fetchSuccess'
-const customersFetchFailure:string = 'app/customers/fetchFailure'
+const customersFetch: string = 'app/customers/fetch';
+const customersFetchSuccess: string = 'app/customers/fetchSuccess'
+const customersFetchFailure: string = 'app/customers/fetchFailure'
 
 const URL_CUSTOMERS = '/api/operations/shipping/edi-order-status/chums/customers';
 
@@ -22,41 +22,46 @@ export interface CustomerState {
     loading: boolean,
 }
 
-const defaultState:CustomerState = {
+const defaultState: CustomerState = {
     list: [],
     loading: false,
 };
 
-export interface CustomerAction extends AnyAction {
-    payload?: {
-        customers?: Customer[],
-    }
+export interface CustomerPayload extends ActionPayload {
+    customers?: Customer[],
 }
 
-export interface CustomerThunkAction extends ThunkAction<void, RootState, unknown, Action<string>> {
-
+export interface CustomerAction extends ActionInterface {
+    payload?: CustomerPayload
 }
 
-export const fetchCustomers = ():CustomerThunkAction =>
+export interface CustomerThunkAction extends ThunkAction<any, RootState, unknown, CustomerAction> {
+}
+
+export const fetchCustomers = (): CustomerThunkAction =>
     async (dispatch, getState) => {
-    try {
-        const state = getState();
-        if (state.customers.loading) {
-            return;
+        try {
+            const state = getState();
+            if (selectCustomersLoading(state)) {
+                return;
+            }
+            dispatch({type: customersFetch});
+            const {customers} = await fetchJSON(URL_CUSTOMERS);
+            dispatch({type: customersFetchSuccess, payload: {customers}});
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.log("loadCustomers()", err.message);
+                return dispatch({type: customersFetchFailure, payload: {error: err, context: customersFetch}});
+            }
+            dispatch({type: customersFetchFailure});
         }
-        dispatch({type: customersFetch});
-        const res = await fetch(URL_CUSTOMERS, {credentials: 'same-origin'});
-        const {customers} = await res.json();
-        dispatch({type: customersFetchSuccess, payload: {customers}});
-    } catch(err) {
-        console.log("loadCustomers()", err.message);
-        dispatch({type: customersFetchFailure});
-        dispatch(onErrorAction(err, customersFetch));
     }
-}
 
+export const selectCustomerList = (state: RootState) => state.customers.list;
+export const selectCustomersLoading = (state: RootState) => state.customers.loading;
+export const selectCustomersLoaded = (state: RootState) => state.customers.loaded;
 
-const list = (state = defaultState.list, action:CustomerAction) => {
+const listReducer = (state = defaultState.list, action: CustomerAction): Customer[] => {
     const {type, payload} = action;
     switch (type) {
     case customersFetchSuccess:
@@ -66,18 +71,29 @@ const list = (state = defaultState.list, action:CustomerAction) => {
     }
 }
 
-const loading = (state = defaultState.loading, action:CustomerAction) => {
+const loadingReducer = (state = defaultState.loading, action: CustomerAction): boolean => {
     switch (action.type) {
     case customersFetch:
         return true;
     case customersFetchSuccess:
     case customersFetchFailure:
         return false;
-    default: return state;
+    default:
+        return state;
+    }
+}
+
+const loadedReducer = (state: boolean = false, action: CustomerAction): boolean => {
+    switch (action.type) {
+    case customersFetchSuccess:
+        return true;
+    default:
+        return state;
     }
 }
 
 export default combineReducers({
-    list,
-    loading,
+    list: listReducer,
+    loading: loadingReducer,
+    loaded: loadedReducer,
 });

@@ -20,7 +20,8 @@ export const initialOrderState: OrderListState = {
     autoRefresh: appStorage.getItem(STORAGE_KEYS.AUTO_REFRESH) || false,
 }
 
+
 export const noSelectedPopup:StatusPopupKey = {
     key: '',
-    statusField: '',
+    statusField: undefined,
 }

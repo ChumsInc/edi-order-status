@@ -1,7 +1,7 @@
 import React from 'react';
 import {EDIOrder} from "./types";
 import {useDispatch} from "react-redux";
-import {selectOrders} from "./actions";
+import {selectOrdersAction} from "./actions";
 import {orderKey} from "./utils";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 const OrderSelectCheckbox: React.FC<Props> = ({order}) => {
     const dispatch = useDispatch();
     const onChange = (order: EDIOrder) => {
-        dispatch(selectOrders([orderKey(order)], !order.selected));
+        dispatch(selectOrdersAction([orderKey(order)], !order.selected));
     }
 
     return (

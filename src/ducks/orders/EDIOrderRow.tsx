@@ -7,7 +7,7 @@ import OrderStatusButton from "./OrderStatusButton";
 import numeral from "numeral";
 import TextareaAutosize from 'react-textarea-autosize';
 import {useDispatch} from "react-redux";
-import {onChangeOrderComment} from "./actions";
+import {onChangeOrderCommentAction} from "./actions";
 import OrderCompletedButton from "./OrderCompletedButton";
 import OrderSelectCheckbox from "./OrderSelectCheckbox";
 
@@ -104,7 +104,7 @@ const EDIOrderComment: React.FC<EDIOrderCommentProps> = ({row, onSave}) => {
     const [notes, setNotes] = useState(row.notes || '');
 
     const blurHandler = () => {
-        dispatch(onChangeOrderComment(row, notes));
+        dispatch(onChangeOrderCommentAction(row, notes));
         onSave();
     }
 

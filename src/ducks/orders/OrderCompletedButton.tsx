@@ -3,7 +3,7 @@ import classNames from "classnames";
 import {EDIOrder, StatusPopupKey} from "./types";
 import {friendlyDateTime, orderKey} from "./utils";
 import {useDispatch, useSelector} from "react-redux";
-import {onChangeOrderStatus, statusPopupEquality, toggleStatusPopup} from "./actions";
+import {onChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
 import {RootState} from "../index";
 
@@ -27,11 +27,11 @@ const OrderCompletedButton: React.FC<Props> = ({order}) => {
     const expanded = statusPopupEquality(statusPopup, _statusPopup)
 
     const clickHandler = (value: number) => {
-        dispatch(onChangeOrderStatus(order, {key: 'completed', value}));
+        dispatch(onChangeOrderStatusAction(order, {key: 'completed', value}));
     }
 
     const onOpenDropDown = () => {
-        dispatch(toggleStatusPopup(_statusPopup))
+        dispatch(toggleStatusPopupAction(_statusPopup))
     }
 
     return (

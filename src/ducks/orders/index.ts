@@ -87,14 +87,14 @@ const listReducer = (state = initialOrderState.list, action: EDIOrdersAction): E
     }
 }
 
-const statusPopupReducer = (state: StatusPopupKey = noSelectedPopup, action: EDIOrdersAction) => {
+const statusPopupReducer = (state: StatusPopupKey = noSelectedPopup, action: EDIOrdersAction):StatusPopupKey => {
     const {type, payload} = action;
     switch (type) {
     case ordersToggleStatusPopup: {
         if (payload?.statusPopupKey?.key === state.key && payload?.statusPopupKey?.statusField === state.statusField) {
             return {...noSelectedPopup};
         }
-        return {...payload?.statusPopupKey};
+        return {...(payload?.statusPopupKey || noSelectedPopup)};
     }
     case ordersPutSuccess:
         return {...noSelectedPopup}
@@ -117,7 +117,7 @@ const sortReducer = (state = initialOrderState.sort, action: EDIOrdersAction) =>
     }
 }
 
-const autoRefreshReducer = (state = initialOrderState.autoRefresh, action: EDIOrdersAction) => {
+const autoRefreshReducer = (state:boolean = initialOrderState.autoRefresh, action: EDIOrdersAction):boolean => {
     const {type} = action;
     switch (type) {
     case setAutoRefresh:

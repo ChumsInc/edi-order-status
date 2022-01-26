@@ -14,8 +14,12 @@ export const appStorage:AppStorage = {
             const val = window.localStorage.getItem(key);
             try {
                 return JSON.parse(val || 'null');
-            } catch (e) {
-                console.log('getItem()', e.message, val);
+            } catch (e:unknown) {
+                if (e instanceof Error) {
+                    console.log('getItem()', e.message, val);
+                    return;
+                }
+                console.log('getItem()', e, val);
             }
         }
         return null;

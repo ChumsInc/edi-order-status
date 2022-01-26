@@ -5,8 +5,11 @@ import EDIOrderRow from "./EDIOrderRow";
 import {orderKey} from "./utils";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../index";
-import {selectOrders, setSortField} from "./actions";
+import {selectOrdersAction, setSortField} from "./actions";
 import OrderStatusTH from "./OrderStatusTH";
+import OrderStatusCompletedTH from "./OrderStatusCompletedTH";
+import {selectOrderSort} from "./selectors";
+import {selectCustomerFilter, selectOrderDateFilter, selectShipDateFilter} from "../filters";
 
 interface ThProps {
     field: string,
@@ -20,11 +23,14 @@ interface ThProps {
 }
 
 const ThSortable: React.FC<ThProps> = ({field, sort, className, children, onClick}) => {
+    if (!sort) {
+        console.warn(`Missing sort for ${field}`);
+    }
     const _className = {
         sortable: true,
-        sorted: sort.field === field,
-        'sorted-asc': sort.field === field && sort.asc,
-        'sorted-desc': sort.field === field && !sort.asc,
+        sorted: sort?.field === field,
+        'sorted-asc': sort?.field === field && sort?.asc,
+        'sorted-desc': sort?.field === field && !sort?.asc,
     }
     return (
         <th className={classNames(_className, className)} onClick={() => onClick(field)}>{children}</th>
@@ -37,10 +43,13 @@ interface Props {
 
 const EDIOrderTable: React.FC<Props> = ({rows}) => {
     const dispatch = useDispatch();
-    const {sort} = useSelector((state: RootState) => state.orders);
-    const {CustomerNo, ShipExpireDate, OrderDate} = useSelector((state: RootState) => state.orders.filter);
+    const {sort} = useSelector(selectOrderSort);
+    const customer = useSelector(selectCustomerFilter);
+    const shipDate = useSelector(selectShipDateFilter);
+    const orderDate = useSelector(selectOrderDateFilter);
+
     const thPopupEnabled = useSelector((state: RootState) => !!state.orders.list.filter(order => order.selected).length);
-    const canSelectAll = !!CustomerNo && (!!ShipExpireDate || !!OrderDate);
+    const canSelectAll = !!customer && (!!shipDate || !!orderDate);
     const [selectAll, setSelectAll] = useState(false);
     const onClickSort = (field: string) => {
         dispatch(setSortField(field));
@@ -48,7 +57,7 @@ const EDIOrderTable: React.FC<Props> = ({rows}) => {
     const onSelectAll = () => {
         setSelectAll(!selectAll);
         const selectedList = rows.map(row => orderKey(row));
-        dispatch(selectOrders(selectedList, !selectAll));
+        dispatch(selectOrdersAction(selectedList, !selectAll));
     }
 
     return (
@@ -80,7 +89,7 @@ const EDIOrderTable: React.FC<Props> = ({rows}) => {
                 <OrderStatusTH type="asn" enabled={thPopupEnabled}>ASN</OrderStatusTH>
                 <OrderStatusTH type="picked-up" enabled={thPopupEnabled}>Picked Up</OrderStatusTH>
                 <OrderStatusTH type="invoiced" enabled={thPopupEnabled}>Invoiced</OrderStatusTH>
-                <OrderStatusTH type="completed" enabled={thPopupEnabled}>Completed</OrderStatusTH>
+                <OrderStatusCompletedTH type="completed" enabled={thPopupEnabled}>Completed</OrderStatusCompletedTH>
                 <ThSortable field="OrderCount" className="right" sort={sort} onClick={onClickSort}>Orders</ThSortable>
                 <ThSortable field="OrderTotal" className="right" sort={sort} onClick={onClickSort}>Order
                     Total</ThSortable>

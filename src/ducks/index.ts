@@ -1,15 +1,17 @@
 import {combineReducers} from 'redux';
 
-import alertsReducer from './alerts';
+import {alertsReducer, pagesReducer} from 'chums-ducks';
+
 import ordersReducer from './orders';
-import pageReducer from './page';
 import customersReducer from './customers';
+import filtersReducer from './filters';
 
 const rootReducer = combineReducers({
     alerts: alertsReducer,
     orders: ordersReducer,
-    page: pageReducer,
+    pages: pagesReducer,
     customers: customersReducer,
+    filters: filtersReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>

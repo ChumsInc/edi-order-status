@@ -1,12 +1,13 @@
 import {EDIOrder} from "./types";
 import {format, isThisYear, isToday, parseISO} from 'date-fns';
 import {Customer} from "../customers";
+import {FilterCustomer} from "../filters";
 
-export const customerKey = (row: EDIOrder | Customer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
+export const customerKey = (row: EDIOrder | Customer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 
 export const orderKey = (row: EDIOrder): string => `${row.ARDivisionNo}-${row.CustomerNo}:${row.CustomerPONo}/${row.OrderStatus}`;
 
-export const orderStatusClassName = (value: string | number | null) => {
+export const orderStatusClassName = (value: string | number | null = '') => {
     switch (value) {
     case 1:
         return 'btn-info';

@@ -24,7 +24,9 @@
   },
   "scripts": {
     "start": "webpack serve --config webpack.dev.js --progress",
-    "build": "webpack --config webpack.prod.js --progress"
+    "build": "webpack --config webpack.prod.js --progress",
+    "version": "auto-changelog -p && git add CHANGELOG.md"
+
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +60,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-redux": "^7.1.16",
+    "auto-changelog": "^2.4.0",
     "babel-loader": "^8.1.0",
     "bootstrap": "^5.0.0-beta2",
     "bootstrap-icons": "^1.4.0",
@@ -72,5 +75,11 @@
     "webpack-dev-server": "^4.7.3",
     "webpack-manifest-plugin": "^5.0.0",
     "webpack-merge": "^5.8.0"
+  },
+  "auto-changelog": {
+    "template": "changelog-template.hbs",
+    "unreleased": true,
+    "commitLimit": false,
+    "breakingPattern": "BREAKING CHANGE:"
   }
 }

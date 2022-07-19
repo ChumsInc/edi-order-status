@@ -55,6 +55,7 @@ const EDIOrderRow: React.FC<Props> = ({row}) => {
                 <td><CustomerItemLink row={row}/></td>
                 <td>{row.BillToName}</td>
                 <td>{row.CustomerPONo}</td>
+                <td>{row.OrderCount === 1 ? row.SalesOrders : `(${row.OrderCount})`}</td>
                 <td>{row.OrderStatus}</td>
                 <td>{friendlyDate(orderDate)}</td>
                 <td>{!!shipDate ? friendlyDate(shipDate) : (!!lastInvoiceDate ? friendlyDate(lastInvoiceDate) : '-')}</td>

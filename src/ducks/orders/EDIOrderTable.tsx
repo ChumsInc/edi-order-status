@@ -75,6 +75,7 @@ const EDIOrderTable: React.FC<Props> = ({rows}) => {
                 <ThSortable field="CustomerNo" sort={sort} onClick={onClickSort}>Customer</ThSortable>
                 <ThSortable field="BillToName" sort={sort} onClick={onClickSort}>Name</ThSortable>
                 <ThSortable field="CustomerPONo" sort={sort} onClick={onClickSort}>PO #</ThSortable>
+                <ThSortable field="SalesOrders" sort={sort} onClick={onClickSort}>SO #</ThSortable>
                 <th>Status</th>
                 <ThSortable field="OrderDate" sort={sort} onClick={onClickSort}>Order Date</ThSortable>
                 <ThSortable field="ShipExpireDate" sort={sort} onClick={onClickSort}>Ship Date</ThSortable>

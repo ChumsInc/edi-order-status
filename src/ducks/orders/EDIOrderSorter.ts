@@ -10,6 +10,7 @@ const sortFields: EDIOrderSort = {
     UDF_CANCEL_DATE: (row: EDIOrder) => row.UDF_CANCEL_DATE || '',
     OrderCount: (row: EDIOrder) => row.OrderCount,
     OrderTotal: (row: EDIOrder) => row.OrderTotal,
+    SalesOrders: (row: EDIOrder) => row.SalesOrders,
 }
 
 function sorter(a: string | number, b: string | number): number {
@@ -39,6 +40,7 @@ const sortASN: SortFunction = (a, b) => (comparableStatusDate(a, 'asn') - compar
 const sortPickedUp: SortFunction = (a, b) => (comparableStatusDate(a, 'picked-up') - comparableStatusDate(b, 'imported'))
 const sortInvoiced: SortFunction = (a, b) => (comparableStatusDate(a, 'invoiced') - comparableStatusDate(b, 'imported'))
 const sortCompleted: SortFunction = (a, b) => (comparableDate(a.completed) - comparableDate(b.completed))
+const sortSalesOrders: SortFunction = (a, b) => sorter(a.SalesOrders, b.SalesOrders);
 
 const sortAlpha = (a: string, b: string) => a.toLowerCase() === b.toLowerCase() ? 0 : (a.toLowerCase() > b.toLowerCase() ? 1 : -1);
 
@@ -47,6 +49,7 @@ export const sortFunctions: EDIOrderSorter = {
     CustomerNo: (a, b) => sortCustomerNo(a, b) || sortShipExpireDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     BillToName: (a, b) => sortBillToName(a, b) || sortShipExpireDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     CustomerPONo: (a, b) => sortCustomerPONo(a, b) || sortOrderStatus(a, b) || sortCustomerNo(a, b) || sortShipExpireDate(a, b),
+    SalesOrders: (a, b) => sortSalesOrders(a, b)  || sortOrderStatus(a, b) || sortCustomerNo(a, b) || sortShipExpireDate(a, b),
     OrderDate: (a, b) => sortOrderDate(a, b) || sortShipExpireDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     ShipExpireDate: (a, b) => sortShipExpireDate(a, b) || sortOrderDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),
     UDF_CANCEL_DATE: (a, b) => sortUDF_CANCEL_DATE(a, b) || sortOrderDate(a, b) || sortCustomerPONo(a, b) || sortOrderStatus(a, b),

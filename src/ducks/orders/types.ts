@@ -53,6 +53,7 @@ export interface EDIOrder {
     Company: string,
     ARDivisionNo: string,
     CustomerNo: string,
+    SalesOrders: string,
     isMAPADOC: boolean,
     BillToName: string,
     OrderDate: string,

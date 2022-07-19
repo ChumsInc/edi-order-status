@@ -1,4 +1,4 @@
-import React, {ReactChildren, useState} from "react";
+import React, {useState} from "react";
 import {EDIOrder} from "./types";
 import classNames from "classnames";
 import EDIOrderRow from "./EDIOrderRow";
@@ -18,14 +18,11 @@ interface ThProps {
         asc: boolean,
     },
     className?: string | object,
-    children: string | ReactChildren,
+    children: string | React.ReactNode,
     onClick: (field: string) => void,
 }
 
 const ThSortable: React.FC<ThProps> = ({field, sort, className, children, onClick}) => {
-    if (!sort) {
-        console.warn(`Missing sort for ${field}`);
-    }
     const _className = {
         sortable: true,
         sorted: sort?.field === field,

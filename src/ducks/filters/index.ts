@@ -1,6 +1,7 @@
 import {combineReducers} from "redux";
-import {ActionInterface, ActionPayload} from "chums-ducks";
+import {ActionInterface, ActionPayload} from "chums-connected-components";
 import {RootState} from "../index";
+import {customerFromKey} from "../orders/utils";
 
 export interface FilterCustomer {
     Company?: string,
@@ -14,6 +15,27 @@ export interface FilterPayload extends ActionPayload {
 }
 export interface FilterAction extends ActionInterface {
     payload: FilterPayload,
+}
+
+interface FiltersState {
+    customer: FilterCustomer|null,
+    mapadoc: boolean,
+    orderDate: string,
+    shipDate: string,
+    showCompleted: boolean,
+    minDate: string,
+    maxDate: string,
+}
+
+const searchParams = new URLSearchParams(window.location.search);
+const defaultState:FiltersState = {
+    customer: customerFromKey(searchParams.get('customer')),
+    mapadoc: searchParams.get('mapadoc') === 'on',
+    orderDate: searchParams.get('orderDate') || '',
+    shipDate: searchParams.get('shipDate') || '',
+    showCompleted: searchParams.get('showCompleted') === 'on',
+    minDate: searchParams.get('minDate') || '',
+    maxDate: searchParams.get('maxDate') || '',
 }
 
 export const customerChanged = 'filter/customerChanged';
@@ -41,7 +63,7 @@ export const selectMaxDateFilter = (state:RootState):string => state.filters.max
 export const selectOrderDateFilter = (state:RootState):string => state.filters.orderDate;
 export const selectShipDateFilter = (state:RootState):string => state.filters.shipDate;
 
-const customerReducer = (state:FilterCustomer|null = null, action:FilterAction):FilterCustomer|null => {
+const customerReducer = (state:FilterCustomer|null = defaultState.customer, action:FilterAction):FilterCustomer|null => {
     switch (action.type) {
     case customerChanged:
         return action.payload.customer || null;
@@ -49,7 +71,7 @@ const customerReducer = (state:FilterCustomer|null = null, action:FilterAction):
     }
 }
 
-export const mapadocReducer = (state:boolean = true, action:FilterAction):boolean => {
+export const mapadocReducer = (state:boolean = defaultState.mapadoc, action:FilterAction):boolean => {
     switch (action.type) {
     case mapadocChanged:
         if (action.payload.bool !== undefined) {
@@ -76,7 +98,7 @@ export const shipDateReducer = (state:string = '', action:FilterAction):string =
     }
 }
 
-export const showCompletedReducer = (state:boolean = false, action:FilterAction):boolean => {
+export const showCompletedReducer = (state:boolean = defaultState.showCompleted, action:FilterAction):boolean => {
     switch (action.type) {
     case showCompleted:
         if (action.payload.bool !== undefined) {

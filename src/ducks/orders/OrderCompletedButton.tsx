@@ -2,10 +2,11 @@ import React from "react";
 import classNames from "classnames";
 import {EDIOrder, StatusPopupKey} from "./types";
 import {friendlyDateTime, orderKey} from "./utils";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {onChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
 import {RootState} from "../index";
+import {useAppDispatch} from "../../app/hooks";
 
 
 interface Props {
@@ -13,11 +14,11 @@ interface Props {
 }
 
 const OrderCompletedButton: React.FC<Props> = ({order}) => {
+    const dispatch = useAppDispatch();
     const statusPopup: StatusPopupKey = useSelector((state: RootState) => state.orders.statusPopup);
     if (order.OrderStatus === 'X') {
         return null;
     }
-    const dispatch = useDispatch();
     const {completed, completedByUserName} = order;
     const currentStatusClassName = {
         'btn-light': !completed,

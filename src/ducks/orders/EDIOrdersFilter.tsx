@@ -1,6 +1,6 @@
 import React, {FormEvent} from "react";
 import {fetchCustomers} from '../customers';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {fetchOrdersAction} from "./actions";
 import CustomerFilterSelect from "../customers/CustomerFilter";
 import OrderStatusLegend from "./OrderStatusLegend";
@@ -9,10 +9,14 @@ import ShipDateFilterSelect from "../filters/ShipDateFilterSelect";
 import MAPADOCCheckBox from "../filters/MAPADOCCheckBox";
 import CompletedCheckBox from "../filters/CompletedCheckBox";
 import {selectShowCompletedFilter} from "../filters";
+import {useAppDispatch} from "../../app/hooks";
+import {SpinnerButton} from "chums-components";
+import {selectOrdersLoading} from "./selectors";
 
 const EDIOrdersFilter: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const showCompleted = useSelector(selectShowCompletedFilter);
+    const loading = useSelector(selectOrdersLoading);
 
     const onReload = (ev: FormEvent) => {
         ev.preventDefault();
@@ -38,7 +42,7 @@ const EDIOrdersFilter: React.FC = () => {
                 </div>
                 <CompletedCheckBox/>
                 <div className="col-auto">
-                    <button type="submit" className="btn btn-sm btn-primary">Reload</button>
+                    <SpinnerButton type="submit" size="sm" spinning={loading}>Reload</SpinnerButton>
                 </div>
             </div>
             <div className="col-auto">

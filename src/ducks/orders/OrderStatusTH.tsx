@@ -2,18 +2,20 @@ import React from "react";
 import classNames from "classnames";
 import {OrderStatusField, StatusPopupKey} from "./types";
 import OrderStatusTooltip from "./OrderStatusTooltip";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState} from "../index";
 import {onMassChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
+import {useAppDispatch} from "../../app/hooks";
 
 interface Props {
     type: OrderStatusField,
-    enabled?: boolean
+    enabled?: boolean,
+    children?: React.ReactNode
 }
 
 const OrderStatusTH: React.FC<Props> = ({type, enabled, children}) => {
     const statusPopup: StatusPopupKey = useSelector((state: RootState) => state.orders.statusPopup);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const thisStatusPopup: StatusPopupKey = {key: 'th', statusField: type};
     const expanded = !!enabled && statusPopupEquality(statusPopup, thisStatusPopup);
 

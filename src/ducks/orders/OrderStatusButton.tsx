@@ -2,10 +2,11 @@ import React from "react";
 import classNames from "classnames";
 import {EDIOrder, OrderStatus, OrderStatusField, StatusPopupKey} from "./types";
 import {friendlyDateTime, orderKey, orderStatusClassName} from "./utils";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {onChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
 import OrderStatusTooltip from "./OrderStatusTooltip";
 import {RootState} from "../index";
+import {useAppDispatch} from "../../app/hooks";
 
 
 interface Props {
@@ -14,12 +15,12 @@ interface Props {
 }
 
 const OrderStatusButton: React.FC<Props> = ({order, type}) => {
+    const dispatch = useAppDispatch();
     const statusPopup: StatusPopupKey = useSelector((state: RootState) => state.orders.statusPopup);
     if (order.OrderStatus === 'X') {
         return null;
     }
-    const dispatch = useDispatch();
-    const status:OrderStatus = order.status_json[type] as OrderStatus;
+    const status: OrderStatus = order.status_json[type] as OrderStatus;
     const currentStatusClassName = orderStatusClassName(status?.value);
     const _statusPopup: StatusPopupKey = {key: orderKey(order), statusField: type};
     const expanded = statusPopupEquality(statusPopup, _statusPopup)

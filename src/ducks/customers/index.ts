@@ -1,7 +1,8 @@
 import {combineReducers} from 'redux';
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
-import {ActionInterface, ActionPayload, fetchJSON} from "chums-ducks";
+import {ActionInterface, ActionPayload} from "chums-connected-components";
+import {fetchJSON} from "chums-components";
 
 //actions
 const customersFetch: string = 'app/customers/fetch';

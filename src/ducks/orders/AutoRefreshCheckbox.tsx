@@ -1,11 +1,12 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState} from "../index";
 import {toggleAutoRefreshAction} from "./actions";
+import {useAppDispatch} from "../../app/hooks";
 
 const AutoRefreshCheckbox: React.FC = () => {
+    const dispatch = useAppDispatch();
     const {autoRefresh} = useSelector((state: RootState) => state.orders);
-    const dispatch = useDispatch();
     return (
         <div className="form-check">
             <label className="form-check-label" htmlFor="edi-order-status--auto-refresh">Auto Refresh</label>

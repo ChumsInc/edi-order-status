@@ -1,5 +1,5 @@
 import {ActionInterface} from "../types";
-import {ActionPayload} from "chums-ducks";
+import {ActionPayload} from "chums-connected-components";
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
 

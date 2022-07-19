@@ -1,21 +1,20 @@
-import React from "react";
-import {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect} from "react";
+import {useSelector} from "react-redux";
 import {fetchOrdersAction, toggleStatusPopupAction} from "./actions";
 import EDIOrdersFilter from "./EDIOrdersFilter";
 import EDIOrderTable from "./EDIOrderTable";
-import ErrorBoundary from "../../common-components/ErrorBoundary";
+import {ErrorBoundary} from "chums-components";
 import {noSelectedPopup} from "./defaults";
-import ProgressBar from "../../common-components/ProgressBar";
 import AutoRefreshCheckbox from "./AutoRefreshCheckbox";
 import {selectFilteredOrdersList, selectOrdersListLength, selectOrdersLoading, selectStatusPopup} from "./selectors";
-import {addPageSetAction, PaginationDuck, RowsPerPageDuck, selectPagedData} from "chums-ducks";
+import {addPageSetAction, ConnectedPager, selectPagedData} from "chums-connected-components";
 import {appStorage, STORAGE_KEYS} from "../../appStorage";
+import {useAppDispatch} from "../../app/hooks";
 
 const pageKey = 'edi-orders-list';
 
 const EDIOrdersList: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const orders = useSelector(selectFilteredOrdersList);
     const pagedOrdersList = useSelector(selectPagedData(pageKey, orders));
     const listLength = useSelector(selectOrdersListLength);
@@ -36,7 +35,7 @@ const EDIOrdersList: React.FC = () => {
         dispatch(toggleStatusPopupAction(noSelectedPopup));
     }
 
-    const onChangeRowsPerPage = (rowsPerPage:number) => {
+    const onChangeRowsPerPage = (rowsPerPage: number) => {
         appStorage.setItem(STORAGE_KEYS.ROWS_PER_PAGE, rowsPerPage || 25);
     }
 
@@ -44,9 +43,6 @@ const EDIOrdersList: React.FC = () => {
         <>
             <div onClick={onClick}>
                 <EDIOrdersFilter/>
-                <div className="mb-1">
-                    <ProgressBar striped={true} active={true} visible={loading}/>
-                </div>
                 <ErrorBoundary>
                     <EDIOrderTable rows={pagedOrdersList}/>
                 </ErrorBoundary>
@@ -56,11 +52,8 @@ const EDIOrdersList: React.FC = () => {
                     <AutoRefreshCheckbox/>
                 </div>
                 <div className="col-auto">
-                    <RowsPerPageDuck pageKey={pageKey} onChange={onChangeRowsPerPage}/>
-                </div>
-                <div className="col-auto">
-                    <PaginationDuck pageKey={pageKey} dataLength={orders.length}
-                                    filtered={orders.length !== listLength}/>
+                    <ConnectedPager pageSetKey={pageKey} dataLength={orders.length}
+                                    onChangeRowsPerPage={onChangeRowsPerPage} filtered={orders.length !== listLength}/>
                 </div>
             </div>
         </>

@@ -6,10 +6,10 @@ import {customerKey, friendlyDate, orderKey} from "./utils";
 import OrderStatusButton from "./OrderStatusButton";
 import numeral from "numeral";
 import TextareaAutosize from 'react-textarea-autosize';
-import {useDispatch} from "react-redux";
 import {onChangeOrderCommentAction} from "./actions";
 import OrderCompletedButton from "./OrderCompletedButton";
 import OrderSelectCheckbox from "./OrderSelectCheckbox";
+import {useAppDispatch} from "../../app/hooks";
 
 interface Props {
     row: EDIOrder,
@@ -100,7 +100,7 @@ interface EDIOrderCommentProps {
 }
 
 const EDIOrderComment: React.FC<EDIOrderCommentProps> = ({row, onSave}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const {trClassName} = rowValues(row);
     const [notes, setNotes] = useState(row.notes || '');
 

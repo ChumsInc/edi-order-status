@@ -4,6 +4,18 @@ import {Customer} from "../customers";
 import {FilterCustomer} from "../filters";
 
 export const customerKey = (row: EDIOrder | Customer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
+export const customerFromKey = (key:string|null):FilterCustomer|null => {
+    console.log('customerFromKey()', key)
+    if (!key || !/\d{2}-[\dA-Z]+/.test(key)) {
+        return null;
+    }
+    const [ARDivisionNo, CustomerNo] = key.split('-');
+    return {
+        Company: 'chums',
+        ARDivisionNo,
+        CustomerNo
+    }
+}
 
 export const orderKey = (row: EDIOrder): string => `${row.ARDivisionNo}-${row.CustomerNo}:${row.CustomerPONo}/${row.OrderStatus}`;
 

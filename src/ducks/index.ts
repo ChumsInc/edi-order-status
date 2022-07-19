@@ -1,15 +1,15 @@
 import {combineReducers} from 'redux';
 
-import {alertsReducer, pagesReducer} from 'chums-ducks';
+import {alertsReducer, pageSetsReducer} from 'chums-connected-components';
 
 import ordersReducer from './orders';
-import customersReducer from './customers';
+import {default as customersReducer} from './customers';
 import filtersReducer from './filters';
 
 const rootReducer = combineReducers({
     alerts: alertsReducer,
     orders: ordersReducer,
-    pages: pagesReducer,
+    pageSets: pageSetsReducer,
     customers: customersReducer,
     filters: filtersReducer,
 });

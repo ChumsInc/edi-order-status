@@ -1,10 +1,6 @@
-import {Action} from 'redux';
-import {ThunkAction} from 'redux-thunk';
-
 import {EDIOrder, EDIOrdersAction, EDIOrdersThunkAction, OrderFilter, OrderStatusUpdate, StatusPopupKey} from "./types";
-import {RootState} from "../index";
 import {selectOrdersLoading} from "./selectors";
-import {fetchJSON} from "chums-ducks";
+import {fetchJSON} from "chums-components";
 import {
     FilterCustomer,
     selectCustomerFilter,
@@ -35,7 +31,7 @@ export const setAutoRefresh: string = 'app/orders/setAutoRefresh';
 let refreshTimer: Timeout | number;
 const REFRESH_TIMER_MS = 10 * 60 * 1000;
 
-const API_URL_ORDERS = '/api/operations/shipping/edi-order-status/chums/';
+const API_URL_ORDERS = (customer: FilterCustomer | null) => '/api/operations/shipping/edi-order-status/chums/' + (customer ? `${customer.ARDivisionNo}-${customer.CustomerNo}` : '');
 const API_URL_ORDERS_COMPLETED = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/';
 const API_URL_ORDER_STATUS = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/:CustomerPONo/:statusCode';
 const API_URL_ORDER_NOTES = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/:CustomerPONo/notes';
@@ -77,7 +73,7 @@ export const fetchOrdersAction = (): EDIOrdersThunkAction =>
 
             const url = showCompleted
                 ? completedURL({customer, minDate, maxDate})
-                : API_URL_ORDERS;
+                : API_URL_ORDERS(customer);
             dispatch({type: ordersFetch});
             const {salesOrders, error} = await fetchJSON(url);
             if (error) {
@@ -180,7 +176,7 @@ export const selectOrdersAction = (selectedList: string[], selected: boolean): E
 });
 
 
-export const toggleAutoRefreshAction = (): ThunkAction<void, RootState, null, Action> =>
+export const toggleAutoRefreshAction = (): EDIOrdersThunkAction =>
     (dispatch, getState) => {
         const willAutoRefresh = !getState().orders.autoRefresh;
         if (willAutoRefresh) {

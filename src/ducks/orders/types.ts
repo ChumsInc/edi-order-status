@@ -1,8 +1,3 @@
-import {ActionInterface} from "../types";
-import {ActionPayload} from "chums-connected-components";
-import {ThunkAction} from "redux-thunk";
-import {RootState} from "../index";
-
 export type OrderStatusField = 'imported' | 'inventory' | 'printed' | 'logistics'
     | 'work-cell' | 'picked' | 'routed' | 'asn' | 'picked-up' | 'invoiced' | 'completed';
 
@@ -16,24 +11,12 @@ export interface OrderFilter {
     maxDate?: string,
     OrderDate?: string,
     ShipExpireDate?: string,
-    mapadoc?:boolean,
+    mapadoc?: boolean,
 }
 
 export interface OrderStatusUpdate {
     key: string,
     value: number,
-}
-
-export interface OrderStatusTitles {
-    imported?: string,
-    inventory?: string,
-    printed?: string,
-    logistics?: string,
-    'work-cell'?: string,
-    picked?: string,
-    routed?: string,
-    'picked-up'?: string,
-    asn?: string,
 }
 
 export interface OrderStatus {
@@ -71,58 +54,45 @@ export interface EDIOrder {
     completed?: string | Date,
     completedByUserName?: string,
     selected?: boolean,
+    saving?: boolean;
 }
+
+export interface EDIOrderList {
+    [key: string]: EDIOrder;
+}
+
+export type OrderSortField = OrderStatusField | keyof EDIOrder;
 
 export interface OrderSort {
-    field: OrderStatusField|EDIOrderField,
-    asc: boolean,
+    field: OrderSortField;
+    asc: boolean;
 }
 
-export interface OrderListState {
-    loading: boolean,
-    saving: boolean,
-    filter: OrderFilter,
-    list: EDIOrder[],
-    sort: OrderSort,
-    autoRefresh: boolean,
-}
-
-export interface EDIOrdersPayload extends ActionPayload {
-    filter?: OrderFilter,
-    list?: EDIOrder[],
-    salesOrder?: EDIOrder,
-    statusPopupKey?: StatusPopupKey,
-    field?: string,
-    selectedList?: string[],
-    selected?: boolean,
-}
-
-export interface EDIOrdersAction extends ActionInterface {
-    payload?: EDIOrdersPayload,
-}
-
-export interface EDIOrdersThunkAction extends ThunkAction<any, RootState, unknown, EDIOrdersAction> {}
-
-export interface EDIOrderSort {
-    [key: string]: (row: EDIOrder) => string | number,
-}
-
-export interface EDIOrderSortParams {
-    list: EDIOrder[],
-    field: string,
-    asc: boolean,
-}
-
-export type SortFunction = (a: EDIOrder, b: EDIOrder) => number;
-
-export type EDIOrderField = keyof EDIOrder;
-
-export type EDIOrderSorterKey = EDIOrderField|OrderStatusField;
-export type EDIOrderSorter = {
-    [key in EDIOrderSorterKey]: SortFunction;
-};
 
 export interface StatusPopupKey {
     key: string,
     statusField?: OrderStatusField,
+}
+
+export interface FetchOrdersArg {
+    ARDivisionNo?: string;
+    CustomerNo?: string;
+    completed?: boolean;
+    minDate?: string;
+    maxDate?: string;
+}
+
+export interface FetchOrdersResponse {
+    salesOrders?: EDIOrder[],
+    error?: string;
+}
+
+export interface PutOrderStatusArg {
+    salesOrder: EDIOrder;
+    statusCode: OrderStatusUpdate
+}
+
+export interface PutOrderCommentArg {
+    salesOrder: EDIOrder;
+    comment: string;
 }

@@ -1,52 +1,62 @@
-import React from "react";
+import React, {useId, useState} from "react";
 import classNames from "classnames";
-import {EDIOrder, OrderStatus, OrderStatusField, StatusPopupKey} from "./types";
-import {friendlyDateTime, orderKey, orderStatusClassName} from "./utils";
-import {useSelector} from "react-redux";
-import {onChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
+import {EDIOrder, OrderStatus, OrderStatusField, OrderStatusUpdate} from "./types";
+import {friendlyDateTime, orderStatusClassName} from "./utils";
+import {saveOrderStatus} from "./actions";
 import OrderStatusTooltip from "./OrderStatusTooltip";
-import {RootState} from "../index";
 import {useAppDispatch} from "../../app/hooks";
+import Popover from "@mui/material/Popover";
 
 
-interface Props {
+interface OrderStatusButtonProps {
     order: EDIOrder,
     type: OrderStatusField,
 }
 
-const OrderStatusButton: React.FC<Props> = ({order, type}) => {
+const OrderStatusButton = ({order, type}: OrderStatusButtonProps) => {
     const dispatch = useAppDispatch();
-    const statusPopup: StatusPopupKey = useSelector((state: RootState) => state.orders.statusPopup);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const id = useId();
+
     if (order.OrderStatus === 'X') {
         return null;
     }
     const status: OrderStatus = order.status_json[type] as OrderStatus;
     const currentStatusClassName = orderStatusClassName(status?.value);
-    const _statusPopup: StatusPopupKey = {key: orderKey(order), statusField: type};
-    const expanded = statusPopupEquality(statusPopup, _statusPopup)
 
-    const clickHandler = (value: number) => {
-        if (order.completed) {
-            return;
-        }
-        dispatch(onChangeOrderStatusAction(order, {key: type, value}));
+
+    const closeHandler = () => {
+        setAnchorEl(null);
     }
 
-    const onOpenDropDown = () => {
+    const onSetStatus = (value: number) => {
+        setAnchorEl(null);
         if (order.completed) {
             return;
         }
-        dispatch(toggleStatusPopupAction(_statusPopup))
+        const statusCode: OrderStatusUpdate = {key: type, value};
+        dispatch(saveOrderStatus({salesOrder: order, statusCode}));
+    }
+
+    const onOpenDropDown = (ev: React.MouseEvent<HTMLButtonElement>) => {
+        if (order.completed) {
+            return;
+        }
+        setAnchorEl(ev.currentTarget);
     }
 
     return (
-        <div className={classNames("status-button-select", {open: expanded})} role="group">
-            <button type="button" onClick={onOpenDropDown}
+        <div className="status-button-select text-center">
+            <button aria-describedby={id}
+                    type="button" onClick={onOpenDropDown}
                     title={status?.userName}
-                    className={classNames("btn", currentStatusClassName)} aria-expanded={expanded}>
+                    className={classNames("btn btn-sm", currentStatusClassName)}>
                 {!status?.date ? '-' : friendlyDateTime(status.date)}
             </button>
-            {expanded && (<OrderStatusTooltip onClick={clickHandler}/>)}
+            <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
+                     anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
+                <OrderStatusTooltip onClick={onSetStatus}/>
+            </Popover>
         </div>
     )
 }

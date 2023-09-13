@@ -1,7 +1,7 @@
 import React, {FormEvent} from "react";
-import {fetchCustomers} from '../customers';
+import {loadCustomers} from '../customers';
 import {useSelector} from 'react-redux';
-import {fetchOrdersAction} from "./actions";
+import {loadOrders} from "./actions";
 import CustomerFilterSelect from "../customers/CustomerFilter";
 import OrderStatusLegend from "./OrderStatusLegend";
 import OrderDateFilterSelect from "../filters/OrderDateFilterSelect";
@@ -20,8 +20,8 @@ const EDIOrdersFilter: React.FC = () => {
 
     const onReload = (ev: FormEvent) => {
         ev.preventDefault();
-        dispatch(fetchOrdersAction());
-        dispatch(fetchCustomers());
+        dispatch(loadOrders());
+        dispatch(loadCustomers());
     }
 
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import {EDIOrder} from "./types";
 import {useDispatch} from "react-redux";
-import {selectOrdersAction} from "./actions";
+import {toggleOrderSelected} from "./actions";
 import {orderKey} from "./utils";
 
 interface Props {
@@ -11,13 +11,13 @@ interface Props {
 const OrderSelectCheckbox: React.FC<Props> = ({order}) => {
     const dispatch = useDispatch();
     const onChange = (order: EDIOrder) => {
-        dispatch(selectOrdersAction([orderKey(order)], !order.selected));
+        dispatch(toggleOrderSelected({list: [orderKey(order)], checked: !order.selected}));
     }
 
     return (
         <div className="form-check form-check-inline">
             <input type="checkbox" className="form-check-input"
-                   checked={order.selected || false} disabled={order.OrderStatus === 'X'}
+                   checked={order.selected ?? false} disabled={order.OrderStatus === 'X'}
                    onClick={(ev) => ev.stopPropagation()}
                    onChange={() => onChange(order)}/>
         </div>

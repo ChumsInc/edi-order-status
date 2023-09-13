@@ -65,4 +65,9 @@
   .pagination {
     margin-bottom: 0;
   }
+  .btn-text {
+    border-color: transparent !important;
+    --bs-btn-font-size: inherit;
+    --bs-btn-font-weight: inherit;
+  }
 }

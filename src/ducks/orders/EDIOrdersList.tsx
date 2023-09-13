@@ -1,59 +1,62 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {fetchOrdersAction, toggleStatusPopupAction} from "./actions";
+import {loadOrders} from "./actions";
 import EDIOrdersFilter from "./EDIOrdersFilter";
 import EDIOrderTable from "./EDIOrderTable";
-import {ErrorBoundary} from "chums-components";
-import {noSelectedPopup} from "./defaults";
+import {LocalStore, TablePagination} from "chums-components";
 import AutoRefreshCheckbox from "./AutoRefreshCheckbox";
-import {selectFilteredOrdersList, selectOrdersListLength, selectOrdersLoading, selectStatusPopup} from "./selectors";
-import {addPageSetAction, ConnectedPager, selectPagedData} from "chums-connected-components";
-import {appStorage, STORAGE_KEYS} from "../../appStorage";
+import {selectFilteredOrdersList} from "./selectors";
+import {STORAGE_KEYS} from "../../appStorage";
 import {useAppDispatch} from "../../app/hooks";
+import {ErrorBoundary} from 'react-error-boundary';
+import ErrorBoundaryFallbackAlert from "../../common-components/ErrorBoundaryFallbackAlert";
 
 const pageKey = 'edi-orders-list';
 
 const EDIOrdersList: React.FC = () => {
     const dispatch = useAppDispatch();
     const orders = useSelector(selectFilteredOrdersList);
-    const pagedOrdersList = useSelector(selectPagedData(pageKey, orders));
-    const listLength = useSelector(selectOrdersListLength);
-    const loading = useSelector(selectOrdersLoading);
-    const popup = useSelector(selectStatusPopup);
+    // const popup = useSelector(selectStatusPopup);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(LocalStore.getItem<number>(STORAGE_KEYS.ROWS_PER_PAGE, 25) ?? 25)
 
     useEffect(() => {
-        const rowsPerPage = appStorage.getItem(STORAGE_KEYS.ROWS_PER_PAGE) || 25;
-        dispatch(addPageSetAction({key: pageKey, rowsPerPage}));
-        dispatch(fetchOrdersAction());
+        dispatch(loadOrders());
     }, [])
 
-    const onClick = (ev: React.MouseEvent) => {
-        const target = ev.target as HTMLElement;
-        if (!popup.key || target.closest('.status-button-select')) {
-            return;
-        }
-        dispatch(toggleStatusPopupAction(noSelectedPopup));
-    }
+    useEffect(() => {
+        setPage(0);
+    }, [orders]);
+
+    // const onClick = (ev: React.MouseEvent) => {
+    //     const target = ev.target as HTMLElement;
+    //     if (!popup?.key || target.closest('.status-button-select')) {
+    //         return;
+    //     }
+    //     dispatch(toggleStatusPopup(null));
+    // }
 
     const onChangeRowsPerPage = (rowsPerPage: number) => {
-        appStorage.setItem(STORAGE_KEYS.ROWS_PER_PAGE, rowsPerPage || 25);
+        LocalStore.setItem(STORAGE_KEYS.ROWS_PER_PAGE, rowsPerPage || 25);
+        setRowsPerPage(rowsPerPage);
     }
 
     return (
         <>
-            <div onClick={onClick}>
+            <div>
                 <EDIOrdersFilter/>
-                <ErrorBoundary>
-                    <EDIOrderTable rows={pagedOrdersList}/>
+                <ErrorBoundary FallbackComponent={ErrorBoundaryFallbackAlert}>
+                    <EDIOrderTable rows={orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
                 </ErrorBoundary>
             </div>
-            <div className="row g-3 align-items-end">
+            <div className="row g-3 align-items-baseline">
                 <div className="col-auto">
                     <AutoRefreshCheckbox/>
                 </div>
                 <div className="col-auto">
-                    <ConnectedPager pageSetKey={pageKey} dataLength={orders.length}
-                                    onChangeRowsPerPage={onChangeRowsPerPage} filtered={orders.length !== listLength}/>
+                    <TablePagination bsSize="sm" showFirst showLast
+                                     page={page} onChangePage={setPage} rowsPerPage={rowsPerPage}
+                                     onChangeRowsPerPage={onChangeRowsPerPage} count={orders.length}/>
                 </div>
             </div>
         </>

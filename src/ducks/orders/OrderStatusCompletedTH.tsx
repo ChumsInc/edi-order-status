@@ -1,11 +1,10 @@
-import React from "react";
+import React, {useId, useState} from "react";
 import classNames from "classnames";
-import {OrderStatusField, StatusPopupKey} from "./types";
-import {useSelector} from "react-redux";
-import {RootState} from "../index";
-import {onMassChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
+import {OrderStatusField} from "./types";
+import {saveSelectedStatus} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
 import {useAppDispatch} from "../../app/hooks";
+import Popover from "@mui/material/Popover";
 
 interface Props {
     type: OrderStatusField,
@@ -14,23 +13,31 @@ interface Props {
 }
 
 const OrderStatusCompletedTH = ({type, enabled, children}: Props) => {
-    const statusPopup: StatusPopupKey = useSelector((state: RootState) => state.orders.statusPopup);
     const dispatch = useAppDispatch();
-    const thisStatusPopup: StatusPopupKey = {key: 'th', statusField: type};
-    const expanded = !!enabled && statusPopupEquality(statusPopup, thisStatusPopup);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const id = useId();
 
-    const clickHandler = (ev: React.MouseEvent) => {
+    const clickHandler = (ev: React.MouseEvent<HTMLButtonElement>) => {
         ev.stopPropagation();
-        dispatch(toggleStatusPopupAction(thisStatusPopup))
+        setAnchorEl(ev.currentTarget);
     }
 
+    const closeHandler = () => {
+        setAnchorEl(null);
+    }
+
+    const onSetStatus = (value: number) => {
+        dispatch(saveSelectedStatus({key: type, value}))
+        setAnchorEl(null);
+    }
     return (
         <th className={classNames({'tooltip-toggle': enabled})}>
-            <div onClick={clickHandler}>{children}</div>
-            {expanded && (
-                <OrderCompletedTooltip
-                    onClick={(value) => dispatch(onMassChangeOrderStatusAction({key: type, value}))}/>
-            )}
+            <button aria-describedby={id} disabled={!enabled} type="button"
+                    className="btn btn-sm btn-light" onClick={clickHandler}>{children}</button>
+            <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
+                     anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
+                <OrderCompletedTooltip onClick={onSetStatus}/>
+            </Popover>
         </th>
     )
 }

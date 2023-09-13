@@ -8,6 +8,9 @@ export interface StorageKeys {
     [key:string]: string,
 }
 
+/**
+ * @deprecated
+ */
 export const appStorage:AppStorage = {
     getItem: (key:string):any => {
         if (window.localStorage) {
@@ -37,6 +40,6 @@ export const appStorage:AppStorage = {
 };
 
 export const STORAGE_KEYS = {
-    ROWS_PER_PAGE: 'com.chums.intranet.edi-order-status.rowsPerPage',
-    AUTO_REFRESH: 'com.chums.intranet.edi-order-status.autoRefresh',
+    ROWS_PER_PAGE: 'intranet::edi-order-status::rowsPerPage',
+    AUTO_REFRESH: 'intranet::edi-order-status::autoRefresh',
 };

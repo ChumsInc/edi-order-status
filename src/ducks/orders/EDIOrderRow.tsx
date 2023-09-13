@@ -6,7 +6,7 @@ import {customerKey, friendlyDate, orderKey} from "./utils";
 import OrderStatusButton from "./OrderStatusButton";
 import numeral from "numeral";
 import TextareaAutosize from 'react-textarea-autosize';
-import {onChangeOrderCommentAction} from "./actions";
+import {saveOrderComment} from "./actions";
 import OrderCompletedButton from "./OrderCompletedButton";
 import OrderSelectCheckbox from "./OrderSelectCheckbox";
 import {useAppDispatch} from "../../app/hooks";
@@ -105,7 +105,7 @@ const EDIOrderComment: React.FC<EDIOrderCommentProps> = ({row, onSave}) => {
     const [notes, setNotes] = useState(row.notes || '');
 
     const blurHandler = () => {
-        dispatch(onChangeOrderCommentAction(row, notes));
+        dispatch(saveOrderComment({salesOrder: row, comment: notes}));
         onSave();
     }
 

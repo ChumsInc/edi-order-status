@@ -1,12 +1,12 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {
-    maxDateChangedAction,
-    minDateChangedAction,
+    setMaxDate,
+    setMinDate,
     selectMaxDateFilter,
     selectMinDateFilter,
     selectShowCompletedFilter,
-    showCompletedChangedAction
+    toggleShowCompleted
 } from "./index";
 
 const CompletedCheckBox: React.FC = () => {
@@ -15,9 +15,9 @@ const CompletedCheckBox: React.FC = () => {
     const minDate = useSelector(selectMinDateFilter);
     const maxDate = useSelector(selectMaxDateFilter);
 
-    const onToggleCompleted = () => dispatch(showCompletedChangedAction(!showCompleted));
-    const onChangeMinDate = (ev: React.ChangeEvent<HTMLInputElement>) => dispatch(minDateChangedAction(ev.target.value))
-    const onChangeMaxDate = (ev: React.ChangeEvent<HTMLInputElement>) => dispatch(maxDateChangedAction(ev.target.value));
+    const onToggleCompleted = () => dispatch(toggleShowCompleted(!showCompleted));
+    const onChangeMinDate = (ev: React.ChangeEvent<HTMLInputElement>) => dispatch(setMinDate(ev.target.value))
+    const onChangeMaxDate = (ev: React.ChangeEvent<HTMLInputElement>) => dispatch(setMaxDate(ev.target.value));
 
     return (
         <>

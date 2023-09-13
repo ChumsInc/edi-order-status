@@ -1,11 +1,11 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {useSelector} from "react-redux";
 import {customerKey} from "../orders/utils";
-import {fetchCustomers, selectCustomerList, selectCustomersLoaded} from "./index";
-import {customerChangedAction, selectCustomerFilter, selectMapadocFilter} from "../filters";
+import {loadCustomers, selectCustomerList, selectCustomersLoaded} from "./index";
+import {selectCustomerFilter, selectMapadocFilter, setCustomer} from "../filters";
 import {useAppDispatch} from "../../app/hooks";
 import {useSearchParams} from "react-router-dom";
-import {fetchOrdersAction} from "../orders/actions";
+import {loadOrders} from "../orders/actions";
 
 interface Props {
     required?: boolean
@@ -21,7 +21,7 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
 
     useEffect(() => {
         if (!loaded) {
-            dispatch(fetchCustomers());
+            dispatch(loadCustomers());
         }
     }, []);
 
@@ -35,8 +35,8 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
             const params = new URLSearchParams(window.location.search);
             params.delete('customer');
             setSearchParams(params);
-            dispatch(customerChangedAction(null));
-            dispatch(fetchOrdersAction())
+            dispatch(setCustomer(null));
+            dispatch(loadOrders())
         }
     }, [mapadoc, loaded]);
 
@@ -50,9 +50,9 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
             params.set('customer', key);
         }
         setSearchParams(params);
-        dispatch(customerChangedAction(customer));
+        dispatch(setCustomer(customer));
         if (selected) {
-            dispatch(fetchOrdersAction());
+            dispatch(loadOrders());
         }
     }
     return (

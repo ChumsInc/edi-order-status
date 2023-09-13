@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {selectOrderDates} from "../orders/selectors";
-import {orderDateChangedAction, selectOrderDateFilter} from "./index";
+import {setOrderDate, selectOrderDateFilter} from "./index";
 
 
 const OrderDateFilterSelect: React.FC = () => {
@@ -10,7 +10,7 @@ const OrderDateFilterSelect: React.FC = () => {
     const value = useSelector(selectOrderDateFilter);
 
     const changeHandler = (ev: ChangeEvent<HTMLSelectElement>) => {
-        dispatch(orderDateChangedAction(ev.target.value));
+        dispatch(setOrderDate(ev.target.value));
     }
 
     return (

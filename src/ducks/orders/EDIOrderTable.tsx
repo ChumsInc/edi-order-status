@@ -1,28 +1,25 @@
-import React, {useState} from "react";
-import {EDIOrder} from "./types";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {EDIOrder, OrderSortField} from "./types";
 import classNames from "classnames";
 import EDIOrderRow from "./EDIOrderRow";
 import {orderKey} from "./utils";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../index";
-import {selectOrdersAction, setSortField} from "./actions";
+import {setSortField, toggleOrderSelected} from "./actions";
 import OrderStatusTH from "./OrderStatusTH";
 import OrderStatusCompletedTH from "./OrderStatusCompletedTH";
-import {selectOrderSort} from "./selectors";
+import {selectCountChecked, selectFilteredOrdersList, selectOrderSort} from "./selectors";
 import {selectCustomerFilter, selectOrderDateFilter, selectShipDateFilter} from "../filters";
 
-interface ThProps {
-    field: string,
-    sort: {
-        field: string,
-        asc: boolean,
-    },
-    className?: string | object,
+
+interface ThSortableProps {
+    field: OrderSortField,
+    className?: string | classNames.Argument,
+    onClick: (field: OrderSortField) => void,
     children: string | React.ReactNode,
-    onClick: (field: string) => void,
 }
 
-const ThSortable: React.FC<ThProps> = ({field, sort, className, children, onClick}) => {
+const ThSortable = ({field, className, onClick, children}: ThSortableProps) => {
+    const sort = useSelector(selectOrderSort);
     const _className = {
         sortable: true,
         sorted: sort?.field === field,
@@ -34,27 +31,48 @@ const ThSortable: React.FC<ThProps> = ({field, sort, className, children, onClic
     )
 }
 
-interface Props {
+interface EDIOrderTableProps {
     rows: EDIOrder[],
 }
 
-const EDIOrderTable: React.FC<Props> = ({rows}) => {
+const EDIOrderTable = ({rows}:EDIOrderTableProps) => {
     const dispatch = useDispatch();
-    const {sort} = useSelector(selectOrderSort);
+    const sort = useSelector(selectOrderSort);
     const customer = useSelector(selectCustomerFilter);
     const shipDate = useSelector(selectShipDateFilter);
     const orderDate = useSelector(selectOrderDateFilter);
+    const checkedCount = useSelector(selectCountChecked);
 
-    const thPopupEnabled = useSelector((state: RootState) => !!state.orders.list.filter(order => order.selected).length);
     const canSelectAll = !!customer && (!!shipDate || !!orderDate);
     const [selectAll, setSelectAll] = useState(false);
-    const onClickSort = (field: string) => {
-        dispatch(setSortField(field));
+    const [thPopupEnabled, setTHPopupEnabled] = useState<boolean>(false);
+
+    useEffect(() => {
+        const countSelected = rows.filter(order => order.selected).length;
+        setSelectAll(countSelected > 0 && countSelected === rows.length)
+        setTHPopupEnabled(countSelected > 0);
+    }, [rows]);
+
+    const onClickSort = (field: OrderSortField) => {
+        const nextSort = {...sort};
+        if (nextSort.field === field) {
+            nextSort.asc = !nextSort.asc;
+        } else {
+            nextSort.field = field;
+            nextSort.asc = true;
+        }
+        dispatch(setSortField(nextSort));
     }
-    const onSelectAll = () => {
-        setSelectAll(!selectAll);
-        const selectedList = rows.map(row => orderKey(row));
-        dispatch(selectOrdersAction(selectedList, !selectAll));
+
+    const onSelectAll = (ev:ChangeEvent<HTMLInputElement>) => {
+        if (!canSelectAll && ev.target.checked) {
+            return;
+        }
+        setSelectAll(ev.target.checked);
+        const selectedList = rows
+            .filter(row => row.OrderStatus !== 'X')
+            .map(row => orderKey(row));
+        dispatch(toggleOrderSelected({list: selectedList, checked: ev.target.checked}));
     }
 
     return (
@@ -62,21 +80,21 @@ const EDIOrderTable: React.FC<Props> = ({rows}) => {
             <thead>
             <tr>
                 <th>
-                    {canSelectAll && (
-                        <div className="form-check form-check-inline">
-                            <input type="checkbox" className="form-check-input" checked={selectAll}
-                                   onChange={onSelectAll}/>
-                        </div>
-                    )}
+                    <div className="form-check form-check-inline">
+                        <input type="checkbox" className="form-check-input" checked={selectAll}
+                               disabled={!canSelectAll && checkedCount === 0}
+                               onChange={onSelectAll}/>
+                        {!!checkedCount && <span className="ms-1">({checkedCount})</span>}
+                    </div>
                 </th>
-                <ThSortable field="CustomerNo" sort={sort} onClick={onClickSort}>Customer</ThSortable>
-                <ThSortable field="BillToName" sort={sort} onClick={onClickSort}>Name</ThSortable>
-                <ThSortable field="CustomerPONo" sort={sort} onClick={onClickSort}>PO #</ThSortable>
-                <ThSortable field="SalesOrders" sort={sort} onClick={onClickSort}>SO #</ThSortable>
+                <ThSortable field="CustomerNo" onClick={onClickSort}>Customer</ThSortable>
+                <ThSortable field="BillToName" onClick={onClickSort}>Name</ThSortable>
+                <ThSortable field="CustomerPONo" onClick={onClickSort}>PO #</ThSortable>
+                <ThSortable field="SalesOrders" onClick={onClickSort}>SO #</ThSortable>
                 <th>Status</th>
-                <ThSortable field="OrderDate" sort={sort} onClick={onClickSort}>Order Date</ThSortable>
-                <ThSortable field="ShipExpireDate" sort={sort} onClick={onClickSort}>Ship Date</ThSortable>
-                <ThSortable field="UDF_CANCEL_DATE" sort={sort} onClick={onClickSort}>Cancel Date</ThSortable>
+                <ThSortable field="OrderDate" onClick={onClickSort}>Order Date</ThSortable>
+                <ThSortable field="ShipExpireDate" onClick={onClickSort}>Ship Date</ThSortable>
+                <ThSortable field="UDF_CANCEL_DATE" onClick={onClickSort}>Cancel Date</ThSortable>
                 <OrderStatusTH type="imported" enabled={thPopupEnabled}>Import</OrderStatusTH>
                 <OrderStatusTH type="inventory" enabled={thPopupEnabled}>Inventory</OrderStatusTH>
                 <OrderStatusTH type="printed" enabled={thPopupEnabled}>Print</OrderStatusTH>
@@ -88,8 +106,8 @@ const EDIOrderTable: React.FC<Props> = ({rows}) => {
                 <OrderStatusTH type="picked-up" enabled={thPopupEnabled}>Picked Up</OrderStatusTH>
                 <OrderStatusTH type="invoiced" enabled={thPopupEnabled}>Invoiced</OrderStatusTH>
                 <OrderStatusCompletedTH type="completed" enabled={thPopupEnabled}>Completed</OrderStatusCompletedTH>
-                <ThSortable field="OrderCount" className="right" sort={sort} onClick={onClickSort}>Orders</ThSortable>
-                <ThSortable field="OrderTotal" className="right" sort={sort} onClick={onClickSort}>Order
+                <ThSortable field="OrderCount" className="right" onClick={onClickSort}>Orders</ThSortable>
+                <ThSortable field="OrderTotal" className="right" onClick={onClickSort}>Order
                     Total</ThSortable>
                 <th><span className="bi bi-sticky"/></th>
             </tr>

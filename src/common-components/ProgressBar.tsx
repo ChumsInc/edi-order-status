@@ -9,7 +9,7 @@ interface Props {
     visible?: boolean,
     striped?: boolean,
     active?: boolean,
-    className?: string | object,
+    className?: string | classNames.Argument,
     label?: string,
     style?: object,
     min?: number,

@@ -1,15 +1,15 @@
 import React, {useEffect} from 'react';
 import EDIOrdersList from "../ducks/orders/EDIOrdersList";
 import "./App.css";
-import {fetchCustomers} from "../ducks/customers";
-import {AlertList} from "chums-connected-components";
+import {loadCustomers} from "../ducks/customers";
 import {useAppDispatch} from "./hooks";
 import {Route, Routes} from "react-router-dom";
+import AlertList from "../ducks/alerts/AlertList";
 
 function App() {
     const dispatch = useAppDispatch();
     useEffect(() => {
-        dispatch(fetchCustomers());
+        dispatch(loadCustomers());
     })
     return (
         <div>

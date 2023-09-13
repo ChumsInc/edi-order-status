@@ -8,9 +8,10 @@ interface OrderStatusTooltipItemProps {
     onClick: (val:number) => void,
 }
 
-const OrderStatusTooltipItem:React.FC<OrderStatusTooltipItemProps> = ({color, value, text, onClick}) => {
+const OrderStatusTooltipItem = ({color, value, text, onClick}:OrderStatusTooltipItemProps) => {
     const className = classNames({
         btn: true,
+        ['btn-sm']: true,
         [`btn-${color}`]: true
     });
     const clickHandler = (ev:React.MouseEvent) => {
@@ -18,7 +19,7 @@ const OrderStatusTooltipItem:React.FC<OrderStatusTooltipItemProps> = ({color, va
         onClick(value)
     }
     return (
-        <li className={className} onClick={clickHandler}>{text}</li>
+        <button className={className} onClick={clickHandler}>{text}</button>
     );
 };
 

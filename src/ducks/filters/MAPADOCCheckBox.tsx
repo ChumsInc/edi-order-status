@@ -1,19 +1,19 @@
-import React from "react";
+import React, {ChangeEvent, useId} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {mapadocChangedAction, selectMapadocFilter} from "./index";
+import {selectMapadocFilter, toggleFilterMapadoc} from "./index";
 import {useSearchParams} from "react-router-dom";
 
 
 const MAPADOCCheckBox: React.FC = () => {
     const dispatch = useDispatch();
-    const mapadoc = useSelector(selectMapadocFilter);
+    const checked = useSelector(selectMapadocFilter);
+    const id = useId();
     const [searchParams, setSearchParams] = useSearchParams(window.location.search);
 
-    const changeHandler = () => {
-        const nextMapadoc = !mapadoc;
-        dispatch(mapadocChangedAction(nextMapadoc));
+    const changeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
+        dispatch(toggleFilterMapadoc(ev.target.checked));
         const params = new URLSearchParams(window.location.search);
-        if (nextMapadoc) {
+        if (ev.target.checked) {
             params.set('mapadoc', 'on');
         } else {
             params.delete('mapadoc');
@@ -23,9 +23,9 @@ const MAPADOCCheckBox: React.FC = () => {
 
     return (
         <div className="form-check">
-            <label className="form-check-label" htmlFor="edi-order-status--mapadoc">MAPADOC</label>
-            <input type="checkbox" className="form-check-input" id="edi-order-status--mapadoc"
-                   checked={mapadoc || false} onChange={changeHandler}/>
+            <label className="form-check-label" htmlFor={id}>MAPADOC</label>
+            <input type="checkbox" className="form-check-input" id={id}
+                   checked={checked} onChange={changeHandler}/>
         </div>
     )
 }

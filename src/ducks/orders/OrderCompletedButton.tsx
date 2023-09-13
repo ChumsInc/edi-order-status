@@ -1,12 +1,11 @@
-import React from "react";
+import React, {useId, useState} from "react";
 import classNames from "classnames";
-import {EDIOrder, StatusPopupKey} from "./types";
-import {friendlyDateTime, orderKey} from "./utils";
-import {useSelector} from "react-redux";
-import {onChangeOrderStatusAction, statusPopupEquality, toggleStatusPopupAction} from "./actions";
+import {EDIOrder} from "./types";
+import {friendlyDateTime} from "./utils";
+import {saveOrderStatus} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
-import {RootState} from "../index";
 import {useAppDispatch} from "../../app/hooks";
+import Popover from "@mui/material/Popover";
 
 
 interface Props {
@@ -15,7 +14,9 @@ interface Props {
 
 const OrderCompletedButton: React.FC<Props> = ({order}) => {
     const dispatch = useAppDispatch();
-    const statusPopup: StatusPopupKey = useSelector((state: RootState) => state.orders.statusPopup);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const id = useId();
+
     if (order.OrderStatus === 'X') {
         return null;
     }
@@ -24,26 +25,33 @@ const OrderCompletedButton: React.FC<Props> = ({order}) => {
         'btn-light': !completed,
         'btn-success': !!completed,
     };
-    const _statusPopup: StatusPopupKey = {key: orderKey(order), statusField: 'completed'};
-    const expanded = statusPopupEquality(statusPopup, _statusPopup)
 
-    const clickHandler = (value: number) => {
-        dispatch(onChangeOrderStatusAction(order, {key: 'completed', value}));
+    const clickHandler = (ev: React.MouseEvent<HTMLButtonElement>) => {
+        ev.stopPropagation();
+        setAnchorEl(ev.currentTarget);
     }
 
-    const onOpenDropDown = () => {
-        dispatch(toggleStatusPopupAction(_statusPopup))
+    const onSetStatus = (value: number) => {
+        const statusCode = {key: 'completed', value};
+        dispatch(saveOrderStatus({salesOrder: order, statusCode}));
+    }
+
+    const closeHandler = () => {
+        setAnchorEl(null);
     }
 
     return (
-        <div className={classNames("status-button-select", {open: expanded})} role="group">
+        <div className="status-button-select" role="group">
             <button type="button"
-                    onClick={onOpenDropDown}
+                    onClick={clickHandler}
                     title={completedByUserName}
-                    className={classNames("btn", currentStatusClassName)} aria-expanded={expanded}>
+                    className={classNames("btn btn-sm", currentStatusClassName)}>
                 {!completed ? '-' : friendlyDateTime(completed)}
             </button>
-            {expanded && (<OrderCompletedTooltip onClick={clickHandler}/>)}
+            <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
+                     anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
+                <OrderCompletedTooltip onClick={onSetStatus}/>
+            </Popover>
         </div>
     )
 }

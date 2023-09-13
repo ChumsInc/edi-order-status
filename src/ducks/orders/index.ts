@@ -22,7 +22,7 @@ export const initialOrderState = (): OrderListState => ({
 
 const ordersReducer = createReducer(initialOrderState, builder => {
     builder
-        .addCase(loadOrders.pending, (state, action) => {
+        .addCase(loadOrders.pending, (state) => {
             state.loading = true;
         })
         .addCase(loadOrders.fulfilled, (state, action) => {

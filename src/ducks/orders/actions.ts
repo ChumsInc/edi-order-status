@@ -53,12 +53,6 @@ export const saveOrderStatus = createAsyncThunk<EDIOrder | null, PutOrderStatusA
     }
 )
 
-function wait(ms: number) {
-    return new Promise(resolve => {
-        setTimeout(() => resolve(null), ms);
-    });
-}
-
 export const saveSelectedStatus = createAsyncThunk<void, OrderStatusUpdate>(
     'orders/selected/save',
     async (arg, {dispatch, getState}) => {

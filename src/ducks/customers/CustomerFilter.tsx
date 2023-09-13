@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {useSelector} from "react-redux";
-import {customerKey} from "../orders/utils";
+import {customerFromKey, customerKey} from "../orders/utils";
 import {loadCustomers, selectCustomerList, selectCustomersLoaded} from "./index";
 import {selectCustomerFilter, selectMapadocFilter, setCustomer} from "../filters";
 import {useAppDispatch} from "../../app/hooks";
@@ -20,10 +20,17 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
     const mapadoc = useSelector(selectMapadocFilter);
 
     useEffect(() => {
+        if (searchParams.get('customer')) {
+            dispatch(setCustomer(customerFromKey(searchParams.get('customer'))));
+        }
         if (!loaded) {
             dispatch(loadCustomers());
         }
     }, []);
+
+    useEffect(() => {
+        dispatch(loadOrders());
+    }, [selected]);
 
 
     useEffect(() => {
@@ -51,10 +58,8 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
         }
         setSearchParams(params);
         dispatch(setCustomer(customer));
-        if (selected) {
-            dispatch(loadOrders());
-        }
     }
+
     return (
         <select className="form-select form-select-sm"
                 value={!!selected ? customerKey(selected) : ''}

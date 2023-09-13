@@ -7,7 +7,6 @@ import dayjs from "dayjs";
 
 export const customerKey = (row: EDIOrder | Customer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 export const customerFromKey = (key: string | null): FilterCustomer | null => {
-    console.log('customerFromKey()', key)
     if (!key || !/\d{2}-[\dA-Z]+/.test(key)) {
         return null;
     }

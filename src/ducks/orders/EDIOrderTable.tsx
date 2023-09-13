@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setSortField, toggleOrderSelected} from "./actions";
 import OrderStatusTH from "./OrderStatusTH";
 import OrderStatusCompletedTH from "./OrderStatusCompletedTH";
-import {selectCountChecked, selectFilteredOrdersList, selectOrderSort} from "./selectors";
+import {selectCountChecked, selectOrderSort} from "./selectors";
 import {selectCustomerFilter, selectOrderDateFilter, selectShipDateFilter} from "../filters";
 
 
@@ -35,7 +35,7 @@ interface EDIOrderTableProps {
     rows: EDIOrder[],
 }
 
-const EDIOrderTable = ({rows}:EDIOrderTableProps) => {
+const EDIOrderTable = ({rows}: EDIOrderTableProps) => {
     const dispatch = useDispatch();
     const sort = useSelector(selectOrderSort);
     const customer = useSelector(selectCustomerFilter);
@@ -64,7 +64,7 @@ const EDIOrderTable = ({rows}:EDIOrderTableProps) => {
         dispatch(setSortField(nextSort));
     }
 
-    const onSelectAll = (ev:ChangeEvent<HTMLInputElement>) => {
+    const onSelectAll = (ev: ChangeEvent<HTMLInputElement>) => {
         if (!canSelectAll && ev.target.checked) {
             return;
         }

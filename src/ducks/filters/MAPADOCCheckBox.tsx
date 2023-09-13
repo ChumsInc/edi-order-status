@@ -1,7 +1,9 @@
-import React, {ChangeEvent, useId} from "react";
+import React, {ChangeEvent, useEffect, useId} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {selectMapadocFilter, toggleFilterMapadoc} from "./index";
+import {selectMapadocFilter, setCustomer, toggleFilterMapadoc} from "./index";
 import {useSearchParams} from "react-router-dom";
+import {customerFromKey} from "../orders/utils";
+import {loadCustomers} from "../customers";
 
 
 const MAPADOCCheckBox: React.FC = () => {
@@ -9,6 +11,12 @@ const MAPADOCCheckBox: React.FC = () => {
     const checked = useSelector(selectMapadocFilter);
     const id = useId();
     const [searchParams, setSearchParams] = useSearchParams(window.location.search);
+
+    useEffect(() => {
+        if (searchParams.get('mapadoc')) {
+            dispatch(toggleFilterMapadoc(true));
+        }
+    }, []);
 
     const changeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
         dispatch(toggleFilterMapadoc(ev.target.checked));

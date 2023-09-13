@@ -34,6 +34,7 @@ const OrderCompletedButton: React.FC<Props> = ({order}) => {
     const onSetStatus = (value: number) => {
         const statusCode = {key: 'completed', value};
         dispatch(saveOrderStatus({salesOrder: order, statusCode}));
+        setAnchorEl(null);
     }
 
     const closeHandler = () => {

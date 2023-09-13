@@ -52,7 +52,7 @@ const customersReducer = createReducer(defaultState, builder => {
             state.list = action.payload.sort(customerSorter);
             state.loaded = false;
         })
-        .addCase(loadCustomers.rejected, (state, action) => {
+        .addCase(loadCustomers.rejected, (state) => {
             state.loading = false;
         })
 })

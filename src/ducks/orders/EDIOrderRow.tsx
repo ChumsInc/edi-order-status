@@ -60,17 +60,17 @@ const EDIOrderRow: React.FC<Props> = ({row}) => {
                 <td>{friendlyDate(orderDate)}</td>
                 <td>{!!shipDate ? friendlyDate(shipDate) : (!!lastInvoiceDate ? friendlyDate(lastInvoiceDate) : '-')}</td>
                 <td>{!!cancelDate ? friendlyDate(cancelDate) : '-'}</td>
-                <td><OrderStatusButton order={row} type="imported"/></td>
-                <td><OrderStatusButton order={row} type="inventory"/></td>
-                <td><OrderStatusButton order={row} type="printed"/></td>
-                <td><OrderStatusButton order={row} type="logistics"/></td>
-                <td><OrderStatusButton order={row} type="work-cell"/></td>
-                <td><OrderStatusButton order={row} type="picked"/></td>
-                <td><OrderStatusButton order={row} type="routed"/></td>
-                <td><OrderStatusButton order={row} type="asn"/></td>
-                <td><OrderStatusButton order={row} type="picked-up"/></td>
-                <td><OrderStatusButton order={row} type="invoiced"/></td>
-                <td><OrderCompletedButton order={row}/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="imported"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="inventory"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="printed"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="logistics"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="work-cell"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="picked"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="routed"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="asn"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="picked-up"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="invoiced"/></td>
+                <td className="text-center"><OrderCompletedButton order={row}/></td>
                 <td className="right">
                     {numeral(row.InvoiceCount).format('0,0')} / {numeral(row.OrderCount).format('0,0')}
                 </td>

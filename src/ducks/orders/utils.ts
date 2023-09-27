@@ -90,6 +90,14 @@ export const orderSorter = (sort: OrderSort) => (a: EDIOrder, b: EDIOrder) => {
                 : (dayjs(a[field]).isAfter(b[field]) ? 1 : -1)
             ) * sortMod;
         case 'ShipExpireDate':
+            return (
+                !dayjs(a.ShipExpireDate ?? a.LastInvoiceDate).isValid()
+                || !dayjs(b.ShipExpireDate ?? b.LastInvoiceDate).isValid()
+                || dayjs(a.ShipExpireDate ?? a.LastInvoiceDate).isSame(b.ShipExpireDate ?? b.LastInvoiceDate, 'day')
+                    ? (orderKey(a) > orderKey(b) ? 1 : -1)
+                    : (dayjs(a.ShipExpireDate ?? a.LastInvoiceDate).isAfter(b.ShipExpireDate ?? b.LastInvoiceDate) ? 1 : -1)
+            ) * sortMod;
+
         case 'UDF_CANCEL_DATE':
         case 'LastInvoiceDate':
             return (

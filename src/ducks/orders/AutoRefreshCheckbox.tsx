@@ -21,7 +21,7 @@ const AutoRefreshCheckbox: React.FC = () => {
     }, [loading]);
 
     useEffect(() => {
-        if (checked) {
+        if (checked && !loading) {
             timer.current = window.setInterval(() => {
                 dispatch(loadOrders())
             }, REFRESH_TIMER_MS)
@@ -29,11 +29,11 @@ const AutoRefreshCheckbox: React.FC = () => {
         return () => {
             window.clearInterval(timer.current);
         }
-    }, [checked]);
+    }, [checked, loading]);
 
     return (
         <div className="d-flex">
-            {!loading && !!updated && <span className="me-3 text-muted">Updated {dayjs(updated).format('hh:mm:ss')}</span>}
+            {!loading && !!updated && <span className="me-3 text-muted">Updated: {dayjs(updated).format('HH:mm:ss')}</span>}
             <div className="form-check">
                 <label className="form-check-label" htmlFor="edi-order-status--auto-refresh">Auto Refresh</label>
                 <input type="checkbox" className="form-check-input" checked={checked}

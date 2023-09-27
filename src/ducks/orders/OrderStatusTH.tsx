@@ -31,7 +31,7 @@ const OrderStatusTH = ({type, enabled, children}: OrderStatusTHProps) => {
         setAnchorEl(null);
     }
     return (
-        <th className={classNames({'tooltip-toggle': enabled})}>
+        <th className={classNames('text-center', {'tooltip-toggle': enabled})}>
             <button aria-describedby={id} disabled={!enabled} type="button"
                     className="btn btn-sm btn-light" onClick={clickHandler}>{children}</button>
             <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}

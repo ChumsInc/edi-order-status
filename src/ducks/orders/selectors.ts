@@ -74,17 +74,20 @@ export const selectOrderDates = createSelector(
     })
 
 export const selectShipDates = createSelector(
-    [selectCustomerFilter, selectMapadocFilter, selectOrdersList],
-    (customer, mapadoc, list) => {
+    [selectCustomerFilter, selectMapadocFilter, selectOrdersList, selectOrderDateFilter],
+    (customer, mapadoc, list, orderDate) => {
         const dates: { [key: string]: string } = {};
         const key = customer === null ? null : customerKey(customer);
         listToEDIOrders(list)
             .filter(order => !key || customerKey(order) === key)
             .filter(order => !mapadoc || order.isMAPADOC)
-            .filter(order => !!order.ShipExpireDate)
+            .filter(order => !orderDate || order.OrderDate === orderDate )
             .forEach(order => {
                 if (order.ShipExpireDate && !dates[order.ShipExpireDate]) {
                     dates[order.ShipExpireDate] = order.ShipExpireDate;
+                }
+                if (order.LastInvoiceDate && !dates[order.LastInvoiceDate]) {
+                    dates[order.LastInvoiceDate] = order.LastInvoiceDate;
                 }
             });
         return Object.values(dates).sort();

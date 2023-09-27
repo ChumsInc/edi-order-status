@@ -6,6 +6,7 @@ import {selectCustomerFilter, selectMapadocFilter, setCustomer} from "../filters
 import {useAppDispatch} from "../../app/hooks";
 import {useSearchParams} from "react-router-dom";
 import {loadOrders} from "../orders/actions";
+import {customerNameSorter} from "./utils";
 
 interface Props {
     required?: boolean
@@ -68,6 +69,7 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
             <option disabled>-</option>
             {customers
                 .filter(customer => !mapadoc || customer.isMAPADOC)
+                .sort(customerNameSorter)
                 .map(customer => (
                     <option key={customerKey(customer)}
                             value={customerKey(customer)}>{customer.CustomerName} - {customerKey(customer)}</option>))}

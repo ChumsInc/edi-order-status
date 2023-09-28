@@ -3,7 +3,7 @@ import classNames from "classnames";
 import {OrderStatusField} from "./types";
 import OrderStatusTooltip from "./OrderStatusTooltip";
 import {saveSelectedStatus} from "./actions";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import Popover from '@mui/material/Popover'
 
 interface OrderStatusTHProps {

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import {OrderStatusField} from "./types";
 import {saveSelectedStatus} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import Popover from "@mui/material/Popover";
 
 interface Props {

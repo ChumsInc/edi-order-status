@@ -6,8 +6,8 @@ import EDIOrderTable from "./EDIOrderTable";
 import {Alert, LocalStore, TablePagination} from "chums-components";
 import AutoRefreshCheckbox from "./AutoRefreshCheckbox";
 import {selectFilteredOrdersList, selectOrdersLoading} from "./selectors";
-import {STORAGE_KEYS} from "../../appStorage";
-import {useAppDispatch} from "../../app/hooks";
+import {STORAGE_KEYS} from "../../storage-keys";
+import {useAppDispatch} from "../../app/configureStore";
 import {ErrorBoundary} from 'react-error-boundary';
 import ErrorBoundaryFallbackAlert from "../../common-components/ErrorBoundaryFallbackAlert";
 

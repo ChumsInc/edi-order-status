@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import {customerFromKey, customerKey} from "../orders/utils";
 import {loadCustomers, selectCustomerList, selectCustomersLoaded} from "./index";
 import {selectCustomerFilter, selectMapadocFilter, setCustomer} from "../filters";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import {useSearchParams} from "react-router-dom";
 import {loadOrders} from "../orders/actions";
 import {customerNameSorter} from "./utils";

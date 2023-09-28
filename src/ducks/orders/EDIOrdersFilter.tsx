@@ -9,7 +9,7 @@ import ShipDateFilterSelect from "../filters/ShipDateFilterSelect";
 import MAPADOCCheckBox from "../filters/MAPADOCCheckBox";
 import CompletedCheckBox from "../filters/CompletedCheckBox";
 import {selectShowCompletedFilter} from "../filters";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import {SpinnerButton} from "chums-components";
 import {selectOrdersLoading} from "./selectors";
 

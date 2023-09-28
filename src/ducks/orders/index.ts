@@ -1,7 +1,7 @@
 import {EDIOrderList, OrderSort} from "./types";
 import {loadOrders, saveOrderComment, saveOrderStatus, setSortField, toggleOrderSelected} from "./actions";
 import {orderKey} from "./utils";
-import {STORAGE_KEYS} from '../../appStorage';
+import {STORAGE_KEYS} from '../../storage-keys';
 import {createReducer} from "@reduxjs/toolkit";
 import {LocalStore} from "chums-components";
 

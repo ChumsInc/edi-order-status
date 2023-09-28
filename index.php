@@ -14,5 +14,4 @@ $title = "EDI Order Status";
 $ui = new WebUI($bodyPath, $title, '', true, 5);
 $ui->bodyClassName = 'container-fluid';
 $ui->addManifest("./public/js/manifest.json");
-//$ui->AddCSS("./public/styles.css", false, true);
 $ui->Send();

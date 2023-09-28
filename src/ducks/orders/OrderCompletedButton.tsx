@@ -4,7 +4,7 @@ import {EDIOrder} from "./types";
 import {friendlyDateTime} from "./utils";
 import {saveOrderStatus} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import Popover from "@mui/material/Popover";
 
 

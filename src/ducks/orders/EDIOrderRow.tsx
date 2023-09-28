@@ -8,7 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import {saveOrderComment} from "./actions";
 import OrderCompletedButton from "./OrderCompletedButton";
 import OrderSelectCheckbox from "./OrderSelectCheckbox";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import dayjs from "dayjs";
 
 interface Props {

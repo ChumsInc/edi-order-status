@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {loadOrders} from "./actions";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import {useSelector} from "react-redux";
 import {selectOrdersLoading} from "./selectors";
 import dayjs from "dayjs";

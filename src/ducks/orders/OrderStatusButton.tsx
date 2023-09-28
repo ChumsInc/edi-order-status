@@ -4,7 +4,7 @@ import {EDIOrder, OrderStatus, OrderStatusField, OrderStatusUpdate} from "./type
 import {friendlyDateTime, orderStatusClassName} from "./utils";
 import {saveOrderStatus} from "./actions";
 import OrderStatusTooltip from "./OrderStatusTooltip";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch} from "../../app/configureStore";
 import Popover from "@mui/material/Popover";
 
 

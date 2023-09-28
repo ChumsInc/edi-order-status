@@ -4,7 +4,7 @@ import classNames from "classnames";
 interface OrderStatusTooltipItemProps {
     color: 'light'|'info'|'success'|'warning'|'danger'|'dark',
     value: number,
-    text: string,
+    text: string|null,
     onClick: (val:number) => void,
 }
 

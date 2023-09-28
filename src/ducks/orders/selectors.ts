@@ -1,5 +1,5 @@
 import {RootState} from "../../app/configureStore";
-import {createSelector} from "reselect";
+import {createSelector} from "@reduxjs/toolkit";
 import {customerKey, listToEDIOrders, orderSorter} from "./utils";
 import {selectCustomerFilter, selectMapadocFilter, selectOrderDateFilter, selectShipDateFilter} from "../filters";
 

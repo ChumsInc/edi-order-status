@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import classNames from "classnames";
 import {EDIOrder} from "./types";
-import {isPast, isSameDay, parseISO} from 'date-fns';
 import {customerKey, friendlyDate, orderKey} from "./utils";
 import OrderStatusButton from "./OrderStatusButton";
 import numeral from "numeral";
@@ -10,29 +9,39 @@ import {saveOrderComment} from "./actions";
 import OrderCompletedButton from "./OrderCompletedButton";
 import OrderSelectCheckbox from "./OrderSelectCheckbox";
 import {useAppDispatch} from "../../app/hooks";
+import dayjs from "dayjs";
 
 interface Props {
     row: EDIOrder,
 }
 
-const rowValues = (row: EDIOrder) => {
-    const cancelDate = !row.UDF_CANCEL_DATE ? null : parseISO(row.UDF_CANCEL_DATE);
-    const shipDate = !row.ShipExpireDate ? null : parseISO(row.ShipExpireDate);
-    const lastInvoiceDate = !row.LastInvoiceDate ? null : parseISO(row.LastInvoiceDate);
-    const orderDate = parseISO(row.OrderDate);
+export interface RowValues {
+    cancelDate: dayjs.Dayjs;
+    shipDate: dayjs.Dayjs;
+    orderDate: dayjs.Dayjs;
+    lastInvoiceDate: dayjs.Dayjs;
+    trClassName: classNames.Argument;
+    key: string;
+}
+const rowValues = (row: EDIOrder):RowValues => {
     const key = orderKey(row);
 
+    const djCancelDate = dayjs(row.UDF_CANCEL_DATE);
+    const djShipDate = dayjs(row.ShipExpireDate);
+    const djInvoiceDate = dayjs(row.LastInvoiceDate);
+    const djOrderDate = dayjs(row.OrderDate);
+
     const trClassName = {
-        'table-danger': !lastInvoiceDate && !!cancelDate && isPast(cancelDate) && !isSameDay(cancelDate, new Date()),
-        'table-warning': !lastInvoiceDate && !!shipDate && (isPast(shipDate) || (!!cancelDate && isSameDay(cancelDate, new Date()))),
-        'table-success': !!lastInvoiceDate,
+        'table-danger': !djInvoiceDate.isValid() && djCancelDate.isValid() && djCancelDate.startOf('day').isBefore(new Date()) && !djCancelDate.isSame(new Date(), 'day'),
+        'table-warning': !djInvoiceDate.isValid() && djShipDate.isValid() && (djShipDate.isBefore(new Date(), 'day') || (djCancelDate.isValid() && djCancelDate.isSame(new Date(), 'day'))),
+        'table-success': djInvoiceDate.isValid(),
         'edi-order-row--has-comment': !!row.notes,
     }
     return {
-        cancelDate,
-        shipDate,
-        orderDate,
-        lastInvoiceDate,
+        cancelDate: djCancelDate,
+        shipDate: djShipDate,
+        orderDate: djOrderDate,
+        lastInvoiceDate: djInvoiceDate,
         trClassName,
         key
     }
@@ -85,7 +94,11 @@ const EDIOrderRow: React.FC<Props> = ({row}) => {
             {!editComment && !!row.notes && (
                 <tr className={classNames('edi-order-row--comment', trClassName)}>
                     <td colSpan={7}>&nbsp;</td>
-                    <td colSpan={14} className="edi-order-row--comment-text">{row.notes}</td>
+                    <td colSpan={13} className="edi-order-row--comment-text">
+                        <span className="bi-chat-quote-fill me-3" />
+                        {row.notes}
+                    </td>
+                    <td colSpan={3}>&nbsp;</td>
                 </tr>
             )}
         </>

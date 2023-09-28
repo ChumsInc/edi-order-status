@@ -106,7 +106,7 @@ const EDIOrderTable = ({rows}: EDIOrderTableProps) => {
                 <OrderStatusTH type="picked-up" enabled={thPopupEnabled}>Picked Up</OrderStatusTH>
                 <OrderStatusTH type="invoiced" enabled={thPopupEnabled}>Invoiced</OrderStatusTH>
                 <OrderStatusCompletedTH type="completed" enabled={thPopupEnabled}>Completed</OrderStatusCompletedTH>
-                <ThSortable field="OrderCount" className="right" onClick={onClickSort}>Orders</ThSortable>
+                <ThSortable field="OrderCount" className="right" onClick={onClickSort}>Invoiced</ThSortable>
                 <ThSortable field="OrderTotal" className="right" onClick={onClickSort}>Order
                     Total</ThSortable>
                 <th><span className="bi bi-sticky"/></th>

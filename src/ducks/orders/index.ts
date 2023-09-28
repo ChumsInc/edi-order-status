@@ -15,7 +15,7 @@ export interface OrderListState {
 export const initialOrderState = (): OrderListState => ({
     loading: false,
     list: {},
-    sort: {field: 'CustomerNo', asc: true},
+    sort: {field: 'UDF_CANCEL_DATE', asc: true},
     autoRefresh: LocalStore.getItem<boolean>(STORAGE_KEYS.AUTO_REFRESH, false) ?? false,
 })
 

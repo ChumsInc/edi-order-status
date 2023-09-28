@@ -1,5 +1,4 @@
 import {EDIOrder, EDIOrderList, OrderSort} from "./types";
-import {format, isThisYear, isToday, parseISO} from 'date-fns';
 import {Customer} from "../customers";
 import {FilterCustomer} from "../filters";
 import Decimal from "decimal.js";
@@ -37,17 +36,25 @@ export const orderStatusClassName = (value: string | number | null = '') => {
     }
 }
 
-export const friendlyDate = (val: string | Date) => {
-    const date = val instanceof Date ? val : parseISO(val);
-    if (isThisYear(date)) {
-        return format(date, 'MM/dd')
+export const friendlyDate = (val: string | Date | dayjs.Dayjs): string | null => {
+
+    const date = dayjs(val);
+    if (!date.isValid()) {
+        return null;
     }
-    return format(date, 'MM/dd/yyyy');
+    if (date.isSame(new Date(), 'year')) {
+        return date.format('MM/DD');
+    }
+    return date.format('MM/DD/YYYY');
 }
-export const friendlyDateTime = (val: string | Date) => {
-    const date = val instanceof Date ? val : parseISO(val);
-    if (isToday(date)) {
-        return format(date, 'HH:mm')
+
+export const friendlyDateTime = (val: string | Date | dayjs.Dayjs): string | null => {
+    const date = dayjs(val);
+    if (!date.isValid()) {
+        return null;
+    }
+    if (date.isSame(new Date(), 'day')) {
+        return date.format('HH:mm');
     }
     return friendlyDate(date);
 }
@@ -86,8 +93,8 @@ export const orderSorter = (sort: OrderSort) => (a: EDIOrder, b: EDIOrder) => {
         case 'OrderDate':
             return (
                 dayjs(a[field]).isSame(b[field], 'day')
-                ? (orderKey(a) > orderKey(b) ? 1 : -1)
-                : (dayjs(a[field]).isAfter(b[field]) ? 1 : -1)
+                    ? (orderKey(a) > orderKey(b) ? 1 : -1)
+                    : (dayjs(a[field]).isAfter(b[field]) ? 1 : -1)
             ) * sortMod;
         case 'ShipExpireDate':
             return (
@@ -102,8 +109,8 @@ export const orderSorter = (sort: OrderSort) => (a: EDIOrder, b: EDIOrder) => {
         case 'LastInvoiceDate':
             return (
                 !dayjs(a[field]).isValid() || !dayjs(b[field]).isValid() || dayjs(a[field]).isSame(b[field], 'day')
-                ? (orderKey(a) > orderKey(b) ? 1 : -1)
-                : (dayjs(a[field]).isAfter(b[field]) ? 1 : -1)
+                    ? (orderKey(a) > orderKey(b) ? 1 : -1)
+                    : (dayjs(a[field]).isAfter(b[field]) ? 1 : -1)
             ) * sortMod;
         default:
             return (orderKey(a) > orderKey(b) ? 1 : -1) * sortMod;

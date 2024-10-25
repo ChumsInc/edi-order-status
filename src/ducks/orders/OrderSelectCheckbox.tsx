@@ -1,28 +1,26 @@
-import React from 'react';
+import React, {useId} from 'react';
 import {EDIOrder} from "./types";
 import {useDispatch} from "react-redux";
 import {toggleOrderSelected} from "./actions";
 import {orderKey} from "./utils";
+import FormCheck from "react-bootstrap/FormCheck";
 
-interface Props {
+interface OrderSelectCheckboxProps {
     order: EDIOrder
 }
 
-const OrderSelectCheckbox: React.FC<Props> = ({order}) => {
+const OrderSelectCheckbox = ({order}:OrderSelectCheckboxProps) => {
     const dispatch = useDispatch();
+    const id = useId();
+
     const onChange = (order: EDIOrder) => {
         dispatch(toggleOrderSelected({list: [orderKey(order)], checked: !order.selected}));
     }
-
     return (
-        <div className="form-check form-check-inline">
-            <input type="checkbox" className="form-check-input"
-                   checked={order.selected ?? false} disabled={order.OrderStatus === 'X'}
-                   onClick={(ev) => ev.stopPropagation()}
-                   onChange={() => onChange(order)}/>
-        </div>
+        <FormCheck type="checkbox" checked={order.selected ?? false}
+                   onClick={(ev) => ev.stopPropagation()} onChange={() => onChange(order)}
+                   disabled={order.OrderStatus === 'X'} />
     )
-
 }
 
 export default OrderSelectCheckbox;

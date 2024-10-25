@@ -73,12 +73,12 @@ const EDIOrderRow: React.FC<Props> = ({row}) => {
                 <td className="text-center"><OrderStatusButton order={row} type="inventory"/></td>
                 <td className="text-center"><OrderStatusButton order={row} type="printed"/></td>
                 <td className="text-center"><OrderStatusButton order={row} type="logistics"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="ucc"/></td>
                 <td className="text-center"><OrderStatusButton order={row} type="work-cell"/></td>
                 <td className="text-center"><OrderStatusButton order={row} type="picked"/></td>
                 <td className="text-center"><OrderStatusButton order={row} type="routed"/></td>
                 <td className="text-center"><OrderStatusButton order={row} type="asn"/></td>
-                <td className="text-center"><OrderStatusButton order={row} type="picked-up"/></td>
-                <td className="text-center"><OrderStatusButton order={row} type="invoiced"/></td>
+                <td className="text-center"><OrderStatusButton order={row} type="sps-invoiced"/></td>
                 <td className="text-center"><OrderCompletedButton order={row}/></td>
                 <td className="right">
                     {numeral(row.InvoiceCount).format('0,0')} / {numeral(row.OrderCount).format('0,0')}

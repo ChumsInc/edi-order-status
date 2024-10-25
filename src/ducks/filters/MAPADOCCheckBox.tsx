@@ -4,9 +4,10 @@ import {selectMapadocFilter, setCustomer, toggleFilterMapadoc} from "./index";
 import {useSearchParams} from "react-router-dom";
 import {customerFromKey} from "../orders/utils";
 import {loadCustomers} from "../customers";
+import FormCheck from "react-bootstrap/FormCheck";
 
 
-const MAPADOCCheckBox: React.FC = () => {
+const MAPADOCCheckBox = () => {
     const dispatch = useDispatch();
     const checked = useSelector(selectMapadocFilter);
     const id = useId();
@@ -30,11 +31,7 @@ const MAPADOCCheckBox: React.FC = () => {
     }
 
     return (
-        <div className="form-check">
-            <label className="form-check-label" htmlFor={id}>MAPADOC</label>
-            <input type="checkbox" className="form-check-input" id={id}
-                   checked={checked} onChange={changeHandler}/>
-        </div>
+        <FormCheck type="checkbox" id={id} checked={checked} onChange={changeHandler} label="MAPADOC" />
     )
 }
 

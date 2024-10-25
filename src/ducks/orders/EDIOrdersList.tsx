@@ -3,13 +3,16 @@ import {useSelector} from "react-redux";
 import {loadOrders} from "./actions";
 import EDIOrdersFilter from "./EDIOrdersFilter";
 import EDIOrderTable from "./EDIOrderTable";
-import {Alert, LocalStore, TablePagination} from "chums-components";
+import {LocalStore, TablePagination} from "chums-components";
 import AutoRefreshCheckbox from "./AutoRefreshCheckbox";
 import {selectFilteredOrdersList, selectOrdersLoading} from "./selectors";
 import {STORAGE_KEYS} from "../../storage-keys";
 import {useAppDispatch} from "../../app/configureStore";
 import {ErrorBoundary} from 'react-error-boundary';
 import ErrorBoundaryFallbackAlert from "../../common-components/ErrorBoundaryFallbackAlert";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Alert from "react-bootstrap/Alert";
 
 const EDIOrdersList: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -40,16 +43,17 @@ const EDIOrdersList: React.FC = () => {
             {!loading && !orders.length && (
                 <Alert color="warning">There are no open orders for this customer.</Alert>
             )}
-            <div className="row g-3 align-items-baseline">
-                <div className="col-auto">
+            <Row className="g-3 align-items-baseline">
+                <Col xs="auto">
                     <AutoRefreshCheckbox/>
-                </div>
-                <div className="col-auto">
+                </Col>
+                <Col />
+                <Col xs="auto">
                     <TablePagination bsSize="sm" showFirst showLast
                                      page={page} onChangePage={setPage} rowsPerPage={rowsPerPage}
                                      onChangeRowsPerPage={onChangeRowsPerPage} count={orders.length}/>
-                </div>
-            </div>
+                </Col>
+            </Row>
         </ErrorBoundary>
     )
 }

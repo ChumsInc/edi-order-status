@@ -1,25 +1,19 @@
 import React from 'react';
-import classNames from "classnames";
+import Button, {ButtonProps} from 'react-bootstrap/Button'
 
-interface OrderStatusTooltipItemProps {
-    color: 'light'|'info'|'success'|'warning'|'danger'|'dark',
+interface OrderStatusTooltipItemProps extends Omit<ButtonProps, 'onClick' | 'value'> {
     value: number,
-    text: string|null,
-    onClick: (val:number) => void,
+    text: string | null,
+    onClick: (val: number) => void,
 }
 
-const OrderStatusTooltipItem = ({color, value, text, onClick}:OrderStatusTooltipItemProps) => {
-    const className = classNames({
-        btn: true,
-        ['btn-sm']: true,
-        [`btn-${color}`]: true
-    });
-    const clickHandler = (ev:React.MouseEvent) => {
+const OrderStatusTooltipItem = ({value, text, onClick, ...props}: OrderStatusTooltipItemProps) => {
+    const clickHandler = (ev: React.MouseEvent) => {
         ev.stopPropagation();
         onClick(value)
     }
     return (
-        <button className={className} onClick={clickHandler}>{text}</button>
+        <Button size="sm" type="button" onClick={clickHandler} {...props}>{text}</Button>
     );
 };
 

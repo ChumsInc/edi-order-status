@@ -5,6 +5,7 @@ import OrderStatusTooltip from "./OrderStatusTooltip";
 import {saveSelectedStatus} from "./actions";
 import {useAppDispatch} from "../../app/configureStore";
 import Popover from '@mui/material/Popover'
+import Button from "react-bootstrap/Button";
 
 interface OrderStatusTHProps {
     type: OrderStatusField,
@@ -32,8 +33,10 @@ const OrderStatusTH = ({type, enabled, children}: OrderStatusTHProps) => {
     }
     return (
         <th className={classNames('text-center', {'tooltip-toggle': enabled})}>
-            <button aria-describedby={id} disabled={!enabled} type="button"
-                    className="btn btn-sm btn-light" onClick={clickHandler}>{children}</button>
+            <Button aria-describedby={id} disabled={!enabled} type="button"
+                    variant="light" size="sm" onClick={clickHandler}>
+                {children}
+            </Button>
             <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
                      anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
                 <OrderStatusTooltip onClick={onSetStatus}/>

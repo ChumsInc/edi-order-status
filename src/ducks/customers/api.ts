@@ -6,7 +6,7 @@ const URL_CUSTOMERS = '/api/operations/shipping/edi-order-status/chums/customers
 export async function fetchCustomers():Promise<Customer[]> {
     try {
         const res = await fetchJSON<{customers:Customer[]}>(URL_CUSTOMERS);
-        return res.customers ?? [];
+        return res?.customers ?? [];
     } catch(err:unknown) {
         if (err instanceof Error) {
             console.debug("loadCustomers()", err.message);

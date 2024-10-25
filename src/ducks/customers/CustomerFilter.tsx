@@ -7,12 +7,13 @@ import {useAppDispatch} from "../../app/configureStore";
 import {useSearchParams} from "react-router-dom";
 import {loadOrders} from "../orders/actions";
 import {customerNameSorter} from "./utils";
+import FormSelect from "react-bootstrap/FormSelect";
 
-interface Props {
+interface CustomerFilterSelectProps {
     required?: boolean
 }
 
-const CustomerFilterSelect: React.FC<Props> = ({required}) => {
+const CustomerFilterSelect = ({required}: CustomerFilterSelectProps) => {
     const dispatch = useAppDispatch();
     const [searchParams, setSearchParams] = useSearchParams(window.location.search);
     const customers = useSelector(selectCustomerList);
@@ -62,9 +63,9 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
     }
 
     return (
-        <select className="form-select form-select-sm"
-                value={!!selected ? customerKey(selected) : ''}
-                onChange={changeHandler} required={required}>
+        <FormSelect size="sm"
+                    value={!!selected ? customerKey(selected) : ''}
+                    onChange={changeHandler} required={required}>
             <option value="">All Customers</option>
             <option disabled>-</option>
             {customers
@@ -73,7 +74,7 @@ const CustomerFilterSelect: React.FC<Props> = ({required}) => {
                 .map(customer => (
                     <option key={customerKey(customer)}
                             value={customerKey(customer)}>{customer.CustomerName} - {customerKey(customer)}</option>))}
-        </select>
+        </FormSelect>
     )
 }
 

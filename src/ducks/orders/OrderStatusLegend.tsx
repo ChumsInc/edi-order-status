@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const OrderStatusLegend: React.FC = () => {
+const OrderStatusLegend = () => {
     return (
         <div className="status-button-select--legend">
             <button type="button" className="btn btn-light me-1">No Status</button>

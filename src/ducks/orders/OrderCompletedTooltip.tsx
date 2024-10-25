@@ -1,7 +1,7 @@
 import React from "react";
 import {friendlyDateTime} from "./utils";
 import OrderStatusTooltipItem from "./OrderStatusTooltipItem";
-import Stack from "@mui/material/Stack";
+import Stack from "react-bootstrap/Stack";
 
 interface OrderCompletedTooltipProps {
     onClick: (val: number) => void,
@@ -10,9 +10,9 @@ interface OrderCompletedTooltipProps {
 const OrderCompletedTooltip = ({onClick}:OrderCompletedTooltipProps) => {
     const now = friendlyDateTime(new Date());
     return (
-        <Stack role="tooltip" direction="column" spacing={1} sx={{p: 1}} className="status-button-select">
-            <OrderStatusTooltipItem color="light" value={0} text="Clear" onClick={onClick}/>
-            <OrderStatusTooltipItem color="success" value={1} text={now} onClick={onClick}/>
+        <Stack role="tooltip" direction="vertical" gap={1} className="p-1 status-button-select">
+            <OrderStatusTooltipItem variant="light" value={0} text="Clear" onClick={onClick}/>
+            <OrderStatusTooltipItem variant="success" value={1} text={now} onClick={onClick}/>
         </Stack>
     )
 }

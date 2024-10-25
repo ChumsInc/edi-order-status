@@ -1,9 +1,11 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useId, useRef, useState} from "react";
 import {loadOrders} from "./actions";
 import {useAppDispatch} from "../../app/configureStore";
 import {useSelector} from "react-redux";
 import {selectOrdersLoading} from "./selectors";
 import dayjs from "dayjs";
+import Stack from "react-bootstrap/Stack";
+import FormCheck from "react-bootstrap/FormCheck";
 
 const REFRESH_TIMER_MS = 10 * 60 * 1000;
 
@@ -13,6 +15,7 @@ const AutoRefreshCheckbox: React.FC = () => {
     const loading = useSelector(selectOrdersLoading);
     const [checked, setChecked] = useState(false);
     const [updated, setUpdated] = useState<number|null>(null)
+    const id = useId();
 
     useEffect(() => {
         if (!loading) {
@@ -31,16 +34,15 @@ const AutoRefreshCheckbox: React.FC = () => {
         }
     }, [checked, loading]);
 
+    const changeHandler = (ev:ChangeEvent<HTMLInputElement>) => {
+        setChecked(ev.target.checked);
+    }
+
     return (
-        <div className="d-flex">
+        <Stack direction="horizontal" gap={1}>
             {!loading && !!updated && <span className="me-3 text-muted">Updated: {dayjs(updated).format('HH:mm:ss')}</span>}
-            <div className="form-check">
-                <label className="form-check-label" htmlFor="edi-order-status--auto-refresh">Auto Refresh</label>
-                <input type="checkbox" className="form-check-input" checked={checked}
-                       id="edi-order-status--auto-refresh"
-                       onChange={(ev) => setChecked(ev.target.checked)}/>
-            </div>
-        </div>
+            <FormCheck id={id} label="Auto Refresh" onChange={changeHandler} checked={checked} />
+        </Stack>
     )
 }
 export default AutoRefreshCheckbox;

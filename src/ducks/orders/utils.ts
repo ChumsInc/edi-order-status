@@ -3,6 +3,7 @@ import {Customer} from "../customers";
 import {FilterCustomer} from "../filters";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
+import {ButtonVariant, Variant} from "react-bootstrap/types";
 
 export const customerKey = (row: EDIOrder | Customer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 export const customerFromKey = (key: string | null): FilterCustomer | null => {
@@ -33,6 +34,23 @@ export const orderStatusClassName = (value: string | number | null = '') => {
             return 'btn-dark';
         default:
             return 'btn-light';
+    }
+}
+
+export const orderStatusColor = (value:string|number|null = ''):ButtonVariant => {
+    switch (value) {
+        case 1:
+            return 'info';
+        case 2:
+            return 'success';
+        case 3:
+            return 'warning';
+        case 4:
+            return 'danger';
+        case 5:
+            return 'dark';
+        default:
+            return 'light';
     }
 }
 

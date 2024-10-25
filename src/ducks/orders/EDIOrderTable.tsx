@@ -99,12 +99,12 @@ const EDIOrderTable = ({rows}: EDIOrderTableProps) => {
                 <OrderStatusTH type="inventory" enabled={thPopupEnabled}>Inventory</OrderStatusTH>
                 <OrderStatusTH type="printed" enabled={thPopupEnabled}>Print</OrderStatusTH>
                 <OrderStatusTH type="logistics" enabled={thPopupEnabled}>Logistics</OrderStatusTH>
+                <OrderStatusTH type="ucc" enabled={thPopupEnabled}>UCC</OrderStatusTH>
                 <OrderStatusTH type="work-cell" enabled={thPopupEnabled}>W/C</OrderStatusTH>
                 <OrderStatusTH type="picked" enabled={thPopupEnabled}>Pick</OrderStatusTH>
                 <OrderStatusTH type="routed" enabled={thPopupEnabled}>Route</OrderStatusTH>
                 <OrderStatusTH type="asn" enabled={thPopupEnabled}>ASN</OrderStatusTH>
-                <OrderStatusTH type="picked-up" enabled={thPopupEnabled}>Picked Up</OrderStatusTH>
-                <OrderStatusTH type="invoiced" enabled={thPopupEnabled}>Invoiced</OrderStatusTH>
+                <OrderStatusTH type="sps-invoiced" enabled={thPopupEnabled}>SPS Invoice</OrderStatusTH>
                 <OrderStatusCompletedTH type="completed" enabled={thPopupEnabled}>Completed</OrderStatusCompletedTH>
                 <ThSortable field="OrderCount" className="right" onClick={onClickSort}>Invoiced</ThSortable>
                 <ThSortable field="OrderTotal" className="right" onClick={onClickSort}>Order

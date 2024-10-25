@@ -10,8 +10,12 @@ import MAPADOCCheckBox from "../filters/MAPADOCCheckBox";
 import CompletedCheckBox from "../filters/CompletedCheckBox";
 import {selectShowCompletedFilter} from "../filters";
 import {useAppDispatch} from "../../app/configureStore";
-import {SpinnerButton} from "chums-components";
 import {selectOrdersLoading} from "./selectors";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from "react-bootstrap/Form";
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner'
 
 const EDIOrdersFilter: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -25,31 +29,36 @@ const EDIOrdersFilter: React.FC = () => {
     }
 
     return (
-        <form className="row g-3 mb-3 align-items-end justify-content-between" onSubmit={onReload}>
-            <div className="col-auto row align-items-end">
-                <div className="col-auto">
-                    <MAPADOCCheckBox/>
-                </div>
-                <div className="col-auto">
-                    <label className="form-label">Customer</label>
-                    <CustomerFilterSelect required={showCompleted}/>
-                </div>
-                <div className="col-auto">
-                    <OrderDateFilterSelect/>
-                </div>
-                <div className="col-auto">
-                    <ShipDateFilterSelect/>
-                </div>
+        <Row as={Form} className="g-3 mb-3 align-items-end justify-content-between" onSubmit={onReload}>
+            <Col xs="auto">
+                <MAPADOCCheckBox/>
+            </Col>
+            <Col xs="auto">
+                <label className="form-label">Customer</label>
+                <CustomerFilterSelect required={showCompleted}/>
+            </Col>
+            <Col xs="auto">
+                <OrderDateFilterSelect/>
+            </Col>
+            <Col xs="auto">
+                <ShipDateFilterSelect/>
+            </Col>
+            <Col xs="auto">
                 <CompletedCheckBox/>
-                <div className="col-auto">
-                    <SpinnerButton type="submit" size="sm" spinning={loading}>Reload</SpinnerButton>
-                </div>
-            </div>
-            <div className="col-auto">
+            </Col>
+            <Col xs="auto">
+                <Button type="submit" size="sm" disabled={loading}>
+                    {loading && (<Spinner as="span" size="sm" animation="border" role="status" aria-hidden="true"
+                                          className="me-1"/>)}
+                    Reload
+                </Button>
+            </Col>
+            <Col/>
+            <Col xs="auto">
                 <label className="form-label">Legend</label>
                 <OrderStatusLegend/>
-            </div>
-        </form>
+            </Col>
+        </Row>
     )
 }
 

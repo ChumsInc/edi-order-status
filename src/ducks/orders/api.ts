@@ -27,7 +27,7 @@ export async function fetchOrders(arg: FetchOrdersArg): Promise<EDIOrder[]> {
             ? completedURL(arg)
             : API_URL_ORDERS(arg);
         const res = await fetchJSON<FetchOrdersResponse>(url)
-        return res.salesOrders ?? [];
+        return res?.salesOrders ?? [];
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchOrders()", err.message);
@@ -47,7 +47,7 @@ export async function putOrderStatus(arg: PutOrderStatusArg): Promise<EDIOrder |
             .replace(':statusCode', encodeURIComponent(arg.statusCode.key));
         const body = JSON.stringify(arg.statusCode);
         const res = await fetchJSON<{ salesOrder: EDIOrder }>(url, {method: 'PUT', body});
-        return res.salesOrder ?? null;
+        return res?.salesOrder ?? null;
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("putOrderStatus()", err.message);
@@ -66,7 +66,7 @@ export async function putOrderComment(arg: PutOrderCommentArg): Promise<EDIOrder
             .replace(':CustomerPONo', encodeURIComponent(arg.salesOrder.CustomerPONo));
         const body = JSON.stringify({notes: arg.comment});
         const res = await fetchJSON<{ salesOrder: EDIOrder }>(url, {method: 'PUT', body});
-        return res.salesOrder ?? null;
+        return res?.salesOrder ?? null;
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("putOrderComment()", err.message);

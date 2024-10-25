@@ -1,11 +1,11 @@
 import React, {useId, useState} from "react";
-import classNames from "classnames";
 import {EDIOrder} from "./types";
 import {friendlyDateTime} from "./utils";
 import {saveOrderStatus} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
 import {useAppDispatch} from "../../app/configureStore";
 import Popover from "@mui/material/Popover";
+import Button from "react-bootstrap/Button";
 
 
 interface Props {
@@ -21,10 +21,6 @@ const OrderCompletedButton: React.FC<Props> = ({order}) => {
         return null;
     }
     const {completed, completedByUserName} = order;
-    const currentStatusClassName = {
-        'btn-light': !completed,
-        'btn-success': !!completed,
-    };
 
     const clickHandler = (ev: React.MouseEvent<HTMLButtonElement>) => {
         ev.stopPropagation();
@@ -43,12 +39,11 @@ const OrderCompletedButton: React.FC<Props> = ({order}) => {
 
     return (
         <div className="status-button-select" role="group">
-            <button type="button"
+            <Button size="sm" type="button" variant={!completed ? 'light' : 'success'}
                     onClick={clickHandler}
-                    title={completedByUserName}
-                    className={classNames("btn btn-sm", currentStatusClassName)}>
+                    title={completedByUserName}>
                 {!completed ? '-' : friendlyDateTime(completed)}
-            </button>
+            </Button>
             <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
                      anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
                 <OrderCompletedTooltip onClick={onSetStatus}/>

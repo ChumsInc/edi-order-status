@@ -1,6 +1,5 @@
 import {createAction, createReducer, isRejected} from "@reduxjs/toolkit";
 import {RootState} from "../../app/configureStore";
-import {RejectedAction} from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import {BasicAlert} from "chums-components";
 
 export interface ErrorAlert extends BasicAlert {
@@ -24,10 +23,6 @@ export const dismissAlert = createAction<number>('alerts/dismiss');
 export const addAlert = createAction<ErrorAlert>('alerts/addAlert');
 
 export const selectAlerts = (state:RootState) => state.alerts.list;
-
-function isErrorAction(action: RejectedAction<any, any>): action is RejectedAction<any, any> {
-    return action?.meta?.requestStatus === 'rejected';
-}
 
 
 const alertsReducer = createReducer(initialAlertsState, (builder) => {
@@ -53,7 +48,7 @@ const alertsReducer = createReducer(initialAlertsState, (builder) => {
                 state.nextId += 1;
             }
         })
-        .addMatcher(isErrorAction, (state, action) => {
+        .addMatcher(isRejected, (state, action) => {
             const context = action.type.replace('/rejected', '');
             let [contextAlert] = state.list.filter(alert => alert.context === context);
             if (!contextAlert) {

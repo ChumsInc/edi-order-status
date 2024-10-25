@@ -1,11 +1,12 @@
 import React, {useId, useState} from "react";
 import classNames from "classnames";
 import {EDIOrder, OrderStatus, OrderStatusField, OrderStatusUpdate} from "./types";
-import {friendlyDateTime, orderStatusClassName} from "./utils";
+import {friendlyDateTime, orderStatusClassName, orderStatusColor} from "./utils";
 import {saveOrderStatus} from "./actions";
 import OrderStatusTooltip from "./OrderStatusTooltip";
 import {useAppDispatch} from "../../app/configureStore";
 import Popover from "@mui/material/Popover";
+import Button from "react-bootstrap/Button";
 
 
 interface OrderStatusButtonProps {
@@ -47,12 +48,11 @@ const OrderStatusButton = ({order, type}: OrderStatusButtonProps) => {
 
     return (
         <div className="status-button-select text-center">
-            <button aria-describedby={id}
+            <Button aria-describedby={id} size="sm" variant={orderStatusColor(status?.value)}
                     type="button" onClick={onOpenDropDown}
-                    title={status?.userName}
-                    className={classNames("btn btn-sm", currentStatusClassName)}>
+                    title={status?.userName}>
                 {!status?.date ? '-' : friendlyDateTime(status.date)}
-            </button>
+            </Button>
             <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
                      anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
                 <OrderStatusTooltip onClick={onSetStatus}/>

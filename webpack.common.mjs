@@ -1,7 +1,8 @@
-const path = require('path');
+import path from 'node:path';
+import process from 'node:process';
 
 
-module.exports = {
+export default {
     entry: './src/index.tsx',
     module: {
         rules: [
@@ -54,7 +55,7 @@ module.exports = {
         }
     },
     output: {
-        path: path.join(__dirname, 'public/js'),
+        path: path.join(process.cwd(), 'public/js'),
         filename: "[name].js",
         sourceMapFilename: '[file].map',
         publicPath: '/',

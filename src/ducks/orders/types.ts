@@ -1,4 +1,4 @@
-export type OrderStatusField = 'imported' | 'inventory' | 'printed' | 'logistics'
+export type OrderStatusField = 'imported' | 'inventory' | 'printed' | 'logistics' | 'ucc' | 'sps-invoiced'
     | 'work-cell' | 'picked' | 'routed' | 'asn' | 'picked-up' | 'invoiced' | 'completed';
 
 export interface OrderFilter {

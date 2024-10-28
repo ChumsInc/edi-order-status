@@ -1,6 +1,6 @@
 import React, {useId, useState} from "react";
 import {EDIOrder, EDIOrderStatus, EDIOrderStatusField} from "chums-types";
-import {friendlyDateTime, orderStatusClassName, orderStatusColor} from "./utils";
+import {friendlyDateTime, orderStatusColor} from "./utils";
 import {saveOrderStatus} from "./actions";
 import OrderStatusTooltip from "./OrderStatusTooltip";
 import {useAppDispatch} from "../../app/configureStore";
@@ -23,7 +23,6 @@ const OrderStatusButton = ({order, type}: OrderStatusButtonProps) => {
         return null;
     }
     const status: EDIOrderStatus = order.status_json[type] as EDIOrderStatus;
-
 
 
     const closeHandler = () => {

@@ -1,9 +1,7 @@
 import React, {ChangeEvent, useEffect, useId} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {selectMapadocFilter, setCustomer, toggleFilterMapadoc} from "./index";
+import {selectMapadocFilter, toggleFilterMapadoc} from "./index";
 import {useSearchParams} from "react-router-dom";
-import {customerFromKey} from "../orders/utils";
-import {loadCustomers} from "../customers";
 import FormCheck from "react-bootstrap/FormCheck";
 
 
@@ -31,7 +29,7 @@ const MAPADOCCheckBox = () => {
     }
 
     return (
-        <FormCheck type="checkbox" id={id} checked={checked} onChange={changeHandler} label="MAPADOC" />
+        <FormCheck type="checkbox" id={id} checked={checked} onChange={changeHandler} label="MAPADOC"/>
     )
 }
 

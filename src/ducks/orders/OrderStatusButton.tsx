@@ -23,7 +23,7 @@ const OrderStatusButton = ({order, type}: OrderStatusButtonProps) => {
         return null;
     }
     const status: EDIOrderStatus = order.status_json[type] as EDIOrderStatus;
-    const currentStatusClassName = orderStatusClassName(status?.value);
+
 
 
     const closeHandler = () => {

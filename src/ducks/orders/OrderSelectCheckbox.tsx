@@ -17,7 +17,7 @@ const OrderSelectCheckbox = ({order}:OrderSelectCheckboxProps) => {
         dispatch(toggleOrderSelected({list: [orderKey(order)], checked: !order.selected}));
     }
     return (
-        <FormCheck type="checkbox" checked={order.selected ?? false}
+        <FormCheck type="checkbox" checked={order.selected ?? false} id={id}
                    onClick={(ev) => ev.stopPropagation()} onChange={() => onChange(order)}
                    disabled={order.OrderStatus === 'X'} />
     )

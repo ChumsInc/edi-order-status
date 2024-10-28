@@ -36,7 +36,7 @@ const EDIOrdersList = () => {
     }
 
     return (
-        <ErrorBoundary FallbackComponent={ErrorBoundaryFallbackAlert}>
+        <ErrorBoundary FallbackComponent={ErrorBoundaryFallbackAlert} fallback={undefined}>
             <div>
                 <EDIOrdersFilter/>
                 <EDIOrderTable rows={orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>

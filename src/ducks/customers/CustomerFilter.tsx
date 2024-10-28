@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {useSelector} from "react-redux";
 import {customerFromKey, customerKey} from "../orders/utils";
-import {loadCustomers, selectCustomerList, selectCustomersLoaded} from "./index";
+import {loadCustomers, selectCustomersLoaded, selectFilteredCustomerList} from "./index";
 import {selectCustomerFilter, selectMapadocFilter, setCustomer} from "../filters";
 import {useAppDispatch} from "../../app/configureStore";
 import {useSearchParams} from "react-router-dom";
@@ -16,7 +16,7 @@ interface CustomerFilterSelectProps {
 const CustomerFilterSelect = ({required}: CustomerFilterSelectProps) => {
     const dispatch = useAppDispatch();
     const [searchParams, setSearchParams] = useSearchParams(window.location.search);
-    const customers = useSelector(selectCustomerList);
+    const customers = useSelector(selectFilteredCustomerList);
     const loaded = useSelector(selectCustomersLoaded);
     const selected = useSelector(selectCustomerFilter);
     const mapadoc = useSelector(selectMapadocFilter);

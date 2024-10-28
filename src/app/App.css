@@ -14,6 +14,15 @@
   font-size: small;
   opacity: 0.65;
 }
+#app .status-button-select--legend .btn-transparent,
+#app .status-button-select .btn-transparent {
+  --bs-btn-border-color: var(--bs-light-bg-subtle);
+}
+.status-button-tooltip {
+  background-color: var(--bs-secondary-bg);
+  border-color: var(--bs-light-bg-subtle);
+}
+
 #app .status-group-tooltip .status-group {
   border: 1px solid black;
   box-shadow: rgba(0, 0, 0, 0.75) 5px 5px 5px;
@@ -35,6 +44,9 @@
 }
 #app .table .edi-order-row--has-comment:not(.edi-order-row--comment) {
   border-bottom-color: transparent;
+}
+#app .table .edi-order-row--comment-text {
+  white-space: pre-wrap;
 }
 #app .table .form-check {
   min-height: unset;

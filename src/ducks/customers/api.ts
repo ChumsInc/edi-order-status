@@ -1,11 +1,10 @@
-import {Customer} from "./index";
 import {fetchJSON} from "chums-components";
+import {EDICustomer} from "chums-types";
 
-const URL_CUSTOMERS = '/api/operations/shipping/edi-order-status/chums/customers';
-
-export async function fetchCustomers():Promise<Customer[]> {
+export async function fetchCustomers():Promise<EDICustomer[]> {
     try {
-        const res = await fetchJSON<{customers:Customer[]}>(URL_CUSTOMERS);
+        const url = '/api/operations/shipping/edi-order-status/customers.json';
+        const res = await fetchJSON<{customers:EDICustomer[]}>(url);
         return res?.customers ?? [];
     } catch(err:unknown) {
         if (err instanceof Error) {

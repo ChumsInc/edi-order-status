@@ -1,5 +1,5 @@
 import React, {useId} from 'react';
-import {EDIOrder} from "./types";
+import {EDIOrder} from "chums-types";
 import {useDispatch} from "react-redux";
 import {toggleOrderSelected} from "./actions";
 import {orderKey} from "./utils";

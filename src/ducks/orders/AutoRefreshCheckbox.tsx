@@ -9,7 +9,7 @@ import FormCheck from "react-bootstrap/FormCheck";
 
 const REFRESH_TIMER_MS = 10 * 60 * 1000;
 
-const AutoRefreshCheckbox: React.FC = () => {
+const AutoRefreshCheckbox = () => {
     const dispatch = useAppDispatch();
     const timer = useRef<number>(0);
     const loading = useSelector(selectOrdersLoading);
@@ -18,13 +18,13 @@ const AutoRefreshCheckbox: React.FC = () => {
     const id = useId();
 
     useEffect(() => {
-        if (!loading) {
+        if (loading === 'idle') {
             setUpdated(new Date().valueOf());
         }
     }, [loading]);
 
     useEffect(() => {
-        if (checked && !loading) {
+        if (checked && loading === 'idle') {
             timer.current = window.setInterval(() => {
                 dispatch(loadOrders())
             }, REFRESH_TIMER_MS)
@@ -40,7 +40,7 @@ const AutoRefreshCheckbox: React.FC = () => {
 
     return (
         <Stack direction="horizontal" gap={1}>
-            {!loading && !!updated && <span className="me-3 text-muted">Updated: {dayjs(updated).format('HH:mm:ss')}</span>}
+            {loading === 'idle' && !!updated && <span className="me-3 text-muted">Updated: {dayjs(updated).format('HH:mm:ss')}</span>}
             <FormCheck id={id} label="Auto Refresh" onChange={changeHandler} checked={checked} />
         </Stack>
     )

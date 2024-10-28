@@ -1,21 +1,23 @@
-import {EDIOrderList, OrderSort} from "./types";
+import {EDIOrder} from "chums-types";
 import {loadOrders, saveOrderComment, saveOrderStatus, setSortField, toggleOrderSelected} from "./actions";
 import {orderKey} from "./utils";
 import {STORAGE_KEYS} from '../../storage-keys';
 import {createReducer} from "@reduxjs/toolkit";
 import {LocalStore} from "chums-components";
+import {SortProps} from "chums-types";
+import {EDIOrderList} from "./types";
 
 export interface OrderListState {
-    loading: boolean,
+    loading: 'idle'|'loading',
     list: EDIOrderList;
-    sort: OrderSort;
+    sort: SortProps<EDIOrder>;
     autoRefresh: boolean,
 }
 
 export const initialOrderState = (): OrderListState => ({
-    loading: false,
+    loading: 'idle',
     list: {},
-    sort: {field: 'UDF_CANCEL_DATE', asc: true},
+    sort: {field: 'UDF_CANCEL_DATE', ascending: true},
     autoRefresh: LocalStore.getItem<boolean>(STORAGE_KEYS.AUTO_REFRESH, false) ?? false,
 })
 
@@ -23,17 +25,17 @@ export const initialOrderState = (): OrderListState => ({
 const ordersReducer = createReducer(initialOrderState, builder => {
     builder
         .addCase(loadOrders.pending, (state) => {
-            state.loading = true;
+            state.loading = 'loading';
         })
         .addCase(loadOrders.fulfilled, (state, action) => {
-            state.loading = false;
+            state.loading = 'idle';
             state.list = {}
             action.payload.map(row => {
                 state.list[orderKey(row)] = row;
             });
         })
         .addCase(loadOrders.rejected, (state) => {
-            state.loading = false;
+            state.loading = 'idle';
         })
         .addCase(saveOrderStatus.pending, (state, action) => {
             const key = orderKey(action.meta.arg.salesOrder)

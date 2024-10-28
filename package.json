@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/base": "^5.0.0-beta.60",
     "@mui/material": "^5.14.9",
     "@reduxjs/toolkit": "^2.3.0",
     "chums-components": "github:ChumsInc/chums-components",
@@ -26,7 +27,7 @@
   },
   "scripts": {
     "start": "webpack serve --config webpack.dev.mjs --progress",
-    "build": "webpack --config webpack.prod.js --progress",
+    "build": "webpack --config webpack.prod.mjs --progress",
     "version": "auto-changelog -p && git add CHANGELOG.md"
   },
   "browserslist": {

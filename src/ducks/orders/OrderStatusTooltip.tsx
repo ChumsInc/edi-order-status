@@ -8,7 +8,7 @@ interface OrderStatusTooltipProps {
 
 const OrderStatusTooltip = ({onClick}:OrderStatusTooltipProps) => {
     return (
-        <Stack role="tooltip" direction="vertical" gap={1} className="p-1 status-button-select">
+        <Stack role="tooltip" direction="vertical" gap={1} className="p-1 status-button-select status-button-tooltip">
             <OrderStatusTooltipItem variant="light" value={0} text="Clear" onClick={onClick}/>
             <OrderStatusTooltipItem variant="info" value={1} text="In Process" onClick={onClick}/>
             <OrderStatusTooltipItem variant="success" value={2} text="Done" onClick={onClick}/>

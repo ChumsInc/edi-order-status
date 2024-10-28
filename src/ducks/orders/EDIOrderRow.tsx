@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import classNames from "classnames";
-import {EDIOrder} from "./types";
+import {EDIOrder} from "chums-types";
 import {customerKey, friendlyDate, orderKey} from "./utils";
 import OrderStatusButton from "./OrderStatusButton";
 import numeral from "numeral";
@@ -10,8 +10,9 @@ import OrderCompletedButton from "./OrderCompletedButton";
 import OrderSelectCheckbox from "./OrderSelectCheckbox";
 import {useAppDispatch} from "../../app/configureStore";
 import dayjs from "dayjs";
+import Button from "react-bootstrap/Button";
 
-interface Props {
+interface EDIOrderRowProps {
     row: EDIOrder,
 }
 
@@ -47,14 +48,14 @@ const rowValues = (row: EDIOrder):RowValues => {
     }
 }
 
-const CustomerItemLink: React.FC<{ row: EDIOrder }> = ({row}) => {
-    const href = `/reports/production/customer-open-items?company=${encodeURIComponent(row.Company)}&customer=${encodeURIComponent(row.ARDivisionNo)}-${encodeURIComponent(row.CustomerNo)}`;
+const CustomerItemLink = ({row}:{ row: EDIOrder }) => {
+    const href = `/reports/production/customer-open-items?company=chums&customer=${encodeURIComponent(row.ARDivisionNo)}-${encodeURIComponent(row.CustomerNo)}`;
     return (
         <a href={href} target="_blank">{customerKey(row)}</a>
     )
 }
 
-const EDIOrderRow: React.FC<Props> = ({row}) => {
+const EDIOrderRow = ({row}:EDIOrderRowProps) => {
     const {cancelDate, shipDate, orderDate, trClassName, lastInvoiceDate} = rowValues(row);
     const [editComment, setEditComment] = useState(false);
     return (
@@ -84,8 +85,10 @@ const EDIOrderRow: React.FC<Props> = ({row}) => {
                     {numeral(row.InvoiceCount).format('0,0')} / {numeral(row.OrderCount).format('0,0')}
                 </td>
                 <td className="right">{numeral(row.OrderTotal).format('$0,0.00')}</td>
-                <td className="comment-icon" onClick={() => setEditComment(true)}>
-                    <span className="bi-pencil-square"/>
+                <td className="comment-icon">
+                    <div onClick={() => setEditComment(true)} role="button" aria-label="Add/Edit Comment">
+                        <span className="bi-pencil-square" aria-hidden/>
+                    </div>
                 </td>
             </tr>
             {editComment && (
@@ -112,7 +115,7 @@ interface EDIOrderCommentProps {
     onSave: () => void,
 }
 
-const EDIOrderComment: React.FC<EDIOrderCommentProps> = ({row, onSave}) => {
+const EDIOrderComment = ({row, onSave}:EDIOrderCommentProps) => {
     const dispatch = useAppDispatch();
     const {trClassName} = rowValues(row);
     const [notes, setNotes] = useState(row.notes || '');
@@ -133,7 +136,7 @@ const EDIOrderComment: React.FC<EDIOrderCommentProps> = ({row, onSave}) => {
                 />
             </td>
             <td>
-                <span className="bi-cloud-arrow-up-fill"/>
+                <Button size="sm" variant="secondary"><span className="bi-cloud-arrow-up-fill"/></Button>
             </td>
         </tr>
     )

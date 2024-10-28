@@ -13,8 +13,9 @@ import ErrorBoundaryFallbackAlert from "../../common-components/ErrorBoundaryFal
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
+import Show01TEST from "../customers/Show01TESTToggle";
 
-const EDIOrdersList: React.FC = () => {
+const EDIOrdersList = () => {
     const dispatch = useAppDispatch();
     const orders = useSelector(selectFilteredOrdersList);
     const loading = useSelector(selectOrdersLoading);
@@ -40,12 +41,15 @@ const EDIOrdersList: React.FC = () => {
                 <EDIOrdersFilter/>
                 <EDIOrderTable rows={orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
             </div>
-            {!loading && !orders.length && (
+            {loading === 'idle' && !orders.length && (
                 <Alert color="warning">There are no open orders for this customer.</Alert>
             )}
             <Row className="g-3 align-items-baseline">
                 <Col xs="auto">
                     <AutoRefreshCheckbox/>
+                </Col>
+                <Col xs="auto">
+                    <Show01TEST />
                 </Col>
                 <Col />
                 <Col xs="auto">

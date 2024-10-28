@@ -1,17 +1,23 @@
-import {EDIOrder, FetchOrdersArg, FetchOrdersResponse, PutOrderCommentArg, PutOrderStatusArg} from "./types";
+import {FetchOrdersArg, FetchOrdersResponse, PutOrderCommentArg, PutOrderStatusArg} from "./types";
 import {fetchJSON} from "chums-components";
+import {EDIOrder} from "chums-types";
 
-const API_URL_ORDERS = (arg: FetchOrdersArg) => '/api/operations/shipping/edi-order-status/chums/' + (arg.ARDivisionNo ? `${arg.ARDivisionNo}-${arg.CustomerNo}` : '');
-const API_URL_ORDERS_COMPLETED = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/';
-const API_URL_ORDER_STATUS = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/:CustomerPONo/:statusCode';
-const API_URL_ORDER_NOTES = '/api/operations/shipping/edi-order-status/chums/:ARDivisionNo/:CustomerNo/:CustomerPONo/notes';
+const urlCustomerOrders = '/api/operations/shipping/edi-order-status/:ARDivisionNo-:CustomerNo/orders.json';
+const urlAllOrders = '/api/operations/shipping/edi-order-status/orders.json';
+const urlSetStatus = '/api/operations/shipping/edi-order-status/:ARDivisionNo-:CustomerNo/:status.json';
+const urlSetNotes = '/api/operations/shipping/edi-order-status/:ARDivisionNo-:CustomerNo/notes.json';
 
-function completedURL({ARDivisionNo, CustomerNo, minDate, maxDate}: FetchOrdersArg) {
-    const url = API_URL_ORDERS_COMPLETED
-        .replace(':ARDivisionNo', encodeURIComponent(ARDivisionNo!))
-        .replace(':CustomerNo', encodeURIComponent(CustomerNo!));
+
+function ordersURL({ARDivisionNo, CustomerNo, completed, minDate, maxDate}: FetchOrdersArg): string {
+    const url = (!!ARDivisionNo && !!CustomerNo)
+        ? urlCustomerOrders
+            .replace(':ARDivisionNo', encodeURIComponent(ARDivisionNo))
+            .replace(':CustomerNo', encodeURIComponent(CustomerNo))
+        : urlAllOrders;
     const query = new URLSearchParams();
-    query.append('completed', '1');
+    if (completed) {
+        query.append('completed', '1');
+    }
     if (minDate) {
         query.append('minDate', minDate);
     }
@@ -23,9 +29,7 @@ function completedURL({ARDivisionNo, CustomerNo, minDate, maxDate}: FetchOrdersA
 
 export async function fetchOrders(arg: FetchOrdersArg): Promise<EDIOrder[]> {
     try {
-        const url = arg.completed
-            ? completedURL(arg)
-            : API_URL_ORDERS(arg);
+        const url = ordersURL(arg);
         const res = await fetchJSON<FetchOrdersResponse>(url)
         return res?.salesOrders ?? [];
     } catch (err: unknown) {
@@ -40,12 +44,11 @@ export async function fetchOrders(arg: FetchOrdersArg): Promise<EDIOrder[]> {
 
 export async function putOrderStatus(arg: PutOrderStatusArg): Promise<EDIOrder | null> {
     try {
-        const url = API_URL_ORDER_STATUS
+        const url = urlSetStatus
             .replace(':ARDivisionNo', encodeURIComponent(arg.salesOrder.ARDivisionNo))
             .replace(':CustomerNo', encodeURIComponent(arg.salesOrder.CustomerNo))
-            .replace(':CustomerPONo', encodeURIComponent(arg.salesOrder.CustomerPONo))
-            .replace(':statusCode', encodeURIComponent(arg.statusCode.key));
-        const body = JSON.stringify(arg.statusCode);
+            .replace(':status', encodeURIComponent(arg.status.statusCode))
+        const body = JSON.stringify({CustomerPONo: arg.salesOrder.CustomerPONo, ...arg.status});
         const res = await fetchJSON<{ salesOrder: EDIOrder }>(url, {method: 'PUT', body});
         return res?.salesOrder ?? null;
     } catch (err: unknown) {
@@ -60,11 +63,10 @@ export async function putOrderStatus(arg: PutOrderStatusArg): Promise<EDIOrder |
 
 export async function putOrderComment(arg: PutOrderCommentArg): Promise<EDIOrder | null> {
     try {
-        const url = API_URL_ORDER_NOTES
+        const url = urlSetNotes
             .replace(':ARDivisionNo', encodeURIComponent(arg.salesOrder.ARDivisionNo))
-            .replace(':CustomerNo', encodeURIComponent(arg.salesOrder.CustomerNo))
-            .replace(':CustomerPONo', encodeURIComponent(arg.salesOrder.CustomerPONo));
-        const body = JSON.stringify({notes: arg.comment});
+            .replace(':CustomerNo', encodeURIComponent(arg.salesOrder.CustomerNo));
+        const body = JSON.stringify({CustomerPONo: arg.salesOrder.CustomerPONo, notes: arg.comment});
         const res = await fetchJSON<{ salesOrder: EDIOrder }>(url, {method: 'PUT', body});
         return res?.salesOrder ?? null;
     } catch (err: unknown) {
@@ -76,3 +78,4 @@ export async function putOrderComment(arg: PutOrderCommentArg): Promise<EDIOrder
         return Promise.reject(new Error('Error in putOrderComment()'));
     }
 }
+

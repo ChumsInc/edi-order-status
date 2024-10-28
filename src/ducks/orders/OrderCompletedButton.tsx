@@ -1,18 +1,18 @@
 import React, {useId, useState} from "react";
-import {EDIOrder} from "./types";
+import {EDIOrder} from "chums-types";
 import {friendlyDateTime} from "./utils";
 import {saveOrderStatus} from "./actions";
 import OrderCompletedTooltip from "./OrderCompletedTooltip";
 import {useAppDispatch} from "../../app/configureStore";
-import Popover from "@mui/material/Popover";
 import Button from "react-bootstrap/Button";
+import {ClickAwayListener, Popper} from "@mui/base";
 
 
-interface Props {
+interface OrderCompletedButtonProps {
     order: EDIOrder,
 }
 
-const OrderCompletedButton: React.FC<Props> = ({order}) => {
+const OrderCompletedButton = ({order}: OrderCompletedButtonProps) => {
     const dispatch = useAppDispatch();
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const id = useId();
@@ -24,12 +24,16 @@ const OrderCompletedButton: React.FC<Props> = ({order}) => {
 
     const clickHandler = (ev: React.MouseEvent<HTMLButtonElement>) => {
         ev.stopPropagation();
-        setAnchorEl(ev.currentTarget);
+        if (anchorEl) {
+            setAnchorEl(null)
+        } else {
+            setAnchorEl(ev.currentTarget);
+        }
     }
 
     const onSetStatus = (value: number) => {
-        const statusCode = {key: 'completed', value};
-        dispatch(saveOrderStatus({salesOrder: order, statusCode}));
+        const statusCode = {statusCode: 'completed', value};
+        dispatch(saveOrderStatus({salesOrder: order, status: statusCode}));
         setAnchorEl(null);
     }
 
@@ -38,17 +42,19 @@ const OrderCompletedButton: React.FC<Props> = ({order}) => {
     }
 
     return (
-        <div className="status-button-select" role="group">
-            <Button size="sm" type="button" variant={!completed ? 'light' : 'success'}
-                    onClick={clickHandler}
-                    title={completedByUserName}>
-                {!completed ? '-' : friendlyDateTime(completed)}
-            </Button>
-            <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
-                     anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
-                <OrderCompletedTooltip onClick={onSetStatus}/>
-            </Popover>
-        </div>
+        <ClickAwayListener onClickAway={closeHandler}>
+            <div className="status-button-select" role="group">
+                <Button size="sm" type="button" variant={!completed ? 'transparent' : 'success'}
+                        onClick={clickHandler}
+                        title={completedByUserName}>
+                    {!completed ? '-' : friendlyDateTime(completed)}
+                </Button>
+                <Popper open={Boolean(anchorEl)} id={id} anchorEl={anchorEl}
+                        placement="bottom">
+                    <OrderCompletedTooltip onClick={onSetStatus}/>
+                </Popper>
+            </div>
+        </ClickAwayListener>
     )
 }
 

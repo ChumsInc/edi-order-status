@@ -1,26 +1,22 @@
 import {RootState} from "../../app/configureStore";
-import {createAsyncThunk, createReducer} from "@reduxjs/toolkit";
+import {createAction, createAsyncThunk, createReducer, createSelector} from "@reduxjs/toolkit";
 import {fetchCustomers} from "./api";
 import {customerSorter} from "./utils";
-
-
-export interface Customer {
-    ARDivisionNo: string,
-    CustomerNo: string,
-    CustomerName: string,
-    isMAPADOC: boolean,
-}
+import {EDICustomer} from "chums-types";
+import {customerKey} from "../orders/utils";
 
 export interface CustomerState {
-    list: Customer[],
+    list: EDICustomer[],
     loading: boolean,
     loaded: boolean;
+    showO1TEST: boolean;
 }
 
 const defaultState: CustomerState = {
     list: [],
     loading: false,
     loaded: false,
+    showO1TEST: false,
 };
 
 
@@ -37,10 +33,21 @@ export const loadCustomers = createAsyncThunk(
     }
 )
 
+export const toggleShow01TEST = createAction<boolean|undefined>('customers/show01TEST');
+
 
 export const selectCustomerList = (state: RootState) => state.customers.list;
 export const selectCustomersLoading = (state: RootState) => state.customers.loading;
 export const selectCustomersLoaded = (state: RootState) => state.customers.loaded;
+export const selectShow01TEST = (state:RootState) => state.customers.showO1TEST;
+
+export const selectFilteredCustomerList = createSelector(
+    [selectCustomerList, selectShow01TEST],
+    (list, show01TEST) => {
+        return [...list]
+            .filter(customer => show01TEST || customerKey(customer) !== '01-TEST')
+    }
+)
 
 const customersReducer = createReducer(defaultState, builder => {
     builder
@@ -54,6 +61,9 @@ const customersReducer = createReducer(defaultState, builder => {
         })
         .addCase(loadCustomers.rejected, (state) => {
             state.loading = false;
+        })
+        .addCase(toggleShow01TEST, (state, action) => {
+            state.showO1TEST = action.payload ?? !state.showO1TEST;
         })
 })
 

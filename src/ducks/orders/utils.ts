@@ -1,11 +1,11 @@
-import {EDIOrder, EDIOrderList, OrderSort} from "./types";
-import {Customer} from "../customers";
+import {EDIOrderList} from "./types";
 import {FilterCustomer} from "../filters";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
-import {ButtonVariant, Variant} from "react-bootstrap/types";
+import {ButtonVariant} from "react-bootstrap/types";
+import {EDICustomer, EDIOrder, SortProps} from "chums-types";
 
-export const customerKey = (row: EDIOrder | Customer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
+export const customerKey = (row: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 export const customerFromKey = (key: string | null): FilterCustomer | null => {
     if (!key || !/\d{2}-[\dA-Z]+/.test(key)) {
         return null;
@@ -37,7 +37,7 @@ export const orderStatusClassName = (value: string | number | null = '') => {
     }
 }
 
-export const orderStatusColor = (value:string|number|null = ''):ButtonVariant => {
+export const orderStatusColor = (value: string | number | null = ''): ButtonVariant => {
     switch (value) {
         case 1:
             return 'info';
@@ -50,7 +50,7 @@ export const orderStatusColor = (value:string|number|null = ''):ButtonVariant =>
         case 5:
             return 'dark';
         default:
-            return 'light';
+            return 'transparent';
     }
 }
 
@@ -81,9 +81,9 @@ export const listToEDIOrders = (list: EDIOrderList): EDIOrder[] => {
     return Object.values(list);
 }
 
-export const orderSorter = (sort: OrderSort) => (a: EDIOrder, b: EDIOrder) => {
-    const {field, asc} = sort;
-    const sortMod = asc ? 1 : -1;
+export const orderSorter = (sort: SortProps<EDIOrder>) => (a: EDIOrder, b: EDIOrder) => {
+    const {field, ascending} = sort;
+    const sortMod = ascending ? 1 : -1;
     switch (field) {
         case 'ARDivisionNo':
         case 'CustomerNo':
@@ -97,9 +97,9 @@ export const orderSorter = (sort: OrderSort) => (a: EDIOrder, b: EDIOrder) => {
         case 'OrderStatus':
         case 'SalesOrders':
             return (
-                a[field].toUpperCase() === b[field].toUpperCase()
+                (a[field] ?? '').toUpperCase() === (b[field] ?? '').toUpperCase()
                     ? (orderKey(a) > orderKey(b) ? 1 : -1)
-                    : (a[field].toUpperCase() > b[field].toUpperCase() ? 1 : -1)
+                    : ((a[field] ?? '').toUpperCase() > (b[field] ?? '').toUpperCase() ? 1 : -1)
             ) * sortMod;
         case 'OrderTotal':
         case 'OrderCount':

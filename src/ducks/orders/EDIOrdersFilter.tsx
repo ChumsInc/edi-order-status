@@ -17,7 +17,7 @@ import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner'
 
-const EDIOrdersFilter: React.FC = () => {
+const EDIOrdersFilter = () => {
     const dispatch = useAppDispatch();
     const showCompleted = useSelector(selectShowCompletedFilter);
     const loading = useSelector(selectOrdersLoading);
@@ -47,8 +47,8 @@ const EDIOrdersFilter: React.FC = () => {
                 <CompletedCheckBox/>
             </Col>
             <Col xs="auto">
-                <Button type="submit" size="sm" disabled={loading}>
-                    {loading && (<Spinner as="span" size="sm" animation="border" role="status" aria-hidden="true"
+                <Button type="submit" size="sm" disabled={loading !== 'idle'}>
+                    {loading !== 'idle' && (<Spinner as="span" size="sm" animation="border" role="status" aria-hidden="true"
                                           className="me-1"/>)}
                     Reload
                 </Button>

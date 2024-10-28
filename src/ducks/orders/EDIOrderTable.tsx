@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
-import {EDIOrder, OrderSortField} from "./types";
+import {EDIOrder} from "chums-types";
 import classNames from "classnames";
 import EDIOrderRow from "./EDIOrderRow";
 import {orderKey} from "./utils";
@@ -12,9 +12,9 @@ import {selectCustomerFilter, selectOrderDateFilter, selectShipDateFilter} from 
 
 
 interface ThSortableProps {
-    field: OrderSortField,
+    field: keyof EDIOrder,
     className?: string | classNames.Argument,
-    onClick: (field: OrderSortField) => void,
+    onClick: (field: keyof EDIOrder) => void,
     children: string | React.ReactNode,
 }
 
@@ -23,8 +23,8 @@ const ThSortable = ({field, className, onClick, children}: ThSortableProps) => {
     const _className = {
         sortable: true,
         sorted: sort?.field === field,
-        'sorted-asc': sort?.field === field && sort?.asc,
-        'sorted-desc': sort?.field === field && !sort?.asc,
+        'sorted-asc': sort?.field === field && sort?.ascending,
+        'sorted-desc': sort?.field === field && !sort?.ascending,
     }
     return (
         <th className={classNames(_className, className)} onClick={() => onClick(field)}>{children}</th>
@@ -53,13 +53,13 @@ const EDIOrderTable = ({rows}: EDIOrderTableProps) => {
         setTHPopupEnabled(countSelected > 0);
     }, [rows]);
 
-    const onClickSort = (field: OrderSortField) => {
+    const onClickSort = (field: keyof EDIOrder) => {
         const nextSort = {...sort};
         if (nextSort.field === field) {
-            nextSort.asc = !nextSort.asc;
+            nextSort.ascending = !nextSort.ascending;
         } else {
             nextSort.field = field;
-            nextSort.asc = true;
+            nextSort.ascending = true;
         }
         dispatch(setSortField(nextSort));
     }
@@ -95,17 +95,17 @@ const EDIOrderTable = ({rows}: EDIOrderTableProps) => {
                 <ThSortable field="OrderDate" onClick={onClickSort}>Order Date</ThSortable>
                 <ThSortable field="ShipExpireDate" onClick={onClickSort}>Ship Date</ThSortable>
                 <ThSortable field="UDF_CANCEL_DATE" onClick={onClickSort}>Cancel Date</ThSortable>
-                <OrderStatusTH type="imported" enabled={thPopupEnabled}>Import</OrderStatusTH>
-                <OrderStatusTH type="inventory" enabled={thPopupEnabled}>Inventory</OrderStatusTH>
-                <OrderStatusTH type="printed" enabled={thPopupEnabled}>Print</OrderStatusTH>
-                <OrderStatusTH type="logistics" enabled={thPopupEnabled}>Logistics</OrderStatusTH>
-                <OrderStatusTH type="ucc" enabled={thPopupEnabled}>UCC</OrderStatusTH>
-                <OrderStatusTH type="work-cell" enabled={thPopupEnabled}>W/C</OrderStatusTH>
-                <OrderStatusTH type="picked" enabled={thPopupEnabled}>Pick</OrderStatusTH>
-                <OrderStatusTH type="routed" enabled={thPopupEnabled}>Route</OrderStatusTH>
-                <OrderStatusTH type="asn" enabled={thPopupEnabled}>ASN</OrderStatusTH>
-                <OrderStatusTH type="sps-invoiced" enabled={thPopupEnabled}>SPS Invoice</OrderStatusTH>
-                <OrderStatusCompletedTH type="completed" enabled={thPopupEnabled}>Completed</OrderStatusCompletedTH>
+                <OrderStatusTH statusCode="imported" enabled={thPopupEnabled}>Import</OrderStatusTH>
+                <OrderStatusTH statusCode="inventory" enabled={thPopupEnabled}>Inventory</OrderStatusTH>
+                <OrderStatusTH statusCode="printed" enabled={thPopupEnabled}>Print</OrderStatusTH>
+                <OrderStatusTH statusCode="logistics" enabled={thPopupEnabled}>Logistics</OrderStatusTH>
+                <OrderStatusTH statusCode="ucc" enabled={thPopupEnabled}>UCC</OrderStatusTH>
+                <OrderStatusTH statusCode="work-cell" enabled={thPopupEnabled}>W/C</OrderStatusTH>
+                <OrderStatusTH statusCode="picked" enabled={thPopupEnabled}>Pick</OrderStatusTH>
+                <OrderStatusTH statusCode="routed" enabled={thPopupEnabled}>Route</OrderStatusTH>
+                <OrderStatusTH statusCode="asn" enabled={thPopupEnabled}>ASN</OrderStatusTH>
+                <OrderStatusTH statusCode="sps-invoiced" enabled={thPopupEnabled}>SPS Invoice</OrderStatusTH>
+                <OrderStatusCompletedTH statusCode="completed" enabled={thPopupEnabled}>Completed</OrderStatusCompletedTH>
                 <ThSortable field="OrderCount" className="right" onClick={onClickSort}>Invoiced</ThSortable>
                 <ThSortable field="OrderTotal" className="right" onClick={onClickSort}>Order
                     Total</ThSortable>

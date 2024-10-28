@@ -20,6 +20,13 @@
     .btn {
       @extend .--status-btn;
     }
+    .btn-transparent {
+      --bs-btn-border-color: var(--bs-light-bg-subtle);
+    }
+    @at-root .status-button-tooltip {
+      background-color: var(--bs-secondary-bg);
+      border-color: var(--bs-light-bg-subtle);
+    }
   }
 
   .status-group-tooltip {
@@ -52,7 +59,7 @@
       border-bottom-color: transparent;
     }
     .edi-order-row--comment-text {
-
+      white-space: pre-wrap;
     }
     .form-check {
       min-height: unset;
@@ -70,4 +77,5 @@
     --bs-btn-font-size: inherit;
     --bs-btn-font-weight: inherit;
   }
+
 }

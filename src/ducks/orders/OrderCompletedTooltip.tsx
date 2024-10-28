@@ -10,7 +10,7 @@ interface OrderCompletedTooltipProps {
 const OrderCompletedTooltip = ({onClick}:OrderCompletedTooltipProps) => {
     const now = friendlyDateTime(new Date());
     return (
-        <Stack role="tooltip" direction="vertical" gap={1} className="p-1 status-button-select">
+        <Stack role="tooltip" direction="vertical" gap={1} className="p-1 status-button-select status-button-tooltip">
             <OrderStatusTooltipItem variant="light" value={0} text="Clear" onClick={onClick}/>
             <OrderStatusTooltipItem variant="success" value={1} text={now} onClick={onClick}/>
         </Stack>

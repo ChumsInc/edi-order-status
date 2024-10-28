@@ -1,4 +1,4 @@
-import {EDIOrder, OrderSort, OrderStatusUpdate, PutOrderCommentArg, PutOrderStatusArg} from "./types";
+import {OrderStatusUpdate, PutOrderCommentArg, PutOrderStatusArg} from "./types";
 import {selectOrderSaving, selectOrdersLoading, selectSalesOrder, selectSelectedOrders} from "./selectors";
 import {
     FilterCustomer,
@@ -11,6 +11,7 @@ import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {RootState} from "../../app/configureStore";
 import {fetchOrders, putOrderComment, putOrderStatus} from "./api";
 import {orderKey} from "./utils";
+import {EDIOrder, SortProps} from "chums-types";
 
 
 export interface CompletedURLProps {
@@ -33,7 +34,7 @@ export const loadOrders = createAsyncThunk<EDIOrder[]>(
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !selectOrdersLoading(state);
+            return selectOrdersLoading(state) === 'idle';
         }
     }
 )
@@ -59,7 +60,12 @@ export const saveSelectedStatus = createAsyncThunk<void, OrderStatusUpdate>(
         const state = getState() as RootState;
         const selectedOrders = selectSelectedOrders(state);
         for await (const order of selectedOrders) {
-            await dispatch(saveOrderStatus({salesOrder: order, statusCode: arg}));
+            await dispatch(saveOrderStatus({salesOrder: order, status: arg}));
+        }
+    }, {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return selectOrdersLoading(state) === 'idle';
         }
     }
 )
@@ -77,6 +83,6 @@ export const saveOrderComment = createAsyncThunk<EDIOrder | null, PutOrderCommen
 
     }
 )
-export const setSortField = createAction<OrderSort>('orders/setSort');
+export const setSortField = createAction<SortProps<EDIOrder>>('orders/setSort');
 
 export const toggleOrderSelected = createAction<{ list: string[], checked: boolean }>('orders/toggleSelected');

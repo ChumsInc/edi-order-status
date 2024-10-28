@@ -1,26 +1,30 @@
 import React, {useId, useState} from "react";
 import classNames from "classnames";
-import {OrderStatusField} from "./types";
+import {EDIOrderStatusField} from "chums-types";
 import OrderStatusTooltip from "./OrderStatusTooltip";
 import {saveSelectedStatus} from "./actions";
 import {useAppDispatch} from "../../app/configureStore";
-import Popover from '@mui/material/Popover'
 import Button from "react-bootstrap/Button";
+import {ClickAwayListener, Popper} from "@mui/base";
 
 interface OrderStatusTHProps {
-    type: OrderStatusField,
+    statusCode: EDIOrderStatusField,
     enabled?: boolean,
     children?: React.ReactNode
 }
 
-const OrderStatusTH = ({type, enabled, children}: OrderStatusTHProps) => {
+const OrderStatusTH = ({statusCode, enabled, children}: OrderStatusTHProps) => {
     const dispatch = useAppDispatch();
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const id = useId();
 
     const clickHandler = (ev: React.MouseEvent<HTMLButtonElement>) => {
         ev.stopPropagation();
-        setAnchorEl(ev.currentTarget);
+        if (anchorEl) {
+            setAnchorEl(null)
+        } else {
+            setAnchorEl(ev.currentTarget);
+        }
     }
 
     const closeHandler = () => {
@@ -28,20 +32,21 @@ const OrderStatusTH = ({type, enabled, children}: OrderStatusTHProps) => {
     }
 
     const onSetStatus = (value: number) => {
-        dispatch(saveSelectedStatus({key: type, value}))
+        dispatch(saveSelectedStatus({statusCode: statusCode, value}))
         setAnchorEl(null);
     }
     return (
-        <th className={classNames('text-center', {'tooltip-toggle': enabled})}>
-            <Button aria-describedby={id} disabled={!enabled} type="button"
-                    variant="light" size="sm" onClick={clickHandler}>
-                {children}
-            </Button>
-            <Popover open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={closeHandler}
-                     anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
-                <OrderStatusTooltip onClick={onSetStatus}/>
-            </Popover>
-        </th>
+        <ClickAwayListener onClickAway={closeHandler}>
+            <th className={classNames('text-center', {'tooltip-toggle': enabled})}>
+                <Button aria-describedby={id} disabled={!enabled} type="button"
+                        variant="light" size="sm" onClick={clickHandler}>
+                    <span className="text-wrap">{children}</span>
+                </Button>
+                <Popper open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} placement="bottom">
+                    <OrderStatusTooltip onClick={onSetStatus}/>
+                </Popper>
+            </th>
+        </ClickAwayListener>
     )
 }
 

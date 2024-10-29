@@ -43,9 +43,7 @@ const EDIOrdersFilter = () => {
             <Col xs="auto">
                 <ShipDateFilterSelect/>
             </Col>
-            <Col xs="auto">
-                <CompletedCheckBox/>
-            </Col>
+            <CompletedCheckBox/>
             <Col xs="auto">
                 <Button type="submit" size="sm" disabled={loading !== 'idle'}>
                     {loading !== 'idle' && (<Spinner as="span" size="sm" animation="border" role="status" aria-hidden="true"

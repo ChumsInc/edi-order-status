@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {loadOrders} from "./actions";
-import EDIOrdersFilter from "./EDIOrdersFilter";
 import EDIOrderTable from "./EDIOrderTable";
 import {LocalStore, TablePagination} from "chums-components";
 import AutoRefreshCheckbox from "./AutoRefreshCheckbox";
@@ -37,10 +36,7 @@ const EDIOrdersList = () => {
 
     return (
         <ErrorBoundary FallbackComponent={ErrorBoundaryFallbackAlert} fallback={undefined}>
-            <div>
-                <EDIOrdersFilter/>
-                <EDIOrderTable rows={orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
-            </div>
+            <EDIOrderTable rows={orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
             {loading === 'idle' && !orders.length && (
                 <Alert color="warning">There are no open orders for this customer.</Alert>
             )}
@@ -49,9 +45,9 @@ const EDIOrdersList = () => {
                     <AutoRefreshCheckbox/>
                 </Col>
                 <Col xs="auto">
-                    <Show01TEST />
+                    <Show01TEST/>
                 </Col>
-                <Col />
+                <Col/>
                 <Col xs="auto">
                     <TablePagination bsSize="sm" showFirst showLast
                                      page={page} onChangePage={setPage} rowsPerPage={rowsPerPage}

@@ -5,6 +5,7 @@ import {loadCustomers} from "../ducks/customers";
 import {useAppDispatch} from "./configureStore";
 import {Route, Routes} from "react-router-dom";
 import AlertList from "../ducks/alerts/AlertList";
+import EDIOrdersFilter from "../ducks/orders/EDIOrdersFilter";
 
 function App() {
     const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ function App() {
     return (
         <div>
             <AlertList/>
+            <EDIOrdersFilter/>
             <Routes>
                 <Route path="/" element={<EDIOrdersList/>}/>
             </Routes>

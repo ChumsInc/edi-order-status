@@ -31,7 +31,7 @@ const CompletedCheckBox = () => {
             <Col xs="auto">
                 <FormCheck type="checkbox" id={id}
                            checked={showCompleted} onChange={onToggleCompleted}
-                           label="Load Completed Orders"/>
+                           label="Completed Orders"/>
             </Col>
             {showCompleted && (
                 <>

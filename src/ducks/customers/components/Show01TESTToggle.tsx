@@ -13,6 +13,6 @@ export default function Show01TEST() {
     }
 
     return (
-        <FormCheck type="checkbox" checked={show} id={id} label="Show 01-TEST" onChange={changeHandler}/>
+        <FormCheck type="checkbox" checked={show} id={id} label="Show Chums Test Account" onChange={changeHandler}/>
     )
 }

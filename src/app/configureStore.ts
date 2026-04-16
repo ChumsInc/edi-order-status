@@ -1,7 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {combineReducers} from "redux";
 import {type TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
-import filtersReducer from "../ducks/filters";
 import {alertsSlice} from '@chumsinc/alert-list'
 import customersSlice from "@/ducks/customers/customersSlice.ts";
 import ordersSlice from "@/ducks/orders/ordersSlice.ts";
@@ -9,7 +8,6 @@ import ordersSlice from "@/ducks/orders/ordersSlice.ts";
 const rootReducer = combineReducers({
     [alertsSlice.reducerPath]: alertsSlice.reducer,
     [customersSlice.reducerPath]: customersSlice.reducer,
-    filters: filtersReducer,
     [ordersSlice.reducerPath]: ordersSlice.reducer,
 });
 

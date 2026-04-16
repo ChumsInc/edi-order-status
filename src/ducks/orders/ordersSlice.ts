@@ -10,7 +10,6 @@ import {
     setCurrentCustomer
 } from "@/ducks/customers/customersSlice.ts";
 import dayjs from "dayjs";
-import {selectOrderDateFilter} from "@/ducks/filters";
 
 const adapter = createEntityAdapter<EDIOrder, string>({
     selectId: (arg) => orderKey(arg),
@@ -215,7 +214,7 @@ export const selectOrderDates = createSelector(
 );
 
 export const selectShipDates = createSelector(
-    [selectCurrentCustomer, selectShowTestCustomer, selectShowMAPADOCOnly, selectOrdersList, selectOrderDateFilter],
+    [selectCurrentCustomer, selectShowTestCustomer, selectShowMAPADOCOnly, selectOrdersList, selectOrderDate],
     (customer, showTestCustomer, onlyMAPADOC, list, orderDate) => {
         const dates: string[] = list
             .filter(order => !customer || customerKey(order) === customer)

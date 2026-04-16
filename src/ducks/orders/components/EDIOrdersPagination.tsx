@@ -4,7 +4,6 @@ import Show01TEST from "@/ducks/customers/components/Show01TESTToggle.tsx";
 import {TablePagination} from "@chumsinc/sortable-tables";
 import Row from "react-bootstrap/esm/Row";
 import {useEDIOrders} from "@/hooks/edi-orders/useEDIOrders.ts";
-import AutoRefreshProvider from "@/components/auto-refresh/AutoRefreshProvider.tsx";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorBoundaryFallbackAlert from "@/ducks/alerts/ErrorBoundaryFallbackAlert.tsx";
 
@@ -14,9 +13,7 @@ export default function EDIOrdersPagination() {
         <ErrorBoundary FallbackComponent={ErrorBoundaryFallbackAlert}>
             <Row className="g-3 align-items-baseline">
                 <Col xs="auto">
-                    <AutoRefreshProvider>
-                        <AutoRefreshCheckbox/>
-                    </AutoRefreshProvider>
+                    <AutoRefreshCheckbox/>
                 </Col>
                 <Col xs="auto">
                     <Show01TEST/>

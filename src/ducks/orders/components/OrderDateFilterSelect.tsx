@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectOrderDate, selectOrderDates, setOrderDate} from "../ordersSlice.ts";
 import FormLabel from "react-bootstrap/FormLabel";
 import FormSelect from "react-bootstrap/FormSelect";
+import dayjs from "dayjs";
 
 
 const OrderDateFilterSelect = () => {
@@ -22,7 +23,7 @@ const OrderDateFilterSelect = () => {
                 <option value="">All</option>
                 <option value="" disabled/>
                 {orderDates.map(date => (
-                    <option key={date} value={date}>{new Date(date).toLocaleDateString()}</option>))}
+                    <option key={date} value={date}>{dayjs(date).format('MM/DD/YYYY')}</option>))}
             </FormSelect>
         </>
     )

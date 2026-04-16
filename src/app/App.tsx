@@ -8,7 +8,6 @@ import AppContainer from "@/app/AppContainer.ts";
 import OrdersProvider from "@/hooks/edi-orders/OrdersProvider.tsx";
 import EDIOrdersList from "@/ducks/orders/components/EDIOrdersList.tsx";
 import EDIOrdersPagination from "@/ducks/orders/components/EDIOrdersPagination.tsx";
-import AutoRefreshProvider from "@/components/auto-refresh/AutoRefreshProvider.tsx";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorBoundaryFallbackAlert from "@/ducks/alerts/ErrorBoundaryFallbackAlert.tsx";
 import OrdersFormProvider from "@/hooks/edi-orders-form/OrdersFormProvider.tsx";
@@ -26,13 +25,11 @@ function App() {
                 <AppAlertList/>
                 <OrdersFormProvider>
                     <OrdersProvider>
-                        <AutoRefreshProvider>
-                            <EDIOrdersFilter/>
-                            <Routes>
-                                <Route path="/" element={<EDIOrdersList/>}/>
-                            </Routes>
-                            <EDIOrdersPagination />
-                        </AutoRefreshProvider>
+                        <EDIOrdersFilter/>
+                        <Routes>
+                            <Route path="/" element={<EDIOrdersList/>}/>
+                        </Routes>
+                        <EDIOrdersPagination/>
                     </OrdersProvider>
                 </OrdersFormProvider>
             </AppContainer>

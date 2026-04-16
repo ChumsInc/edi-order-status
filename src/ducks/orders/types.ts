@@ -5,10 +5,6 @@ export interface OrderStatusUpdate {
     value: number,
 }
 
-export interface EDIOrderList {
-    [key: string]: EDIOrder;
-}
-
 export interface FetchOrdersArg {
     customerKey?: string|null;
     ARDivisionNo?: string|null;

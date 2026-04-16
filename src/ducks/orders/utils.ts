@@ -1,46 +1,17 @@
-import type {EDIOrderList, FetchOrdersArg} from "./types";
-import type {FilterCustomer} from "../filters";
+import type {FetchOrdersArg} from "./types";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
 import {type ButtonVariant} from "react-bootstrap/types";
 import type {EDICustomer, EDIOrder, SortProps} from "chums-types";
 import type {RefObject} from "react";
 
-export const customerKey = (row: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
-export const customerFromKey = (key: string | null): FilterCustomer | null => {
-    if (!key || !/\d{2}-[\dA-Z]+/.test(key)) {
-        return null;
-    }
-    const [ARDivisionNo, CustomerNo] = key.split('-');
-    return {
-        Company: 'chums',
-        ARDivisionNo,
-        CustomerNo
-    }
-}
+export const customerKey = (row: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 
-export function isTestCustomer(customer: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer | FilterCustomer):boolean {
+export function isTestCustomer(customer: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer): boolean {
     return customerKey(customer) === '01-TEST';
 }
 
 export const orderKey = (row: EDIOrder): string => `${row.ARDivisionNo}-${row.CustomerNo}:${row.CustomerPONo}/${row.OrderStatus}`;
-
-export const orderStatusClassName = (value: string | number | null = '') => {
-    switch (value) {
-        case 1:
-            return 'btn-info';
-        case 2:
-            return 'btn-success';
-        case 3:
-            return 'btn-warning';
-        case 4:
-            return 'btn-danger';
-        case 5:
-            return 'btn-dark';
-        default:
-            return 'btn-light';
-    }
-}
 
 export const orderStatusColor = (value: string | number | null = ''): ButtonVariant => {
     switch (value) {
@@ -80,10 +51,6 @@ export const friendlyDateTime = (val: string | Date | dayjs.Dayjs): string | nul
         return date.format('HH:mm');
     }
     return friendlyDate(date);
-}
-
-export const listToEDIOrders = (list: EDIOrderList): EDIOrder[] => {
-    return Object.values(list);
 }
 
 export const orderSorter = (sort: SortProps<EDIOrder>) => (a: EDIOrder, b: EDIOrder) => {
@@ -149,7 +116,15 @@ export const orderFormElements = {
     maxDate: 'maxDate',
 }
 
-export function buildOrdersParams(formRef:RefObject<HTMLFormElement|null>):FetchOrdersArg {
+export function buildOrdersParams(formRef: RefObject<HTMLFormElement | null> | URLSearchParams): FetchOrdersArg {
+    if (formRef instanceof URLSearchParams) {
+        return {
+            customerKey: formRef.get('customer') as string ?? null,
+            completed: formRef.get('completed') === '1',
+            minDate: formRef.get('minDate') as string,
+            maxDate: formRef.get('maxDate') as string,
+        }
+    }
     if (!formRef?.current) {
         return {}
     }

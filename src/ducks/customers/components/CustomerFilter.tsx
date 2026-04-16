@@ -1,34 +1,20 @@
-import {type ChangeEvent, useEffect, useRef} from "react";
-import {useSelector} from "react-redux";
+import {type ChangeEvent} from "react";
 import {customerKey, orderFormElements} from "../../orders/utils.ts";
-import {
-    selectCurrentCustomer,
-    selectFilteredCustomerList,
-    selectShowMAPADOCOnly,
-    setCurrentCustomer
-} from "../customersSlice.ts";
-import {useAppDispatch} from "@/app/configureStore.ts";
+import {selectCurrentCustomer, selectFilteredCustomerList, selectShowMAPADOCOnly} from "../customersSlice.ts";
 import {useSearchParams} from "react-router";
 import {customerNameSorter} from "../utils.ts";
 import FormSelect from "react-bootstrap/FormSelect";
+import {useAppSelector} from "@/app/configureStore.ts";
 
 interface CustomerFilterSelectProps {
     required?: boolean
 }
 
 const CustomerFilterSelect = ({required}: CustomerFilterSelectProps) => {
-    const dispatch = useAppDispatch();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const customers = useSelector(selectFilteredCustomerList);
-    const currentCustomer = useSelector(selectCurrentCustomer);
-    const onlyMAPADOC = useSelector(selectShowMAPADOCOnly);
-    // const initialized = useRef<boolean>(false);
-
-    // useEffect(() => {
-    //     if (searchParams.get('customer')) {
-    //         dispatch(setCurrentCustomer(searchParams.get('customer')));
-    //     }
-    // }, [dispatch, searchParams, initialized]);
+    const [, setSearchParams] = useSearchParams();
+    const customers = useAppSelector(selectFilteredCustomerList);
+    const currentCustomer = useAppSelector(selectCurrentCustomer);
+    const onlyMAPADOC = useAppSelector(selectShowMAPADOCOnly);
 
     const changeHandler = (ev: ChangeEvent<HTMLSelectElement>) => {
         const key = ev.target.value;

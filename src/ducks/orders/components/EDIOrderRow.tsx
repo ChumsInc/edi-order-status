@@ -137,7 +137,7 @@ const EDIOrderComment = ({row, onSave}: EDIOrderCommentProps) => {
                 />
             </td>
             <td>
-                <Button size="sm" variant="secondary"><span className="bi-cloud-arrow-up-fill"/></Button>
+                <Button size="sm" variant="outline-primary"><span className="bi-cloud-arrow-up-fill"/></Button>
             </td>
         </tr>
     )

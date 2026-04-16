@@ -26,12 +26,15 @@ export default function OrdersFormProvider({children}: OrdersFormProviderProps) 
     const [autoRefresh, setAutoRefresh] = useState<boolean>(LocalStore.getItem<boolean>(STORAGE_KEYS.AUTO_REFRESH, false) ?? false);
     const [updated, setUpdated] = useState<number>(0);
     const interval = useRef<number>(0);
+    const initialized = useRef<boolean>(false);
 
     const loadOrdersHandler = useCallback(async () => {
-        const params = buildOrdersParams(formRef);
-        await dispatch(loadOrders(params));
+        // if this is the initial load, then from URL Search params as the form data has not been populated yet.
+        const arg = initialized.current ? buildOrdersParams(formRef) : buildOrdersParams(params);
+        initialized.current = true;
+        await dispatch(loadOrders(arg));
         setUpdated(new Date().valueOf())
-    }, [dispatch, setUpdated, formRef]);
+    }, [dispatch, setUpdated, formRef, params, initialized]);
 
     const updateParams = useCallback(async (params:URLSearchParams) => {
         const customer = params.get("customer") as string ?? null;

@@ -8,6 +8,10 @@ import AppContainer from "@/app/AppContainer.ts";
 import OrdersProvider from "@/hooks/edi-orders/OrdersProvider.tsx";
 import EDIOrdersList from "@/ducks/orders/components/EDIOrdersList.tsx";
 import EDIOrdersPagination from "@/ducks/orders/components/EDIOrdersPagination.tsx";
+import AutoRefreshProvider from "@/components/auto-refresh/AutoRefreshProvider.tsx";
+import {ErrorBoundary} from "react-error-boundary";
+import ErrorBoundaryFallbackAlert from "@/ducks/alerts/ErrorBoundaryFallbackAlert.tsx";
+import OrdersFormProvider from "@/hooks/edi-orders-form/OrdersFormProvider.tsx";
 
 function App() {
     const dispatch = useAppDispatch();
@@ -17,16 +21,22 @@ function App() {
     }, [dispatch])
 
     return (
-        <AppContainer>
-            <AppAlertList/>
-            <OrdersProvider>
-                <EDIOrdersFilter/>
-                <Routes>
-                    <Route path="/" element={<EDIOrdersList/>}/>
-                </Routes>
-                <EDIOrdersPagination />
-            </OrdersProvider>
-        </AppContainer>
+        <ErrorBoundary FallbackComponent={ErrorBoundaryFallbackAlert}>
+            <AppContainer>
+                <AppAlertList/>
+                <OrdersFormProvider>
+                    <OrdersProvider>
+                        <AutoRefreshProvider>
+                            <EDIOrdersFilter/>
+                            <Routes>
+                                <Route path="/" element={<EDIOrdersList/>}/>
+                            </Routes>
+                            <EDIOrdersPagination />
+                        </AutoRefreshProvider>
+                    </OrdersProvider>
+                </OrdersFormProvider>
+            </AppContainer>
+        </ErrorBoundary>
     );
 }
 

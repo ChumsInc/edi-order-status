@@ -10,11 +10,12 @@ export interface EDIOrderList {
 }
 
 export interface FetchOrdersArg {
-    ARDivisionNo?: string;
-    CustomerNo?: string;
-    completed?: boolean;
-    minDate?: string;
-    maxDate?: string;
+    customerKey?: string|null;
+    ARDivisionNo?: string|null;
+    CustomerNo?: string|null;
+    completed?: boolean|string|null;
+    minDate?: string|null;
+    maxDate?: string|null;
 }
 
 export interface FetchOrdersResponse {

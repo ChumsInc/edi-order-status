@@ -1,9 +1,10 @@
-import type {EDIOrderList} from "./types";
+import type {EDIOrderList, FetchOrdersArg} from "./types";
 import type {FilterCustomer} from "../filters";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
 import {type ButtonVariant} from "react-bootstrap/types";
 import type {EDICustomer, EDIOrder, SortProps} from "chums-types";
+import type {RefObject} from "react";
 
 export const customerKey = (row: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 export const customerFromKey = (key: string | null): FilterCustomer | null => {
@@ -137,5 +138,26 @@ export const orderSorter = (sort: SortProps<EDIOrder>) => (a: EDIOrder, b: EDIOr
             ) * sortMod;
         default:
             return (orderKey(a) > orderKey(b) ? 1 : -1) * sortMod;
+    }
+}
+
+
+export const orderFormElements = {
+    customer: 'customer',
+    completed: 'completed',
+    minDate: 'minDate',
+    maxDate: 'maxDate',
+}
+
+export function buildOrdersParams(formRef:RefObject<HTMLFormElement|null>):FetchOrdersArg {
+    if (!formRef?.current) {
+        return {}
+    }
+    const formData = new FormData(formRef.current);
+    return {
+        customerKey: formData.get(orderFormElements.customer) as string ?? null,
+        completed: formData.get(orderFormElements.completed) as string,
+        minDate: formData.get(orderFormElements.minDate) as string,
+        maxDate: formData.get(orderFormElements.maxDate) as string,
     }
 }

@@ -2,17 +2,17 @@ import type {FetchOrdersArg, FetchOrdersResponse, PutOrderCommentArg, PutOrderSt
 import {fetchJSON} from "@chumsinc/ui-utils";
 import type {EDIOrder} from "chums-types";
 
-const urlCustomerOrders = '/api/operations/shipping/edi-order-status/:ARDivisionNo-:CustomerNo/orders.json';
+const urlCustomerOrders = '/api/operations/shipping/edi-order-status/:customerSlug/orders.json';
 const urlAllOrders = '/api/operations/shipping/edi-order-status/orders.json';
 const urlSetStatus = '/api/operations/shipping/edi-order-status/:ARDivisionNo-:CustomerNo/:status.json';
 const urlSetNotes = '/api/operations/shipping/edi-order-status/:ARDivisionNo-:CustomerNo/notes.json';
 
 
-function ordersURL({ARDivisionNo, CustomerNo, completed, minDate, maxDate}: FetchOrdersArg): string {
-    const url = (!!ARDivisionNo && !!CustomerNo)
+function ordersURL({customerKey, completed, minDate, maxDate}: FetchOrdersArg): string {
+
+    const url = customerKey
         ? urlCustomerOrders
-            .replace(':ARDivisionNo', encodeURIComponent(ARDivisionNo))
-            .replace(':CustomerNo', encodeURIComponent(CustomerNo))
+            .replace(':customerSlug', encodeURIComponent(customerKey))
         : urlAllOrders;
     const query = new URLSearchParams();
     if (completed) {

@@ -6,6 +6,8 @@ import {selectOrdersList, selectOrdersStatus} from "@/ducks/orders/ordersSlice.t
 import dayjs from "dayjs";
 import {LocalStore} from "@chumsinc/ui-utils";
 import {STORAGE_KEYS} from "../../storage-keys.ts";
+import {buildOrdersParams} from "@/ducks/orders/utils.ts";
+import {useEdiOrdersForm} from "@/hooks/edi-orders-form/useEdiOrdersForm.ts";
 
 const refreshInterval = 10 * 60 * 1000;
 
@@ -19,14 +21,16 @@ export default function AutoRefreshProvider({children}: AutoRefreshProviderProps
     const status = useAppSelector(selectOrdersStatus);
     const [checked, setChecked] = useState<boolean>(LocalStore.getItem<boolean>(STORAGE_KEYS.AUTO_REFRESH, false) ?? false);
     const [updated, setUpdated] = useState<number>(0);
+    const {formRef} = useEdiOrdersForm();
     const interval = useRef<number>(0);
 
     const refreshHandler = useCallback(async () => {
         if (checked) {
-            await dispatch(loadOrders());
+            const params = buildOrdersParams(formRef);
+            await dispatch(loadOrders(params));
             setUpdated(new Date().valueOf())
         }
-    }, [dispatch, checked, setUpdated]);
+    }, [dispatch, checked, setUpdated, formRef]);
 
     useEffect(() => {
         window.clearInterval(interval.current);
@@ -58,7 +62,8 @@ export default function AutoRefreshProvider({children}: AutoRefreshProviderProps
         checked,
         setChecked: checkedChangeHandler,
         updated: updated ? dayjs(updated).format('HH:mm:ss') : 'never',
-    }), [checked, checkedChangeHandler, updated]);
+        formRef,
+    }), [checked, checkedChangeHandler, updated, formRef]);
 
     return (
         <AutoRefreshContext value={state}>{children}</AutoRefreshContext>

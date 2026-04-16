@@ -1,12 +1,11 @@
 import {type ChangeEvent, useId} from "react";
-import {useAppDispatch, useAppSelector} from "@/app/configureStore.ts";
+import {useAppSelector} from "@/app/configureStore.ts";
 import Stack from "react-bootstrap/Stack";
 import FormCheck from "react-bootstrap/FormCheck";
 import {useAutoRefresh} from "@/components/auto-refresh/useAutoRefresh.ts";
 import {selectOrdersStatus} from "@/ducks/orders/ordersSlice.ts";
 
 const AutoRefreshCheckbox = () => {
-    const dispatch = useAppDispatch();
     const status = useAppSelector(selectOrdersStatus);
     const {checked, setChecked, updated} = useAutoRefresh();
     const id = useId();

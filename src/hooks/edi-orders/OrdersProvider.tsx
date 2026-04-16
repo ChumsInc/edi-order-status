@@ -1,4 +1,4 @@
-import {type ReactNode, useCallback, useEffect, useMemo, useState} from "react";
+import {type ReactNode, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {OrdersContext, type OrdersState} from "@/hooks/edi-orders/OrdersContext.tsx";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore.ts";
 import {selectFilteredOrdersCount, selectOrdersSort, setOrdersSort} from "@/ducks/orders/ordersSlice.ts";
@@ -13,6 +13,7 @@ export interface PaginationProviderProps {
 
 export default function OrdersProvider({children}: PaginationProviderProps) {
     const dispatch = useAppDispatch();
+    const formRef = useRef<HTMLFormElement|null>(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(LocalStore.getItem<number>(STORAGE_KEYS.ROWS_PER_PAGE, 25) ?? 25);
     const [completed, setCompleted] = useState(false);
@@ -47,6 +48,7 @@ export default function OrdersProvider({children}: PaginationProviderProps) {
     }, [setRowsPerPage, setPage])
 
     const value = useMemo<OrdersState>(() => ({
+        formRef,
         count,
         page,
         setPage,
@@ -60,7 +62,7 @@ export default function OrdersProvider({children}: PaginationProviderProps) {
         setMinDate,
         maxDate,
         setMaxDate,
-    }), [count, page, rowsPerPage, sort, sortChangeHandler, rowsPerPageHandler, setPage,
+    }), [count, page, rowsPerPage, sort, sortChangeHandler, rowsPerPageHandler, setPage, formRef,
         completed, setCompleted, minDate, maxDate, setMinDate, setMaxDate,
     ]);
 

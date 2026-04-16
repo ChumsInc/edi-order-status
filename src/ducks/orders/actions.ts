@@ -1,12 +1,11 @@
-import type {OrderStatusUpdate, PutOrderCommentArg, PutOrderStatusArg} from "./types";
+import type {FetchOrdersArg, OrderStatusUpdate, PutOrderCommentArg, PutOrderStatusArg} from "./types";
 import {selectCheckedOrders, selectOrderById, selectOrderSaving, selectOrdersStatus} from "./ordersSlice";
-import {type FilterCustomer, selectMaxDateFilter, selectMinDateFilter, selectShowCompletedFilter} from "../filters";
+import {type FilterCustomer} from "../filters";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import type {RootState} from "../../app/configureStore";
 import {fetchOrders, putOrderComment, putOrderStatus} from "./api";
-import {customerFromKey, orderKey} from "./utils";
+import {orderKey} from "./utils";
 import type {EDIOrder} from "chums-types";
-import {selectCurrentCustomer} from "@/ducks/customers/customersSlice.ts";
 
 
 export interface CompletedURLProps {
@@ -16,16 +15,10 @@ export interface CompletedURLProps {
 }
 
 
-export const loadOrders = createAsyncThunk<EDIOrder[]>(
+export const loadOrders = createAsyncThunk<EDIOrder[], FetchOrdersArg, {state:RootState}>(
     'orders/load',
-    async (_, {getState}) => {
-        const state = getState() as RootState;
-        const currentCustomer = selectCurrentCustomer(state);
-        const customer = currentCustomer ? customerFromKey(currentCustomer) : {};
-        const minDate = selectMinDateFilter(state);
-        const maxDate = selectMaxDateFilter(state);
-        const completed = selectShowCompletedFilter(state);
-        return await fetchOrders({...customer, completed, minDate, maxDate});
+    async (arg) => {
+        return await fetchOrders(arg);
     },
     {
         condition: (_, {getState}) => {

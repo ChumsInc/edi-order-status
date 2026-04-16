@@ -1,6 +1,6 @@
 import {type ChangeEvent, useEffect, useRef} from "react";
 import {useSelector} from "react-redux";
-import {customerKey} from "../../orders/utils.ts";
+import {customerKey, orderFormElements} from "../../orders/utils.ts";
 import {
     selectCurrentCustomer,
     selectFilteredCustomerList,
@@ -9,7 +9,6 @@ import {
 } from "../customersSlice.ts";
 import {useAppDispatch} from "@/app/configureStore.ts";
 import {useSearchParams} from "react-router";
-import {loadOrders} from "../../orders/actions.ts";
 import {customerNameSorter} from "../utils.ts";
 import FormSelect from "react-bootstrap/FormSelect";
 
@@ -19,36 +18,17 @@ interface CustomerFilterSelectProps {
 
 const CustomerFilterSelect = ({required}: CustomerFilterSelectProps) => {
     const dispatch = useAppDispatch();
-    const [searchParams, setSearchParams] = useSearchParams(window.location.search);
+    const [searchParams, setSearchParams] = useSearchParams();
     const customers = useSelector(selectFilteredCustomerList);
     const currentCustomer = useSelector(selectCurrentCustomer);
-    const mapadoc = useSelector(selectShowMAPADOCOnly);
-    const initialized = useRef<boolean>(false);
+    const onlyMAPADOC = useSelector(selectShowMAPADOCOnly);
+    // const initialized = useRef<boolean>(false);
 
-    useEffect(() => {
-        if (searchParams.get('customer')) {
-            dispatch(setCurrentCustomer(searchParams.get('customer')));
-        }
-    }, [dispatch, searchParams, initialized]);
-
-    useEffect(() => {
-        dispatch(loadOrders());
-    }, [dispatch]);
-
-
-    useEffect(() => {
-        if (!currentCustomer) {
-            return;
-        }
-        const filteredCustomers = customers.filter(c => !mapadoc || c.isMAPADOC).map(c => customerKey(c));
-        if (!filteredCustomers.includes(currentCustomer)) {
-            const params = new URLSearchParams(window.location.search);
-            params.delete('customer');
-            setSearchParams(params);
-            dispatch(setCurrentCustomer(null));
-            dispatch(loadOrders())
-        }
-    }, [mapadoc, dispatch, currentCustomer, customers, setSearchParams]);
+    // useEffect(() => {
+    //     if (searchParams.get('customer')) {
+    //         dispatch(setCurrentCustomer(searchParams.get('customer')));
+    //     }
+    // }, [dispatch, searchParams, initialized]);
 
     const changeHandler = (ev: ChangeEvent<HTMLSelectElement>) => {
         const key = ev.target.value;
@@ -60,17 +40,17 @@ const CustomerFilterSelect = ({required}: CustomerFilterSelectProps) => {
             params.set('customer', key);
         }
         setSearchParams(params);
-        dispatch(setCurrentCustomer(key));
+        // dispatch(setCurrentCustomer(key));
     }
 
     return (
-        <FormSelect size="sm"
+        <FormSelect size="sm" name={orderFormElements.customer}
                     value={currentCustomer ?? ''}
                     onChange={changeHandler} required={required}>
             <option value="">All Customers</option>
             <option disabled>-</option>
             {customers
-                .filter(customer => !mapadoc || customer.isMAPADOC)
+                .filter(customer => !onlyMAPADOC || customer.isMAPADOC)
                 .sort(customerNameSorter)
                 .map(customer => (
                     <option key={customerKey(customer)}

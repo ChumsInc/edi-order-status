@@ -23,4 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 /node_modules/
 /public/js/
-/.idea
+/.idea/
+/dist
+/stats.html

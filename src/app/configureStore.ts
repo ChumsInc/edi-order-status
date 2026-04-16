@@ -1,16 +1,16 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {combineReducers} from "redux";
-import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
-import alertsReducer from "../ducks/alerts";
-import customersReducer from "../ducks/customers";
+import {type TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import filtersReducer from "../ducks/filters";
-import ordersReducer from "../ducks/orders";
+import {alertsSlice} from '@chumsinc/alert-list'
+import customersSlice from "@/ducks/customers/customersSlice.ts";
+import ordersSlice from "@/ducks/orders/ordersSlice.ts";
 
 const rootReducer = combineReducers({
-    alerts: alertsReducer,
-    customers: customersReducer,
+    [alertsSlice.reducerPath]: alertsSlice.reducer,
+    [customersSlice.reducerPath]: customersSlice.reducer,
     filters: filtersReducer,
-    orders: ordersReducer,
+    [ordersSlice.reducerPath]: ordersSlice.reducer,
 });
 
 const store = configureStore({

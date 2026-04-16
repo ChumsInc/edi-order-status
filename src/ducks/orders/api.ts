@@ -1,6 +1,6 @@
-import {FetchOrdersArg, FetchOrdersResponse, PutOrderCommentArg, PutOrderStatusArg} from "./types";
-import {fetchJSON} from "chums-components";
-import {EDIOrder} from "chums-types";
+import type {FetchOrdersArg, FetchOrdersResponse, PutOrderCommentArg, PutOrderStatusArg} from "./types";
+import {fetchJSON} from "@chumsinc/ui-utils";
+import type {EDIOrder} from "chums-types";
 
 const urlCustomerOrders = '/api/operations/shipping/edi-order-status/:ARDivisionNo-:CustomerNo/orders.json';
 const urlAllOrders = '/api/operations/shipping/edi-order-status/orders.json';

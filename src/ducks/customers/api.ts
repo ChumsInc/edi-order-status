@@ -1,5 +1,5 @@
-import {fetchJSON} from "chums-components";
-import {EDICustomer} from "chums-types";
+import {fetchJSON} from "@chumsinc/ui-utils";
+import type {EDICustomer} from "chums-types";
 
 export async function fetchCustomers():Promise<EDICustomer[]> {
     try {

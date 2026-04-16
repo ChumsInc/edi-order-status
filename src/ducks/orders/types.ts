@@ -1,4 +1,4 @@
-import {EDIOrder} from "chums-types";
+import type {EDIOrder} from "chums-types";
 
 export interface OrderStatusUpdate {
     statusCode: string,

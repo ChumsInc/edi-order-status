@@ -1,9 +1,9 @@
-import {EDIOrderList} from "./types";
-import {FilterCustomer} from "../filters";
+import type {EDIOrderList} from "./types";
+import type {FilterCustomer} from "../filters";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
-import {ButtonVariant} from "react-bootstrap/types";
-import {EDICustomer, EDIOrder, SortProps} from "chums-types";
+import {type ButtonVariant} from "react-bootstrap/types";
+import type {EDICustomer, EDIOrder, SortProps} from "chums-types";
 
 export const customerKey = (row: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer | FilterCustomer): string => `${row.ARDivisionNo}-${row.CustomerNo}`;
 export const customerFromKey = (key: string | null): FilterCustomer | null => {
@@ -16,6 +16,10 @@ export const customerFromKey = (key: string | null): FilterCustomer | null => {
         ARDivisionNo,
         CustomerNo
     }
+}
+
+export function isTestCustomer(customer: Pick<EDIOrder, 'ARDivisionNo' | 'CustomerNo'> | EDICustomer | FilterCustomer):boolean {
+    return customerKey(customer) === '01-TEST';
 }
 
 export const orderKey = (row: EDIOrder): string => `${row.ARDivisionNo}-${row.CustomerNo}:${row.CustomerPONo}/${row.OrderStatus}`;
@@ -103,11 +107,12 @@ export const orderSorter = (sort: SortProps<EDIOrder>) => (a: EDIOrder, b: EDIOr
             ) * sortMod;
         case 'OrderTotal':
         case 'OrderCount':
-        case 'InvoiceCount':
-            let difference = new Decimal(a[field]).sub(b[field]);
+        case 'InvoiceCount': {
+            const difference = new Decimal(a[field]).sub(b[field]);
             return difference.eq(0)
                 ? (orderKey(a) > orderKey(b) ? 1 : -1) * sortMod
                 : difference.times(sortMod).toNumber();
+        }
         case 'OrderDate':
             return (
                 dayjs(a[field]).isSame(b[field], 'day')

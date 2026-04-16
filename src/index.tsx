@@ -1,18 +1,18 @@
-import React from 'react';
+import {StrictMode} from 'react';
 import {Provider} from 'react-redux';
 import App from './app/App';
 import store from './app/configureStore'
 import {createRoot} from "react-dom/client";
-import {HashRouter as Router} from 'react-router-dom';
+import {HashRouter as Router} from 'react-router';
 
 const container = document.getElementById('app');
 const root = createRoot(container!);
 root.render(
-    <React.StrictMode>
+    <StrictMode>
         <Provider store={store}>
             <Router>
                 <App/>
             </Router>
         </Provider>
-    </React.StrictMode>
+    </StrictMode>
 );

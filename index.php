@@ -10,5 +10,5 @@ $ui = new WebUI2([
     'title' => 'EDI Order Status',
     'requiredRoles' => [Groups::PRODUCTION, Groups::CS],
 ]);
-$ui->addManifestJSON('public/js/manifest.json')
+$ui->addViteManifest()
     ->render();
